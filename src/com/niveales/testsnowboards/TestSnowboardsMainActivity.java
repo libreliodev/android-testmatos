@@ -32,6 +32,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.Html;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
@@ -114,22 +116,6 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			}
 		});
 		
-		TabHost mAppTabs = (TabHost) findViewById(R.id.AppTabs);
-		this.initAppTabs(mAppTabs);
-
-		WebView wv = (WebView) findViewById(R.id.MagazineWebView);
-		wv.loadUrl("http://www.facebook.com");
-		wv.setWebViewClient(new WebViewClient() {
-			@Override
-		    public boolean shouldOverrideUrlLoading(WebView view, String url) {
-		        view.loadUrl(url);
-		        return true;
-		    }
-		} );
-		
-		wv = (WebView) findViewById(R.id.AboutWebView);
-		wv.loadUrl(Consts.ASSETS_URI+"Privacy.html");
-		
 		// Restore last selected tab from last run
 		mMainActivityTabHost.setCurrentTab(mActiveTab);
 
@@ -189,24 +175,6 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 				onSearchStarted();
 			}
 		});
-	}
-	
-	private void initAppTabs(TabHost pTabHost) {
-		pTabHost.setup();
-		TabHost.TabSpec spec1 = pTabHost.newTabSpec("main");
-		spec1.setContent(R.id.MainLayout);
-		spec1.setIndicator("", getResources().getDrawable(R.drawable.mark_up));
-		pTabHost.addTab(spec1);
-		
-		TabHost.TabSpec spec2 = pTabHost.newTabSpec("magazine");
-		spec2.setIndicator("", getResources().getDrawable(R.drawable.facebook_icon));
-		spec2.setContent(R.id.MagazineWebView);
-		pTabHost.addTab(spec2);
-		
-		TabHost.TabSpec spec3 = pTabHost.newTabSpec("about");
-		spec3.setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_info_details));
-		spec3.setContent(R.id.AboutWebView);
-		pTabHost.addTab(spec3);
 	}
 
 	private void initTabs(TabHost pTabHost) {
@@ -796,4 +764,12 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	    else 
 	    	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.main_menu, menu);
+	    return true;
+	}
+	
 }

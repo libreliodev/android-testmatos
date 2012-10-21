@@ -117,22 +117,6 @@ public class TestSkisMainActivity extends FragmentActivity {
 			}
 		});
 		
-		TabHost mAppTabs = (TabHost) findViewById(R.id.AppTabs);
-		this.initAppTabs(mAppTabs);
-
-		WebView wv = (WebView) findViewById(R.id.MagazineWebView);
-		wv.loadUrl("http://www.facebook.com");
-		wv.setWebViewClient(new WebViewClient() {
-			@Override
-		    public boolean shouldOverrideUrlLoading(WebView view, String url) {
-		        view.loadUrl(url);
-		        return true;
-		    }
-		} );
-		
-		wv = (WebView) findViewById(R.id.AboutWebView);
-		wv.loadUrl(Consts.ASSETS_URI+"Privacy.html");
-		
 		// Restore last selected tab from last run
 		mMainActivityTabHost.setCurrentTab(mActiveTab);
 
@@ -194,24 +178,6 @@ public class TestSkisMainActivity extends FragmentActivity {
 		});
 	}
 	
-	private void initAppTabs(TabHost pTabHost) {
-		pTabHost.setup();
-		TabHost.TabSpec spec1 = pTabHost.newTabSpec("main");
-		spec1.setContent(R.id.MainLayout);
-		spec1.setIndicator("", getResources().getDrawable(R.drawable.mark_up));
-		pTabHost.addTab(spec1);
-		
-		TabHost.TabSpec spec2 = pTabHost.newTabSpec("magazine");
-		spec2.setIndicator("", getResources().getDrawable(R.drawable.facebook_icon));
-		spec2.setContent(R.id.MagazineWebView);
-		pTabHost.addTab(spec2);
-		
-		TabHost.TabSpec spec3 = pTabHost.newTabSpec("about");
-		spec3.setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_info_details));
-		spec3.setContent(R.id.AboutWebView);
-		pTabHost.addTab(spec3);
-	}
-
 	private void initTabs(TabHost pTabHost) {
 		String[] tabNames = this.getResources().getStringArray(
 				R.array.TabsNames);

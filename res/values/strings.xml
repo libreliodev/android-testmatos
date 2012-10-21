@@ -38,5 +38,6 @@
         <item>Mail</item>
     </string-array>
     <string name="share_dialog_title">Share by:</string>
+    <string name="facebook">Facebook</string>
 
 </resources>
