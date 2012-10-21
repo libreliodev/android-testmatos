@@ -7,6 +7,9 @@
     <WebView
         android:id="@+id/AboutDialogWebView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent" 
+        android:minWidth="1000dp"  
+    	android:minHeight="1000dp"
+    />
 
 </LinearLayout>

@@ -34,6 +34,8 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
@@ -115,7 +117,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 				changeTab(arg0);
 			}
 		});
-		
+
 		// Restore last selected tab from last run
 		mMainActivityTabHost.setCurrentTab(mActiveTab);
 
@@ -163,11 +165,12 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			@Override
 			public boolean onEditorAction(TextView pV, int pActionId,
 					KeyEvent pEvent) {
-				if(pActionId == 0) {
-					
+				if (pActionId == 0) {
+
 				}
 				return false;
-			}});
+			}
+		});
 		mSearchEditText.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -210,9 +213,9 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			/**
 			 * Favorites
 			 */
-			
-			FavoriteProductListFragment f = getMyApplication().getFavoriteProductListFragment(
-					helper);
+
+			FavoriteProductListFragment f = getMyApplication()
+					.getFavoriteProductListFragment(helper);
 			f.setOnProductSelectedListener(new ProductSelectedListener() {
 				@Override
 				public void showProductDetails(int id) {
@@ -229,7 +232,6 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 						.commit();
 			}
 
-			
 		} else if (tabId.equals(tabNames[2])) {
 			/**
 			 * Lexique
@@ -287,8 +289,8 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		});
 		if (this.mSearchResultHolder != null) {
 			this.getSupportFragmentManager().beginTransaction()
-					.replace(R.id.SearchResultHolder, f).addToBackStack("search")
-					.commit();
+					.replace(R.id.SearchResultHolder, f)
+					.addToBackStack("search").commit();
 		}
 	}
 
@@ -359,8 +361,6 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 					.commit();
 		}
 	}
-
-	
 
 	private String copyFileToExternalDirectory(String pic) {
 		String state = Environment.getExternalStorageState();
@@ -433,28 +433,50 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		return ft;
 	}
 
-//	@Override
-//	public boolean onCreateOptionsMenu(Menu menu) {
-//		getMenuInflater().inflate(R.menu.main_menu, menu);
-//		MenuItem aboutMenuItem = menu.findItem(R.id.MenuItemAbout);
-//		aboutMenuItem.setIcon(android.R.drawable.ic_menu_info_details);
-//		aboutMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-//
-//			@Override
-//			public boolean onMenuItemClick(MenuItem arg0) {
-//				showAboutDialog();
-//				return false;
-//			}
-//		});
-//		return true;
-//	}
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.main_menu, menu);
+		MenuItem aboutMenuItem = menu.findItem(R.id.MenuItemAbout);
+		aboutMenuItem.setIcon(android.R.drawable.ic_menu_info_details);
+		aboutMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+
+			@Override
+			public boolean onMenuItemClick(MenuItem arg0) {
+				showAboutDialog();
+				return false;
+			}
+		});
+
+		MenuItem facebookMenuItem = menu.findItem(R.id.MenuItemFacebook);
+		facebookMenuItem
+				.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+
+					@Override
+					public boolean onMenuItemClick(MenuItem pArg0) {
+						Intent intent = new Intent(Intent.ACTION_VIEW);
+						intent.setData(Uri.parse("http://www.facebook.com"));
+						startActivity(intent);
+						return true;
+					}
+				});
+
+		return true;
+	}
 
 	protected void showAboutDialog() {
 		try {
 			PrivacyDialogFragment f = PrivacyDialogFragment.getInstance(this,
 					R.layout.about_dialog_fragment_ayout,
-					R.id.AboutDialogWebView, getAssets().open("Privacy.html"));
-			f.show(dismissDialogs(), DIALOG_TAG);
+					R.id.AboutDialogWebView, "Privacy.html");
+			if (this.mRightFrameFragmentHolder != null) {
+				this.getSupportFragmentManager().beginTransaction()
+						.replace(R.id.ContentHolder, f).addToBackStack(null)
+						.commit();
+			} else {
+				this.getSupportFragmentManager().beginTransaction()
+						.replace(R.id.FragmentHolder, f).addToBackStack(null)
+						.commit();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -473,14 +495,14 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 						@Override
 						public void onComplete(Bundle pValues) {
-							// 
+							//
 
 							shareByFacebook(productId);
 						}
 
 						@Override
 						public void onFacebookError(FacebookError pE) {
-							// 
+							//
 							Util.showAlert(TestSnowboardsMainActivity.this,
 									"Error:", pE.getMessage());
 
@@ -488,7 +510,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 						@Override
 						public void onError(DialogError pE) {
-							// 
+							//
 							Util.showAlert(TestSnowboardsMainActivity.this,
 									"Warning", pE.getMessage());
 
@@ -496,7 +518,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 						@Override
 						public void onCancel() {
-							// 
+							//
 							Util.showAlert(TestSnowboardsMainActivity.this,
 									"Warning", "Cancelled");
 
@@ -522,10 +544,10 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 				url = URLDecoder.decode(uri.getQueryParameter("walink"),
 						"utf-8");
 			} catch (UnsupportedEncodingException e1) {
-				// 
+				//
 				e1.printStackTrace();
 			} catch (IllegalArgumentException e1) {
-				// 
+				//
 				e1.printStackTrace();
 			}
 			Log.d("SHARE", shareString);
@@ -547,7 +569,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 						@Override
 						public void onComplete(String pResponse, Object pState) {
-							// 
+							//
 
 						}
 
@@ -587,17 +609,15 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 	}
 
-	
-	
 	/**
 	 * 
-	 * @param productId - id of the product to share
+	 * @param productId
+	 *            - id of the product to share
 	 */
 	public void shareByEmail(int productId) {
 		Cursor cursor = helper.getAllFromTableWithWhereAndOrder("Detail",
 				"id_modele = '" + productId + "'", null);
-		String pic = cursor
-				.getString(cursor.getColumnIndexOrThrow("imgLR"));
+		String pic = cursor.getString(cursor.getColumnIndexOrThrow("imgLR"));
 		String shareString = "";
 		String title = "";
 		String message = "";
@@ -606,28 +626,27 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			shareString = cursor.getString(cursor
 					.getColumnIndexOrThrow("Lien_Partage"));
 			Uri uri = Uri.parse(shareString);
-			title = URLDecoder.decode(uri.getQueryParameter("watitle"),
-					"utf-8");
+			title = URLDecoder
+					.decode(uri.getQueryParameter("watitle"), "utf-8");
 			message = URLDecoder.decode(uri.getQueryParameter("watext"),
 					"utf-8");
-			url = URLDecoder.decode(uri.getQueryParameter("walink"),
-					"utf-8");
+			url = URLDecoder.decode(uri.getQueryParameter("walink"), "utf-8");
 		} catch (UnsupportedEncodingException e1) {
-			// 
+			//
 			e1.printStackTrace();
 		} catch (IllegalArgumentException e1) {
-			// 
+			//
 			e1.printStackTrace();
 		}
-		 String newURI = "file://"+copyFileToExternalDirectory(pic);
-		 Intent intent = new Intent(Intent.ACTION_SEND);
-		 intent.setType("text/html");
-		 intent.setType(HTTP.PLAIN_TEXT_TYPE);
-		 intent.putExtra(Intent.EXTRA_SUBJECT, title);
-		 intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(message));
-		 intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(newURI));
-		 startActivity(intent);
-		 Log.d("Html.fromHtml(body)", Html.fromHtml(message).toString());
+		String newURI = "file://" + copyFileToExternalDirectory(pic);
+		Intent intent = new Intent(Intent.ACTION_SEND);
+		intent.setType("text/html");
+		intent.setType(HTTP.PLAIN_TEXT_TYPE);
+		intent.putExtra(Intent.EXTRA_SUBJECT, title);
+		intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(message));
+		intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(newURI));
+		startActivity(intent);
+		Log.d("Html.fromHtml(body)", Html.fromHtml(message).toString());
 	}
 
 	/**
@@ -674,7 +693,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 					} catch (UnsupportedEncodingException e1) {
 						e1.printStackTrace();
 					} catch (IllegalArgumentException e1) {
-						// 
+						//
 						e1.printStackTrace();
 					}
 					Log.d("SHARE", shareString);
@@ -754,22 +773,16 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		}
 		}
 	}
-	
+
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
-	    super.onConfigurationChanged(newConfig);
-//	    int j = newConfig.screenLayout & Configuration.SCREENLAYOUT_SIZE_XLARGE;
-	    if((newConfig.screenLayout & Configuration.SCREENLAYOUT_SIZE_XLARGE) == 0)
-	    	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-	    else 
-	    	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		super.onConfigurationChanged(newConfig);
+		// int j = newConfig.screenLayout &
+		// Configuration.SCREENLAYOUT_SIZE_XLARGE;
+		if ((newConfig.screenLayout & Configuration.SCREENLAYOUT_SIZE_XLARGE) == 0)
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		else
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 	}
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-	    MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.main_menu, menu);
-	    return true;
-	}
-	
+
 }

@@ -447,8 +447,16 @@ public class TestSkisMainActivity extends FragmentActivity {
 		try {
 			PrivacyDialogFragment f = PrivacyDialogFragment.getInstance(this,
 					R.layout.about_dialog_fragment_ayout,
-					R.id.AboutDialogWebView, getAssets().open("Privacy.html"));
-			f.show(dismissDialogs(), DIALOG_TAG);
+					R.id.AboutDialogWebView, "Privacy.html");
+			if (this.mRightFrameFragmentHolder != null) {
+				this.getSupportFragmentManager().beginTransaction()
+						.replace(R.id.ContentHolder, f).addToBackStack(null)
+						.commit();
+			} else {
+				this.getSupportFragmentManager().beginTransaction()
+						.replace(R.id.FragmentHolder, f).addToBackStack(null)
+						.commit();
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

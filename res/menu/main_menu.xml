@@ -1,4 +1,15 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/FacebookMenuItem" android:icon="@drawable/facebook_icon" android:showAsAction="ifRoom" android:title="@string/facebook"></item><item android:id="@+id/MenuItemAbout" android:title="@string/MenuItemAbout" android:showAsAction="ifRoom"></item>
-    
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/MenuItemFacebook"
+        android:icon="@drawable/facebook_icon"
+        android:showAsAction="ifRoom"
+        android:title="@string/facebook">
+    </item>
+    <item
+        android:id="@+id/MenuItemAbout"
+        android:showAsAction="ifRoom"
+        android:title="@string/MenuItemAbout">
+    </item>
+
 </menu>
