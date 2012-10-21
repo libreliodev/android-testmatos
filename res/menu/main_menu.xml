@@ -1,0 +1,3 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/MenuItemAbout" android:title="@string/MenuItemAbout" android:showAsAction="ifRoom"></item>
+</menu>
