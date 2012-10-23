@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.niveales.library.ui.activity.BaseNivealesFragment;
 import com.niveales.library.utils.Consts;
 import com.niveales.library.utils.adapters.CheckedCriteriaViewBinder;
 import com.niveales.library.utils.adapters.checked.CheckedCriteriaAdapter;
@@ -17,13 +18,13 @@ import com.niveales.library.utils.db.DBHelper;
 
 
 
-public class CriteriaSelectorFragment extends Fragment {
+public class CriteriaSelectorFragment extends BaseNivealesFragment {
 	View rootView;
 	private String colName;
 
 	// private int layout = R.layout.creteria_selector_fragment_layout;
 	CheckedCriteriaAdapter mAdapter;
-	private DBHelper helper;
+//	private DBHelper helper;
 	private Context context;
 	private int layoutId;
 	private int itemLayoutId;
@@ -66,7 +67,7 @@ public class CriteriaSelectorFragment extends Fragment {
 		this.type = type;
 		this.criteria = criteria;
 		this.titleResourceId = titleResourceId;
-		this.helper = helper;
+//		this.helper = helper;
 		this.context = context;
 		this.colName = colName;
 		this.layoutId = layoutId;
@@ -85,20 +86,21 @@ public class CriteriaSelectorFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		this.setRetainInstance(true);
 		rootView = inflater.inflate(layoutId, container, false);
 		TextView title = (TextView) rootView.findViewById(titleResourceId);
 		title.setText(criteria);
 		ListView mCreteriaSelectorListView = (ListView) rootView
 				.findViewById(listViewId);
 		if (!type.equals(Consts.NUMERIC)) {
-			mAdapter = new CheckedCriteriaAdapter(context, helper.getColumn(colName), itemLayoutId, 
+			mAdapter = new CheckedCriteriaAdapter(context, getApplication().getDBHelper().getColumn(colName), itemLayoutId, 
 					new CheckedCriteriaViewBinder(context, new String [] {
 							colName,
 							colName
 					}, new int [] {
 							itemTextViewId,
 							itemCheckBoxId
-					}), helper, colName);
+					}), getApplication().getDBHelper(), colName);
 		}
 		mAdapter.setOnCriteriaCangeListener(new CriteriaChangeListener() {
 
@@ -107,7 +109,6 @@ public class CriteriaSelectorFragment extends Fragment {
 				onCheckedCriteriaChanged(value, checked);				
 			}});
 		mCreteriaSelectorListView.setAdapter(mAdapter);
-		// TODO: add header text
 //		String headerText = mAdapter.getHeaderText();
 		TextView header = (TextView) rootView
 				.findViewById(titleResourceId);
@@ -118,14 +119,14 @@ public class CriteriaSelectorFragment extends Fragment {
 	public void onCheckedCriteriaChanged(String value,
 								boolean isChecked) {
 		if(isChecked) {
-			helper.rawQuery("insert into UserSearchInputs values(?, ?, ?, ? )", new String [] {
+			getApplication().getDBHelper().rawQuery("insert into UserSearchInputs values(?, ?, ?, ? )", new String [] {
 					colName,
 					value,
 					value,
 					colName+ " LIKE '%"+value+"%'"
 			});
 		} else {
-			helper.rawQuery("delete from UserSearchInputs where ColName=? AND UserInput LIKE ?", new String [] {
+			getApplication().getDBHelper().rawQuery("delete from UserSearchInputs where ColName=? AND UserInput LIKE ?", new String [] {
 					colName,
 					"%"+value+"%"
 			});

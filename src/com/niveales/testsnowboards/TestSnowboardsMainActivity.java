@@ -55,6 +55,7 @@ import com.facebook.android.Facebook;
 import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
 import com.facebook.android.Util;
+import com.niveales.library.ui.activity.BaseNivealesActivity;
 import com.niveales.library.ui.criteraselectors.CriteriaSelectorFragment;
 import com.niveales.library.ui.criteraselectors.CriteriaSelectorFragment.OnCriteriaChangedListener;
 import com.niveales.library.ui.criteraselectors.RangeCriteriaSelectorFragment;
@@ -75,11 +76,11 @@ import com.niveales.library.utils.adapters.AdvancedCriteriaMainListAdapter;
 import com.niveales.library.utils.db.DBHelper;
 import com.niveales.testsnowboards.lexique.LexiqueActivity;
 
-public class TestSnowboardsMainActivity extends FragmentActivity {
+public class TestSnowboardsMainActivity extends BaseNivealesActivity {
 
 	private static final String DIALOG_TAG = null;
 	private static final int TWITTER_CALLBACK_ID = 9890;
-	private DBHelper helper;
+
 	private int mActiveTab;
 	private TabHost mMainActivityTabHost;
 	private View mRightFrameFragmentHolder;
@@ -101,8 +102,8 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 		getMyApplication();
 		// Init DB
-		helper = new DBHelper(this, TestSnowboardsApplication.dbName);
-		helper.open();
+		setDBHelper(new DBHelper(this, TestSnowboardsApplication.dbName));
+		getDBHelper().open();
 
 		// Init tabs
 		mMainActivityTabHost = (TabHost) findViewById(R.id.MainLayoutTabHost);
@@ -146,7 +147,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 					}
 				});
 
-		mainAdapter = new AdvancedCriteriaMainListAdapter(helper, this,
+		mainAdapter = new AdvancedCriteriaMainListAdapter(getDBHelper(), this,
 				R.layout.creteria_group_selector_item_layout,
 				R.id.CreteriaGroupTextView, R.id.CreteriaSelectedListTextView);
 		mMainActivityCreteriaSelectionListView.setAdapter(mainAdapter);
@@ -177,7 +178,8 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			}
 		});
 	}
-
+	
+	
 	private void initTabs(TabHost pTabHost) {
 		String[] tabNames = this.getResources().getStringArray(
 				R.array.TabsNames);
@@ -213,7 +215,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			 */
 
 			FavoriteProductListFragment f = getMyApplication()
-					.getFavoriteProductListFragment(helper);
+					.getFavoriteProductListFragment(getDBHelper());
 			f.setOnProductSelectedListener(new ProductSelectedListener() {
 				@Override
 				public void showProductDetails(int id) {
@@ -237,7 +239,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			if (this.mRightFrameFragmentHolder != null) {
 				// Tablet
 				Fragment lexiqueFragment = getMyApplication()
-						.getLexiqueFragment(helper);
+						.getLexiqueFragment(getDBHelper());
 				this.getSupportFragmentManager().beginTransaction()
 						.replace(R.id.ContentHolder, lexiqueFragment)
 						.addToBackStack(null).commit();
@@ -252,7 +254,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	protected void onSearchButtonPressed() {
 
 		ProductListFragment f = getMyApplication().getProductListFragment(
-				helper);
+				getDBHelper());
 		f.setOnProductSelectedListener(new ProductSelectedListener() {
 			@Override
 			public void showProductDetails(int id) {
@@ -275,7 +277,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	 */
 	protected void onSearchStarted() {
 		final ProductSearchFragment f = getMyApplication()
-				.getProductSearchFragment(helper, R.id.SearchEditText);
+				.getProductSearchFragment(getDBHelper(), R.id.SearchEditText);
 		f.setOnProductSearchSelectedListener(new OnProductSearchSelectedListener() {
 
 			@Override
@@ -296,7 +298,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		if (mRightFrameFragmentHolder != null) {
 			// we have a space to show lexique in current activity
 			ProductDetailFragment productDetailFragment = getMyApplication()
-					.getProductDetailFragment(helper, id,
+					.getProductDetailFragment(getDBHelper(), id,
 							new ShareProductListener() {
 
 								@Override
@@ -317,20 +319,21 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	/**
 	 * @return Application instance
 	 */
-	private TestSnowboardsApplication getMyApplication() {
+	@Override
+	public TestSnowboardsApplication getMyApplication() {
 		return (TestSnowboardsApplication) getApplication();
 	}
 
 	protected void showSelectionCategory(int position) {
 
-		Cursor cursor = helper.getAllAdvancedCriteria();
+		Cursor cursor = getDBHelper().getAllAdvancedCriteria();
 		cursor.moveToPosition(position);
 		String criteria = cursor.getString(0);
 		String type = cursor.getString(2);
 		String colName = cursor.getString(1);
 		if (type.equals("Numeric")) {
 			RangeCriteriaSelectorFragment f = getMyApplication()
-					.getRangeCriteriaSelectorFragment(helper, type, criteria,
+					.getRangeCriteriaSelectorFragment(getDBHelper(), type, criteria,
 							colName, new OnRangeCriteriaChangedListener() {
 
 								@Override
@@ -345,7 +348,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 					.commit();
 		} else {
 			CriteriaSelectorFragment f = getMyApplication()
-					.getCriteriaSelectorFragment(helper, type, criteria,
+					.getCriteriaSelectorFragment(getDBHelper(), type, criteria,
 							colName, new OnCriteriaChangedListener() {
 
 								@Override
@@ -518,7 +521,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 						}
 					});
 		} else {
-			Cursor cursor = helper.getAllFromTableWithWhereAndOrder("Detail",
+			Cursor cursor = getDBHelper().getAllFromTableWithWhereAndOrder("Detail",
 					"id_modele = '" + productId + "'", null);
 			String pic = cursor
 					.getString(cursor.getColumnIndexOrThrow("imgLR"));
@@ -608,7 +611,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	 *            - id of the product to share
 	 */
 	public void shareByEmail(int productId) {
-		Cursor cursor = helper.getAllFromTableWithWhereAndOrder("Detail",
+		Cursor cursor = getDBHelper().getAllFromTableWithWhereAndOrder("Detail",
 				"id_modele = '" + productId + "'", null);
 		String pic = cursor.getString(cursor.getColumnIndexOrThrow("imgLR"));
 		String shareString = "";
@@ -665,7 +668,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 					mTwitter = new TwitterFactory().getOAuthAuthorizedInstance(
 							Consts.TWITTER_CONSUMER_KEY, Consts.TWITTER_SECRET,
 							getMyApplication().mTwitterAccessToken);
-					Cursor cursor = helper.getAllFromTableWithWhereAndOrder(
+					Cursor cursor = getDBHelper().getAllFromTableWithWhereAndOrder(
 							"Detail", "id_modele = '" + productId + "'", null);
 					String pic = cursor.getString(cursor
 							.getColumnIndexOrThrow("imgLR"));
@@ -774,8 +777,23 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		// Configuration.SCREENLAYOUT_SIZE_XLARGE;
 		if ((newConfig.screenLayout & Configuration.SCREENLAYOUT_SIZE_XLARGE) == 0)
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		else
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//		else
+//			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+	}
+
+	@Override
+	public void onResume() {
+		if(getDBHelper()!= null) {
+			getDBHelper().open();
+		}
+		super.onResume();
+	}
+	@Override
+	public void onPause() {
+		if(this.getDBHelper() != null) {
+			getDBHelper().close();
+		}
+		super.onPause();
 	}
 
 }

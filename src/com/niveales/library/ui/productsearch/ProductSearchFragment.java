@@ -105,6 +105,8 @@ public class ProductSearchFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		this.setRetainInstance(true);
+
 		rootView = inflater.inflate(layoutId,
 				container, false);
 		if(cursor == null)

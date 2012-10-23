@@ -15,7 +15,7 @@
         android:theme="@style/AppTheme" android:name=".TestSnowboardsApplication">
         <activity
             android:name=".TestSnowboardsMainActivity"
-            android:label="@string/title_activity_test_snowboards_main" android:windowSoftInputMode="stateAlwaysHidden" android:configChanges="keyboard|orientation|screenLayout|screenSize" android:icon="@drawable/tests_snowboards_ic_launcher" android:theme="@style/AppTheme"><intent-filter>
+            android:label="@string/title_activity_test_snowboards_main" android:icon="@drawable/tests_snowboards_ic_launcher" android:theme="@style/AppTheme" android:configChanges="orientation"><intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />

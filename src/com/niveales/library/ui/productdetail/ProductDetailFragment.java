@@ -112,6 +112,8 @@ public class ProductDetailFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		this.setRetainInstance(true);
+
 		rootView = inflater.inflate(productDetailLayout, container, false);
 		WebView w = (WebView) rootView.findViewById(webViewId);
 		w.loadDataWithBaseURL(Consts.ASSETS_URI, text, "text/html", "UTF-8", null);

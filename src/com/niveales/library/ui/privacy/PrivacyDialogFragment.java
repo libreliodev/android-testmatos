@@ -35,6 +35,8 @@ public class PrivacyDialogFragment extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+		this.setRetainInstance(true);
+
 		View rootView = inflater.inflate(layoutId,  container, false);
 		WebView webView = (WebView) rootView.findViewById(webViewId);
 		webView.loadUrl(Consts.ASSETS_URI+assetUri);

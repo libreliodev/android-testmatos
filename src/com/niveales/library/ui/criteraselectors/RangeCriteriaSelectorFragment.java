@@ -77,6 +77,8 @@ public class RangeCriteriaSelectorFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		this.setRetainInstance(true);
+
 		rootView = inflater.inflate(layoutId, container, false);
 		TextView title = (TextView) rootView.findViewById(titleResourceId);
 		title.setText(criteria);

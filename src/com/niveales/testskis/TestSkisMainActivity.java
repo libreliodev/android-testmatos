@@ -15,10 +15,7 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.http.AccessToken;
 import twitter4j.http.RequestToken;
-
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -35,8 +32,6 @@ import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -47,7 +42,6 @@ import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
-import android.widget.Toast;
 
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.AsyncFacebookRunner.RequestListener;
@@ -56,11 +50,11 @@ import com.facebook.android.Facebook;
 import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
 import com.facebook.android.Util;
+import com.niveales.library.ui.activity.BaseNivealesActivity;
 import com.niveales.library.ui.criteraselectors.CriteriaSelectorFragment;
 import com.niveales.library.ui.criteraselectors.CriteriaSelectorFragment.OnCriteriaChangedListener;
 import com.niveales.library.ui.criteraselectors.RangeCriteriaSelectorFragment;
 import com.niveales.library.ui.criteraselectors.RangeCriteriaSelectorFragment.OnRangeCriteriaChangedListener;
-import com.niveales.library.ui.lexique.LexiqueFragment;
 import com.niveales.library.ui.privacy.PrivacyDialogFragment;
 import com.niveales.library.ui.productdetail.ProductDetailFragment;
 import com.niveales.library.ui.productdetail.ProductDetailFragment.ShareProductListener;
@@ -72,16 +66,15 @@ import com.niveales.library.ui.productsearch.ProductSearchFragment;
 import com.niveales.library.ui.productsearch.ProductSearchFragment.OnProductSearchSelectedListener;
 import com.niveales.library.utils.Consts;
 import com.niveales.library.utils.adapters.AdvancedCriteriaMainListAdapter;
-import com.niveales.library.utils.adapters.CursorViewBinder;
 import com.niveales.library.utils.db.DBHelper;
 import com.niveales.testsnowboards.R;
 import com.niveales.testsnowboards.lexique.LexiqueActivity;
 
-public class TestSkisMainActivity extends FragmentActivity {
+public class TestSkisMainActivity extends BaseNivealesActivity {
 
 	private static final String DIALOG_TAG = null;
 	private static final int TWITTER_CALLBACK_ID = 9890;
-	private DBHelper helper;
+//	private DBHelper helper;
 	private int mActiveTab;
 	private TabHost mMainActivityTabHost;
 	private View mRightFrameFragmentHolder;
@@ -101,9 +94,10 @@ public class TestSkisMainActivity extends FragmentActivity {
 		// Set our layout
 		setContentView(R.layout.main_activity_layout);
 
+		getMyApplication();
 		// Init DB
-		helper = new DBHelper(this, getMyApplication().dbName);
-		helper.open();
+		setDBHelper( new DBHelper(this, TestSkisApplication.dbName));
+		getDBHelper().open();
 
 		// Init tabs
 		mMainActivityTabHost = (TabHost) findViewById(R.id.MainLayoutTabHost);
@@ -147,7 +141,7 @@ public class TestSkisMainActivity extends FragmentActivity {
 					}
 				});
 
-		mainAdapter = new AdvancedCriteriaMainListAdapter(helper, this,
+		mainAdapter = new AdvancedCriteriaMainListAdapter(getDBHelper(), this,
 				R.layout.creteria_group_selector_item_layout,
 				R.id.CreteriaGroupTextView, R.id.CreteriaSelectedListTextView);
 		mMainActivityCreteriaSelectionListView.setAdapter(mainAdapter);
@@ -177,6 +171,9 @@ public class TestSkisMainActivity extends FragmentActivity {
 			}
 		});
 	}
+	
+	
+	
 	
 	private void initTabs(TabHost pTabHost) {
 		String[] tabNames = this.getResources().getStringArray(
@@ -219,7 +216,7 @@ public class TestSkisMainActivity extends FragmentActivity {
 			if (this.mRightFrameFragmentHolder != null) {
 				// Tablet
 				Fragment lexiqueFragment = getMyApplication()
-						.getLexiqueFragment(helper);
+						.getLexiqueFragment(getDBHelper());
 				this.getSupportFragmentManager().beginTransaction()
 						.replace(R.id.ContentHolder, lexiqueFragment)
 						.addToBackStack(null).commit();
@@ -234,7 +231,7 @@ public class TestSkisMainActivity extends FragmentActivity {
 	protected void onSearchButtonPressed() {
 		String searchCriteria;
 		ProductListFragment f = getMyApplication().getProductListFragment(
-				helper);
+				getDBHelper());
 		f.setOnProductSelectedListener(new ProductSelectedListener() {
 			@Override
 			public void showProductDetails(int id) {
@@ -257,7 +254,7 @@ public class TestSkisMainActivity extends FragmentActivity {
 	 */
 	protected void onSearchStarted() {
 		final ProductSearchFragment f = getMyApplication()
-				.getProductSearchFragment(helper, R.id.SearchEditText);
+				.getProductSearchFragment(getDBHelper(), R.id.SearchEditText);
 		f.setOnProductSearchSelectedListener(new OnProductSearchSelectedListener() {
 
 			@Override
@@ -278,7 +275,7 @@ public class TestSkisMainActivity extends FragmentActivity {
 		if (mRightFrameFragmentHolder != null) {
 			// we have a space to show lexique in current activity
 			ProductDetailFragment productDetailFragment = getMyApplication()
-					.getProductDetailFragment(helper, id,
+					.getProductDetailFragment(getDBHelper(), id,
 							new ShareProductListener() {
 
 								@Override
@@ -299,21 +296,22 @@ public class TestSkisMainActivity extends FragmentActivity {
 	/**
 	 * @return
 	 */
-	private TestSkisApplication getMyApplication() {
+	@Override
+	public TestSkisApplication getMyApplication() {
 		// TODO Auto-generated method stub
 		return (TestSkisApplication) getApplication();
 	}
 
 	protected void showSelectionCategory(int position) {
 
-		Cursor cursor = helper.getAllAdvancedCriteria();
+		Cursor cursor = getDBHelper().getAllAdvancedCriteria();
 		cursor.moveToPosition(position);
 		String criteria = cursor.getString(0);
 		String type = cursor.getString(2);
 		String colName = cursor.getString(1);
 		if (type.equals("Numeric")) {
 			RangeCriteriaSelectorFragment f = getMyApplication()
-					.getRangeCriteriaSelectorFragment(helper, type, criteria,
+					.getRangeCriteriaSelectorFragment(getDBHelper(), type, criteria,
 							colName, new OnRangeCriteriaChangedListener() {
 
 								@Override
@@ -328,7 +326,7 @@ public class TestSkisMainActivity extends FragmentActivity {
 					.commit();
 		} else {
 			CriteriaSelectorFragment f = getMyApplication()
-					.getCriteriaSelectorFragment(helper, type, criteria,
+					.getCriteriaSelectorFragment(getDBHelper(), type, criteria,
 							colName, new OnCriteriaChangedListener() {
 
 								@Override
@@ -506,7 +504,7 @@ public class TestSkisMainActivity extends FragmentActivity {
 						}
 					});
 		} else {
-			Cursor cursor = helper.getAllFromTableWithWhereAndOrder("Detail",
+			Cursor cursor = getDBHelper().getAllFromTableWithWhereAndOrder("Detail",
 					"id_modele = '" + productId + "'", null);
 			String pic = cursor
 					.getString(cursor.getColumnIndexOrThrow("imgLR"));
@@ -614,7 +612,7 @@ public class TestSkisMainActivity extends FragmentActivity {
 					mTwitter = new TwitterFactory().getOAuthAuthorizedInstance(
 							Consts.TWITTER_CONSUMER_KEY, Consts.TWITTER_SECRET,
 							getMyApplication().mTwitterAccessToken);
-					Cursor cursor = helper.getAllFromTableWithWhereAndOrder(
+					Cursor cursor = getDBHelper().getAllFromTableWithWhereAndOrder(
 							"Detail", "id_modele = '" + productId + "'", null);
 					String pic = cursor.getString(cursor
 							.getColumnIndexOrThrow("imgLR"));

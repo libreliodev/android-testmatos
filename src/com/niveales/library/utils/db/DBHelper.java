@@ -39,7 +39,8 @@ public class DBHelper{
     }
     
     public DBHelper open() throws SQLException { 
-        mDb = mDbHelper.getWritableDatabase();
+    	if(mDb == null || !mDb.isOpen())
+    		mDb = mDbHelper.getWritableDatabase();
         if(mDb != null) {
         	mDb.rawQuery("CREATE TABLE IF NOT EXISTS \"UserSearchInputs\" (\"ColName\" TEXT NOT NULL , \"UserInput\" TEXT, \"Title\" TEXT,\"QueryString\" TEXT);", null).moveToFirst();
         	mDb.rawQuery("CREATE TABLE IF NOT EXISTS \""+FAVORITES_TABLE+"\" (\"id\"  UNIQUE );", null).moveToFirst();
