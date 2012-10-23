@@ -23,6 +23,7 @@
         </activity>
         
         <activity android:name=".lexique.LexiqueActivity" android:icon="@drawable/tests_snowboards_ic_launcher" android:label="@string/tests_snowboards_app_name" android:theme="@style/AppTheme"></activity>
+        <activity android:name="com.niveales.library.ui.privacy.PrivacyActivity"></activity>
     </application>
 
 </manifest>

@@ -33,13 +33,10 @@ import android.text.Html;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -62,6 +59,7 @@ import com.niveales.library.ui.criteraselectors.CriteriaSelectorFragment;
 import com.niveales.library.ui.criteraselectors.CriteriaSelectorFragment.OnCriteriaChangedListener;
 import com.niveales.library.ui.criteraselectors.RangeCriteriaSelectorFragment;
 import com.niveales.library.ui.criteraselectors.RangeCriteriaSelectorFragment.OnRangeCriteriaChangedListener;
+import com.niveales.library.ui.privacy.PrivacyActivity;
 import com.niveales.library.ui.privacy.PrivacyDialogFragment;
 import com.niveales.library.ui.productdetail.ProductDetailFragment;
 import com.niveales.library.ui.productdetail.ProductDetailFragment.ShareProductListener;
@@ -464,22 +462,28 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	}
 
 	protected void showAboutDialog() {
-		try {
-			PrivacyDialogFragment f = PrivacyDialogFragment.getInstance(this,
-					R.layout.about_dialog_fragment_ayout,
-					R.id.AboutDialogWebView, "Privacy.html");
-			if (this.mRightFrameFragmentHolder != null) {
-				this.getSupportFragmentManager().beginTransaction()
-						.replace(R.id.ContentHolder, f).addToBackStack(null)
-						.commit();
-			} else {
-				this.getSupportFragmentManager().beginTransaction()
-						.replace(R.id.FragmentHolder, f).addToBackStack(null)
-						.commit();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			PrivacyDialogFragment f = PrivacyDialogFragment.getInstance(this,
+//					R.layout.about_dialog_fragment_ayout,
+//					R.id.AboutDialogWebView, "Privacy.html");
+//			if (this.mRightFrameFragmentHolder != null) {
+//				this.getSupportFragmentManager().beginTransaction()
+//						.replace(R.id.ContentHolder, f).addToBackStack(null)
+//						.addToBackStack(null)
+//						.commit();
+//			} else {
+//				this.getSupportFragmentManager().beginTransaction()
+//						.replace(R.id.FragmentHolder, f).addToBackStack(null)
+//						.commit();
+//			}
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+		Intent intent = new Intent(this, PrivacyActivity.class);
+		Bundle extras = new Bundle();
+		extras.putString("url", Consts.ASSETS_URI+"Privacy.html");
+		intent.putExtras(extras);
+		startActivity(intent);
 	}
 
 	protected void shareByFacebook(final int productId) {
@@ -621,7 +625,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		String shareString = "";
 		String title = "";
 		String message = "";
-		String url = "";
+		String url;
 		try {
 			shareString = cursor.getString(cursor
 					.getColumnIndexOrThrow("Lien_Partage"));

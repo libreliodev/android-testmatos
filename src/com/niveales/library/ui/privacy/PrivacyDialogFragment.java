@@ -1,14 +1,9 @@
 package com.niveales.library.ui.privacy;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,18 +31,6 @@ public class PrivacyDialogFragment extends Fragment {
 		this.layoutId = layoutId;
 		this.webViewId = webViewId;
 		this.assetUri = assetUri;
-//		BufferedInputStream bin = new BufferedInputStream(asset);
-//		InputStreamReader in = new InputStreamReader(bin, "UTF-8");
-//		StringWriter w = new StringWriter();
-//		char[] buffer = new char[1024];
-//		int count = 0;
-//		while((count = in.read(buffer, 0, 1024)) > 0) {
-//			w.write(buffer, 0, count);
-//		}
-//		htmlString = w.toString();
-//		in.close();
-//		w.close();
-		
 	}
 
 	@Override
