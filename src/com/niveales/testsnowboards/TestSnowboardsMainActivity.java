@@ -304,7 +304,14 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 									showShareDialog(productId);
 								}
 							});
-			this.getSupportFragmentManager().beginTransaction()
+			int orientation = getResources().getConfiguration().orientation;
+			int layout = getResources().getConfiguration().screenLayout;
+			if(orientation == Configuration.ORIENTATION_PORTRAIT && ((layout & Configuration.SCREENLAYOUT_SIZE_XLARGE) != 0))
+				this.getSupportFragmentManager().beginTransaction()
+				.replace(R.id.ProductDetailsHolder, productDetailFragment)
+				.addToBackStack("Selection").commit();
+			else 
+				this.getSupportFragmentManager().beginTransaction()
 					.replace(R.id.ContentHolder, productDetailFragment)
 					.addToBackStack("Selection").commit();
 		} else {
@@ -774,8 +781,8 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		// Configuration.SCREENLAYOUT_SIZE_XLARGE;
 		if ((newConfig.screenLayout & Configuration.SCREENLAYOUT_SIZE_XLARGE) == 0)
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		else
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//		else
+//			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 	}
 
 }
