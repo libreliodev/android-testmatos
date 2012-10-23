@@ -1,5 +1,6 @@
 package com.niveales.library.utils.db;
 
+import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -525,7 +526,7 @@ public class DBHelper{
 		private void copyDataBase() throws IOException {
 
 			// Open your local db as the input stream
-			InputStream myInput = myContext.getAssets().open(dbName);
+			InputStream myInput = myContext.getAssets().open(dbName+".jpg");
 
 			// Path to the just created empty db
 			String outFileName = DB_PATH + dbName;

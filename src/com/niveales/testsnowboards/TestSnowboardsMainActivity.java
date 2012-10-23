@@ -451,9 +451,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 					@Override
 					public boolean onMenuItemClick(MenuItem pArg0) {
-						Intent intent = new Intent(Intent.ACTION_VIEW);
-						intent.setData(Uri.parse("http://www.facebook.com"));
-						startActivity(intent);
+						showFacebookPage();
 						return true;
 					}
 				});
@@ -462,26 +460,17 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	}
 
 	protected void showAboutDialog() {
-//		try {
-//			PrivacyDialogFragment f = PrivacyDialogFragment.getInstance(this,
-//					R.layout.about_dialog_fragment_ayout,
-//					R.id.AboutDialogWebView, "Privacy.html");
-//			if (this.mRightFrameFragmentHolder != null) {
-//				this.getSupportFragmentManager().beginTransaction()
-//						.replace(R.id.ContentHolder, f).addToBackStack(null)
-//						.addToBackStack(null)
-//						.commit();
-//			} else {
-//				this.getSupportFragmentManager().beginTransaction()
-//						.replace(R.id.FragmentHolder, f).addToBackStack(null)
-//						.commit();
-//			}
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
 		Intent intent = new Intent(this, PrivacyActivity.class);
 		Bundle extras = new Bundle();
-		extras.putString("url", Consts.ASSETS_URI+"Privacy.html");
+		extras.putString("url", Consts.ASSETS_URI + "Privacy.html");
+		intent.putExtras(extras);
+		startActivity(intent);
+	}
+
+	protected void showFacebookPage() {
+		Intent intent = new Intent(this, PrivacyActivity.class);
+		Bundle extras = new Bundle();
+		extras.putString("url", "http://www.facebook.com");
 		intent.putExtras(extras);
 		startActivity(intent);
 	}
