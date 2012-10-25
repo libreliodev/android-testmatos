@@ -237,8 +237,8 @@ public class TestSkisMainActivity extends FragmentActivity {
 				helper);
 		f.setOnProductSelectedListener(new ProductSelectedListener() {
 			@Override
-			public void showProductDetails(int id) {
-				showProductDetail(id);
+			public void showProductDetails(Cursor c) {
+				showProductDetail(c);
 			}
 		});
 		if (this.mRightFrameFragmentHolder != null) {
@@ -261,10 +261,10 @@ public class TestSkisMainActivity extends FragmentActivity {
 		f.setOnProductSearchSelectedListener(new OnProductSearchSelectedListener() {
 
 			@Override
-			public void onSearchProductSelected(int pId) {
+			public void onSearchProductSelected(Cursor c) {
 				getSupportFragmentManager().beginTransaction().remove(f)
 						.commit();
-				showProductDetail(pId);
+				showProductDetail(c);
 			}
 		});
 		if (this.mSearchResultHolder != null) {
@@ -274,11 +274,11 @@ public class TestSkisMainActivity extends FragmentActivity {
 		}
 	}
 
-	protected void showProductDetail(int id) {
+	protected void showProductDetail(Cursor pC) {
 		if (mRightFrameFragmentHolder != null) {
 			// we have a space to show lexique in current activity
 			ProductDetailFragment productDetailFragment = getMyApplication()
-					.getProductDetailFragment(helper, id,
+					.getProductDetailFragment(helper, pC,
 							new ShareProductListener() {
 
 								@Override

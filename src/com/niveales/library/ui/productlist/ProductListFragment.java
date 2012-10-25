@@ -136,8 +136,8 @@ public class ProductListFragment extends Fragment {
 				if(a instanceof BoundAdapter) {
 					BoundAdapter adapter = (BoundAdapter) a;
 					Cursor cursor = adapter.getItem(item);
-					int productId = cursor.getInt(cursor.getColumnIndexOrThrow("id_modele"));
-					onProductSelected(productId);
+//					int productId = cursor.getInt(cursor.getColumnIndexOrThrow("id_modele"));
+					onProductSelected(cursor);
 				}
 			}});
 		
@@ -226,8 +226,8 @@ public class ProductListFragment extends Fragment {
 		mAdapter.setCursor(cursor);
 	}
 
-	protected void onProductSelected(int id) {
-		listener.showProductDetails(id);
+	protected void onProductSelected(Cursor c) {
+		listener.showProductDetails(c);
 	}
 
 	public void setOnProductSelectedListener(ProductSelectedListener l) {
@@ -235,7 +235,7 @@ public class ProductListFragment extends Fragment {
 	}
 	
 	public interface ProductSelectedListener {
-		public void showProductDetails(int id);
+		public void showProductDetails(Cursor c);
 	}
 
 

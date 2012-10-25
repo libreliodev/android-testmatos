@@ -31,6 +31,7 @@ import com.niveales.testsnowboards.R;
 
 import android.app.Application;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -62,10 +63,10 @@ public class TestSkisApplication extends Application {
 	public static AccessToken mTwitterAccessToken;
 
 	public ProductDetailFragment getProductDetailFragment(DBHelper helper,
-			int id, ShareProductListener l) {
+			Cursor c, ShareProductListener l) {
 		return ProductDetailFragment.getInstance(this, helper,
 				R.layout.product_detail_layout, R.id.ProductDetailsWebView,
-				R.string.ProductDetailWebPage, id, new String[] { "Marque",
+				R.string.ProductDetailWebPage, c, new String[] { "Marque",
 						"Modele", "Prix_String", "imgLR", "Gamme",
 						"test_Taille_testee", "Tailles", "type_de_cambre_text",
 						"Test_baseline", "Description_Test", "Test_avantages",

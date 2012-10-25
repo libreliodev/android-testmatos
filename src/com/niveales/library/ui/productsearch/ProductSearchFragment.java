@@ -121,8 +121,8 @@ public class ProductSearchFragment extends Fragment {
 				if(a instanceof BoundAdapter) {
 					BoundAdapter adapter = (BoundAdapter) a;
 					Cursor cursor = adapter.getItem(item);
-					int productId = cursor.getInt(cursor.getColumnIndexOrThrow("id_modele"));
-					onProductSelected(productId);
+//					int productId = cursor.getInt(cursor.getColumnIndexOrThrow("id_modele"));
+					onProductSelected(cursor);
 				}
 			}});
 		mSearchEditText = (EditText) getActivity().findViewById(editTextId);
@@ -182,8 +182,8 @@ public class ProductSearchFragment extends Fragment {
 		this.mProductListView.invalidateViews();
 	}
 
-	protected void onProductSelected(int id) {
-		listener.onSearchProductSelected(id);
+	protected void onProductSelected(Cursor c) {
+		listener.onSearchProductSelected(c);
 	}
 
 	public void setOnProductSearchSelectedListener(OnProductSearchSelectedListener l) {
@@ -191,6 +191,6 @@ public class ProductSearchFragment extends Fragment {
 	}
 	
 	public interface OnProductSearchSelectedListener {
-		public void onSearchProductSelected(int id);
+		public void onSearchProductSelected(Cursor c);
 	}
 }

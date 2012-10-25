@@ -17,6 +17,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -25,6 +26,7 @@ import android.widget.ImageView;
 
 import com.niveales.library.utils.Consts;
 import com.niveales.library.utils.db.DBHelper;
+import com.niveales.testsnowboards.R;
 
 
 
@@ -32,9 +34,11 @@ public class ProductDetailFragment extends Fragment {
 	
 	private static final String DIALOG_TAG = "share_dialog";
 	View rootView;
-	String text;
+	String htmlBasePage; // text from assets html page to customize
+	String customizedHTMLPage; // page after customization
 	DBHelper helper;
 	private int productId;
+	Cursor productCursor;
 	String pic;
 	private Context context;
 	private int productDetailLayout;
@@ -42,6 +46,11 @@ public class ProductDetailFragment extends Fragment {
 	private int favoriteId;
 	private int shareId;
 	ShareProductListener listener;
+	private String[] columnKeys;
+	private String[] htmlKeys;
+	private Button mPrevButton;
+	private WebView webView;
+	private Button mNextButton;
 	/**
 	 * 
 	 * @param context - Context
@@ -53,12 +62,12 @@ public class ProductDetailFragment extends Fragment {
 	 */
 	public static ProductDetailFragment getInstance(Context context,
 			DBHelper helper, int productDetailLayout, int webViewId,
-			int webPageStringResourceId, int productId, String[] columnKeys,
+			int webPageStringResourceId, Cursor productCursor, String[] columnKeys,
 			String[] htmlKeys, int favoriteCheckboxId, int shareButtonId, ShareProductListener l) {
 		ProductDetailFragment f = new ProductDetailFragment();
 		try {
 			f.init(context, helper, productDetailLayout, webViewId,
-					webPageStringResourceId, productId, columnKeys, htmlKeys, favoriteCheckboxId, shareButtonId, l);
+					webPageStringResourceId, productCursor, columnKeys, htmlKeys, favoriteCheckboxId, shareButtonId, l);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -68,17 +77,18 @@ public class ProductDetailFragment extends Fragment {
 	
 	private void init(Context context, DBHelper helper,
 			int productDetailLayout, int webViewId,
-			int webPageStringResourceId, int productId, String[] columnKeys,
+			int webPageStringResourceId, Cursor productCursor, String[] columnKeys,
 			String[] htmlKeys, int favoriteCheckboxId, int shareButtonId, ShareProductListener l) throws IOException {
 		this.context = context;
 		this.helper = helper;
 		this.productDetailLayout = productDetailLayout;
 		this.webViewId = webViewId;
-		this.productId = productId;
+		this.productCursor = productCursor;
 		this.favoriteId = favoriteCheckboxId;
 		this.shareId = shareButtonId;
+		this.htmlKeys = htmlKeys;
+		this.columnKeys = columnKeys;
 		this.listener = l;
-		Cursor c = helper.getModele(productId);
 
 		BufferedInputStream bin = new BufferedInputStream(context.getAssets().open(context.getString(webPageStringResourceId)));
 		InputStreamReader in = new InputStreamReader(bin, "UTF-8");
@@ -88,10 +98,14 @@ public class ProductDetailFragment extends Fragment {
 		while((count = in.read(buffer, 0, 1024)) > 0) {
 			w.write(buffer, 0, count);
 		}
-		String htmlString = w.toString();
+		htmlBasePage = w.toString();
+		
 		in.close();
 		w.close();
-		
+	}
+
+	String getHTMLPage(Cursor c) {
+		String htmlString = new String(htmlBasePage);
 		for (int i = 0; i < columnKeys.length; i++) {
 			String value = c.getString(c.getColumnIndexOrThrow(columnKeys[i]));
 			if (htmlKeys[i].startsWith("%icone") && !value.equals("")) {
@@ -105,18 +119,18 @@ public class ProductDetailFragment extends Fragment {
 			htmlString = htmlString.replace(htmlKeys[i], value);
 		}
 		Log.d("HTML", htmlString);
-		this.text = htmlString;
+		return htmlString;
 	}
-
+	
 	@SuppressLint("SetJavaScriptEnabled")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		rootView = inflater.inflate(productDetailLayout, container, false);
-		WebView w = (WebView) rootView.findViewById(webViewId);
-		w.loadDataWithBaseURL(Consts.ASSETS_URI, text, "text/html", "UTF-8", null);
-		w.getSettings().setJavaScriptEnabled(true);
-		w.setWebViewClient(new WebViewClient() {
+		webView = (WebView) rootView.findViewById(webViewId);
+		webView.loadDataWithBaseURL(Consts.ASSETS_URI, getHTMLPage(productCursor), "text/html", "UTF-8", null);
+		webView.getSettings().setJavaScriptEnabled(true);
+		webView.setWebViewClient(new WebViewClient() {
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url){
 				if(url.startsWith("zoom://")) {
@@ -152,6 +166,26 @@ public class ProductDetailFragment extends Fragment {
 				}
 			}});
 		
+		mPrevButton = (Button) rootView.findViewById(R.id.PrevButton);
+		mPrevButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View pV) {
+				if(!productCursor.isFirst()) {
+					productCursor.move(-1);
+					webView.loadDataWithBaseURL(Consts.ASSETS_URI, getHTMLPage(productCursor), "text/html", "UTF-8", null);
+				}
+			}});
+		mNextButton = (Button) rootView.findViewById(R.id.NextButton);
+		mNextButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View pV) {
+				if(!productCursor.isLast()) {
+					productCursor.move(1);
+					webView.loadDataWithBaseURL(Consts.ASSETS_URI, getHTMLPage(productCursor), "text/html", "UTF-8", null);
+				}
+			}});
 		return rootView;
 	}
 
