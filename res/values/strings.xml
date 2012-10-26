@@ -6,7 +6,7 @@
     <string-array name="Genre_Fields"></string-array>
     <string-array name="Genre_Ids"></string-array>
 
-    <string name="spaceholder">Lorem Ipsum</string>
+    <string name="spaceholder"> </string>
     <string name="DatabaseFileName">snowsurf_tests2013_.sqlite</string>
     <string name="modele">Modèle:</string>
     <string name="gamme">Gamme:</string>
