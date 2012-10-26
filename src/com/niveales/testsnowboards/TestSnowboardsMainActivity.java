@@ -3,11 +3,9 @@ package com.niveales.testsnowboards;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URLDecoder;
 
 import org.apache.http.protocol.HTTP;
@@ -18,6 +16,7 @@ import twitter4j.TwitterFactory;
 import twitter4j.http.AccessToken;
 import twitter4j.http.RequestToken;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -47,9 +46,7 @@ import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
-
-import com.facebook.android.AsyncFacebookRunner;
-import com.facebook.android.AsyncFacebookRunner.RequestListener;
+import android.widget.Toast;
 import com.facebook.android.DialogError;
 import com.facebook.android.Facebook;
 import com.facebook.android.Facebook.DialogListener;
@@ -60,7 +57,6 @@ import com.niveales.library.ui.criteraselectors.CriteriaSelectorFragment.OnCrite
 import com.niveales.library.ui.criteraselectors.RangeCriteriaSelectorFragment;
 import com.niveales.library.ui.criteraselectors.RangeCriteriaSelectorFragment.OnRangeCriteriaChangedListener;
 import com.niveales.library.ui.privacy.PrivacyActivity;
-import com.niveales.library.ui.privacy.PrivacyDialogFragment;
 import com.niveales.library.ui.productdetail.ProductDetailFragment;
 import com.niveales.library.ui.productdetail.ProductDetailFragment.ShareProductListener;
 import com.niveales.library.ui.productdetail.ShareDialogFragment;
@@ -302,7 +298,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 							new ShareProductListener() {
 
 								@Override
-								public void onShareProduct(int productId) {
+								public void onShareProduct(Cursor productId) {
 									showShareDialog(productId);
 								}
 							});
@@ -401,26 +397,26 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		return null;
 	}
 
-	private void showShareDialog(int productId) {
+	private void showShareDialog(Cursor productCursor) {
 		final ShareDialogFragment dialog = ShareDialogFragment.getInstance(
 				R.layout.share_dialog_fragment_layout,
-				R.id.ShareDialogListView, productId, new ShareDialogListener() {
+				R.id.ShareDialogListView, productCursor, new ShareDialogListener() {
 
 					@Override
-					public void onShareItemSelected(int pos, int productId) {
+					public void onShareItemSelected(int pos, Cursor productCursor) {
 						switch (pos) {
 						case 0: {
-							shareByFacebook(productId);
+							shareByFacebook(productCursor);
 							break;
 						}
 						case 1: {
 							// twitter
-							shareByTwitter(productId);
+							shareByTwitter(productCursor);
 							break;
 						}
 						case 2: {
 							// emal
-							shareByEmail(productId);
+							shareByEmail(productCursor);
 							break;
 						}
 						}
@@ -484,7 +480,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		startActivity(intent);
 	}
 
-	protected void shareByFacebook(final int productId) {
+	protected void shareByFacebook(final Cursor productCursor) {
 
 		if (TestSnowboardsApplication.mFacebook == null) {
 			TestSnowboardsApplication.mFacebook = new Facebook(
@@ -499,7 +495,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 						public void onComplete(Bundle pValues) {
 							//
 
-							shareByFacebook(productId);
+							shareByFacebook(productCursor);
 						}
 
 						@Override
@@ -527,8 +523,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 						}
 					});
 		} else {
-			Cursor cursor = helper.getAllFromTableWithWhereAndOrder("Detail",
-					"id_modele = '" + productId + "'", null);
+			Cursor cursor = productCursor;
 			String pic = cursor
 					.getString(cursor.getColumnIndexOrThrow("imgLR"));
 			String shareString = "";
@@ -554,71 +549,78 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			}
 			Log.d("SHARE", shareString);
 			Bundle params = new Bundle();
-			try {
-				params.putByteArray("photo", TestSnowboardsApplication
-						.scaleImage(getApplicationContext(), pic));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+
+//			params.putString("caption", getString(R.string.app_name));
+//            params.putString("description", getString(R.string.app_desc));
+//            params.putString("picture", Utility.HACK_ICON_URL);
+//            params.putString("name", getString(R.string.app_action));
+//			try {
+//				params.putByteArray("photo", TestSnowboardsApplication
+//						.scaleImage(getApplicationContext(), pic));
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
 			params.putString("caption", title);
-			params.putString("name", "<A HREF=\"" + url +"\">" + message + "</A>");
+			params.putString("description", message);
+//			params.putString("name", "name");
+//			params.putString("picture", pic);
 			params.putString("link", url);
-			getMyApplication();
-			AsyncFacebookRunner mAsyncRunner = new AsyncFacebookRunner(
-					TestSnowboardsApplication.mFacebook);
-			mAsyncRunner.request("me/photos", params, "POST",
-					new RequestListener() {
-
-						@Override
-						public void onComplete(String pResponse, Object pState) {
-							//
-
-						}
-
-						@Override
-						public void onIOException(IOException pE, Object pState) {
-							Util.showAlert(TestSnowboardsMainActivity.this,
-									"Error:", pE.getMessage());
-
-						}
-
-						@Override
-						public void onFileNotFoundException(
-								FileNotFoundException pE, Object pState) {
-							Util.showAlert(TestSnowboardsMainActivity.this,
-									"Error:", pE.getMessage());
-
-						}
-
-						@Override
-						public void onMalformedURLException(
-								MalformedURLException pE, Object pState) {
-							Util.showAlert(TestSnowboardsMainActivity.this,
-									"Error:", pE.getMessage());
-
-						}
-
-						@Override
-						public void onFacebookError(FacebookError pE,
-								Object pState) {
-							Util.showAlert(TestSnowboardsMainActivity.this,
-									"Error:", pE.getMessage());
-
-						}
-					}, null);
+			TestSnowboardsApplication.mFacebook.dialog(this, "feed", params, new FacebookUpdateStatusListener());
 
 		}
 
 	}
+	
+	/*
+     * callback for the feed dialog which updates the profile status
+     */
+    public class FacebookUpdateStatusListener implements Facebook.DialogListener {
+        @Override
+        public void onComplete(Bundle values) {
+            final String postId = values.getString("post_id");
+            if (postId != null) {
+//                AlertDialog.Builder b = new AlertDialog.Builder(TestSnowboardsMainActivity.this);
+//                b.setTitle("").setIcon(R.drawable.facebook_icon)
+//                .create()
+//                .show();
+            } else {
+                Toast toast = Toast.makeText(getApplicationContext(), "No wall post made",
+                        Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        }
+
+        @Override
+        public void onFacebookError(FacebookError error) {
+            Toast.makeText(getApplicationContext(), "Facebook Error: " + error.getMessage(),
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onCancel() {
+            Toast toast = Toast.makeText(getApplicationContext(), "Update status cancelled",
+                    Toast.LENGTH_SHORT);
+            toast.show();
+        }
+
+		/* (non-Javadoc)
+		 * @see com.facebook.android.Facebook.DialogListener#onError(com.facebook.android.DialogError)
+		 */
+		@Override
+		public void onError(DialogError pArg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+    }
 
 	/**
 	 * 
-	 * @param productId
+	 * @param productCursor
 	 *            - id of the product to share
 	 */
-	public void shareByEmail(int productId) {
-		Cursor cursor = helper.getAllFromTableWithWhereAndOrder("Detail",
-				"id_modele = '" + productId + "'", null);
+	public void shareByEmail(Cursor productCursor) {
+		Cursor cursor = productCursor;
 		String pic = cursor.getString(cursor.getColumnIndexOrThrow("imgLR"));
 		String shareString = "";
 		String title = "";
@@ -654,7 +656,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	/**
 	 * @param pProductId
 	 */
-	protected void shareByTwitter(int productId) {
+	protected void shareByTwitter(Cursor productCursor) {
 		if (getMyApplication().mTwitter == null) {
 			Twitter mTwitter = null;
 			try {
@@ -666,7 +668,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 							.getOAuthRequestToken(Consts.TWITTER_CALLBACK_URL);
 					Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(t
 							.getAuthenticationURL()));
-					intent.putExtra("productid", productId);
+					intent.putExtra("productid", productCursor.getInt(productCursor.getColumnIndexOrThrow("id_modele")));
 					startActivityForResult(intent, TWITTER_CALLBACK_ID);
 					getMyApplication().rToken = t;
 				} else {
@@ -674,8 +676,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 					mTwitter = new TwitterFactory().getOAuthAuthorizedInstance(
 							Consts.TWITTER_CONSUMER_KEY, Consts.TWITTER_SECRET,
 							getMyApplication().mTwitterAccessToken);
-					Cursor cursor = helper.getAllFromTableWithWhereAndOrder(
-							"Detail", "id_modele = '" + productId + "'", null);
+					Cursor cursor = productCursor;
 					String pic = cursor.getString(cursor
 							.getColumnIndexOrThrow("imgLR"));
 					String shareString = "";
@@ -766,7 +767,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 						Consts.TWITTER_CONSUMER_KEY, Consts.TWITTER_SECRET,
 						TestSnowboardsApplication.mTwitterAccessToken);
 				TestSnowboardsApplication.mTwitter = t;
-				this.shareByTwitter(productId);
+				this.shareByTwitter(helper.rawQuery("select from modele where modele_id=?", new String [] { String.valueOf(productId) }));
 
 			} catch (Exception e) {
 				e.printStackTrace();

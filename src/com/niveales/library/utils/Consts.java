@@ -27,7 +27,7 @@ public class Consts {
 	public static final String SELECTED = "Selected.png";
 	public static final String UNSELECTED = "NotSelected.png";
 	public static final String NUMERIC = "Numeric";
-	public static final String FACEBOOK_APP_ID = "427382547281572";
+	public static final String FACEBOOK_APP_ID = "217286221626265";
 	public static final String TWITTER_CONSUMER_KEY = "Qgs7YXW6HCw8u0Mt1102Q";
 	public static final String TWITTER_SECRET="CqOZllOATSal2bjyyBSY2hXZ1dtlwwTZBUYXeMvj0";
 	public static final String TWITTER_CALLBACK_URL = "twitter://callback";
