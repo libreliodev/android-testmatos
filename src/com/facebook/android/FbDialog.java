@@ -16,6 +16,7 @@
 
 package com.facebook.android;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -30,6 +31,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
@@ -112,13 +114,14 @@ public class FbDialog extends Dialog {
         mCrossImage.setVisibility(View.INVISIBLE);
     }
 
-    private void setUpWebView(int margin) {
+    @SuppressLint("SetJavaScriptEnabled")
+	private void setUpWebView(int margin) {
         LinearLayout webViewContainer = new LinearLayout(getContext());
         mWebView = new WebView(getContext());
         mWebView.setVerticalScrollBarEnabled(false);
         mWebView.setHorizontalScrollBarEnabled(false);
-        mWebView.setWebViewClient(new FbDialog.FbWebViewClient());
         mWebView.getSettings().setJavaScriptEnabled(true);
+        mWebView.setWebViewClient(new FbWebViewClient());
         mWebView.loadUrl(mUrl);
         mWebView.setLayoutParams(FILL);
         mWebView.setVisibility(View.INVISIBLE);
@@ -130,7 +133,11 @@ public class FbDialog extends Dialog {
     }
 
     private class FbWebViewClient extends WebViewClient {
-
+    	
+    	public FbWebViewClient() {
+    		Log.d("WebviewClient", "init");
+    	}
+    	
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Util.logd("Facebook-WebView", "Redirect URL: " + url);

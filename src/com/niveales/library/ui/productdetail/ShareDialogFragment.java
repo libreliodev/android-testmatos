@@ -1,5 +1,6 @@
 package com.niveales.library.ui.productdetail;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -15,16 +16,17 @@ public class ShareDialogFragment extends DialogFragment {
 	private int shareDialogLayout;
 	private int shareDialogListViewId;
 	private int productId;
+	private Cursor productCursor;
 	
-	public static ShareDialogFragment getInstance(int shareDialogLayout, int shareDialogListViewId, int productId, ShareDialogListener pListener) {
+	public static ShareDialogFragment getInstance(int shareDialogLayout, int shareDialogListViewId, Cursor productCursor, ShareDialogListener pListener) {
 		ShareDialogFragment f = new ShareDialogFragment();
-		f.init(shareDialogLayout, shareDialogListViewId, productId, pListener);
+		f.init(shareDialogLayout, shareDialogListViewId, productCursor, pListener);
 		
 		return f;
 	}
-	private  void init(int shareDialogLayout, int shareDialogListViewId, int productId, ShareDialogListener pListener) {
+	private  void init(int shareDialogLayout, int shareDialogListViewId, Cursor productCursor, ShareDialogListener pListener) {
 		this.shareDialogLayout = shareDialogLayout;
-		this.productId = productId;
+		this.productCursor = productCursor;
 		this.shareDialogListViewId = shareDialogListViewId;
 		listener = pListener;
 	}
@@ -47,10 +49,10 @@ public class ShareDialogFragment extends DialogFragment {
 	}
 
 	protected void share(int pos) {
-		listener.onShareItemSelected(pos, productId);
+		listener.onShareItemSelected(pos, productCursor);
 	}
 
 	public interface ShareDialogListener {
-		public void onShareItemSelected(int pos, int productId);
+		public void onShareItemSelected(int pos, Cursor productCursor);
 	}
 }

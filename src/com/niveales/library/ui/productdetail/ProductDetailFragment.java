@@ -148,7 +148,7 @@ public class ProductDetailFragment extends Fragment {
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				listener.onShareProduct(productId);
+				listener.onShareProduct(productCursor);
 			}});
 		CheckBox favoriteCkeckBox = (CheckBox) rootView.findViewById(favoriteId);
 		favoriteCkeckBox.setChecked(helper.isFavorite(productId));
@@ -194,6 +194,6 @@ public class ProductDetailFragment extends Fragment {
 	}
 
 	public interface ShareProductListener {
-		public void onShareProduct(int productId);
+		public void onShareProduct(Cursor productCursor);
 	}
 }
