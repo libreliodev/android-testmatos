@@ -561,7 +561,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 				e.printStackTrace();
 			}
 			params.putString("caption", title);
-			params.putString("name", "<A HREF=\"" + url + message);
+			params.putString("name", "<A HREF=\"" + url +"\">" + message + "</A>");
 			params.putString("link", url);
 			getMyApplication();
 			AsyncFacebookRunner mAsyncRunner = new AsyncFacebookRunner(
