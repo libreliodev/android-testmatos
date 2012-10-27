@@ -30,7 +30,7 @@
     <string name="min">mini</string>
     <string name="max">maxi</string>
     <string name="MenuItemAbout">Editeur</string>
-    <string name="empty"></string>
+    <string name="empty">TestTestTest</string>
 
     <string-array name="ShareOptions">
         <item>Facebook</item>
