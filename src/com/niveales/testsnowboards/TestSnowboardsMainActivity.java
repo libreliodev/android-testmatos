@@ -24,6 +24,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -47,11 +48,14 @@ import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
+
+import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.DialogError;
 import com.facebook.android.Facebook;
 import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
 import com.facebook.android.Util;
+import com.niveales.library.ui.FacebookImagePostPreviewDialogFragment;
 import com.niveales.library.ui.criteraselectors.CriteriaSelectorFragment;
 import com.niveales.library.ui.criteraselectors.CriteriaSelectorFragment.OnCriteriaChangedListener;
 import com.niveales.library.ui.criteraselectors.RangeCriteriaSelectorFragment;
@@ -485,6 +489,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		if (TestSnowboardsApplication.mFacebook == null) {
 			TestSnowboardsApplication.mFacebook = new Facebook(
 					Consts.FACEBOOK_APP_ID);
+			TestSnowboardsApplication.mAsyncRunner = new AsyncFacebookRunner(TestSnowboardsApplication.mFacebook);
 		}
 		if (!TestSnowboardsApplication.mFacebook.isSessionValid()) {
 			TestSnowboardsApplication.mFacebook.authorize(this,
@@ -565,7 +570,11 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 //			params.putString("name", "name");
 //			params.putString("picture", pic);
 			params.putString("link", url);
-			TestSnowboardsApplication.mFacebook.dialog(this, "feed", params, new FacebookUpdateStatusListener());
+			FacebookImagePostPreviewDialogFragment f = new FacebookImagePostPreviewDialogFragment();
+			f.setMessage(title + "\n" + url);
+			f.setPicUri(pic);
+			f.show(dismissDialogs(), DIALOG_TAG);
+//			TestSnowboardsApplication.mFacebook.dialog(this, "feed", params, new FacebookUpdateStatusListener());
 
 		}
 
@@ -664,6 +673,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 				mTwitter.setOAuthConsumer(Consts.TWITTER_CONSUMER_KEY,
 						Consts.TWITTER_SECRET);
 				if (getMyApplication().mTwitterAccessToken == null) {
+					// TODO: wrap in async task
 					RequestToken t = mTwitter
 							.getOAuthRequestToken(Consts.TWITTER_CALLBACK_URL);
 					Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(t
@@ -733,8 +743,20 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		 * login_tag
 		 */
 		case 32665: {
-			TestSnowboardsApplication.mFacebook.authorizeCallback(requestCode,
-					resultCode, data);
+			// Avoid Runtime Exception bug
+			// http://efreedom.com/Question/1-7328392/Android-ViewPager-IllegalStateException-Can-Perform-Action-OnSaveInstanceState
+			Handler h = new Handler();
+			final int mRes = resultCode;
+			final int mReq = requestCode;
+			final Intent i = data;
+			h.postDelayed(new Runnable() {
+
+				@Override
+				public void run() {
+					TestSnowboardsApplication.mFacebook.authorizeCallback(mReq,
+							mRes, i);
+				}}, 1000);
+			
 			break;
 		}
 

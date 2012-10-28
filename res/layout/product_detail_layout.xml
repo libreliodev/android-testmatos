@@ -6,68 +6,83 @@
     android:orientation="vertical" >
 
     <FrameLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/grey" >
-
-    <TextView
-        android:id="@+id/RightPaneTitleTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginTop="30dp"
-        android:text="@string/product_detail_title"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/milk" />
-
-    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom"
-        android:gravity="right" >
+        android:layout_height="wrap_content"
+        android:background="@color/grey" >
+
+        <TextView
+            android:id="@+id/RightPaneTitleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="30dp"
+            android:text="@string/product_detail_title"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/milk" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_horizontal|center_vertical" >
+            android:layout_gravity="bottom"
+            android:gravity="right" >
 
-            <Button
-                android:id="@+id/PrevButton"
-                style="?android:attr/buttonStyleSmall"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_horizontal|center_vertical" >
+
+                <Button
+                    android:id="@+id/PrevButton"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="prev." />
+
+                <Button
+                    android:id="@+id/NextButton"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="next" />
+            </LinearLayout>
+
+            <CheckBox
+                android:id="@+id/FavoriteCkeckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="prev." />
+                android:button="@drawable/favorite_checkbox_button"
+                android:text="" />
 
-            <Button
-                android:id="@+id/NextButton"
-                style="?android:attr/buttonStyleSmall"
+            <ImageView
+                android:id="@+id/ShareButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="next" />
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/share_button" />
         </LinearLayout>
+    </FrameLayout>
 
-        <CheckBox
-            android:id="@+id/FavoriteCkeckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:button="@drawable/favorite_checkbox_button"
-            android:text="@string/empty" />
+    <FrameLayout
+        android:id="@+id/ProductDetailWebviewHolder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <WebView
+            android:id="@+id/ProductDetailsWebView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
         <ImageView
-            android:id="@+id/ShareButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:src="@drawable/share_button" />
-    </LinearLayout>
+            android:id="@+id/ProductImage"
+            android:layout_width="770dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:scaleType="center"
+            android:src="@drawable/cambre_classique"
+            android:visibility="gone" />
 
-</FrameLayout>
-
-    <WebView
-        android:id="@+id/ProductDetailsWebView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    </FrameLayout>
 
 </LinearLayout>

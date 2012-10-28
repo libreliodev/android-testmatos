@@ -11,4 +11,5 @@
     <color name="button_stroke">#205c88</color>
     <color name="button_gradient_start_color">#61a2d2</color>
     <color name="button_gradient_end_color">#0d5686</color>
+    <color name="facebook_bg">#41569a</color>
 </resources>

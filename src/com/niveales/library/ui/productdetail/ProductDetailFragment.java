@@ -8,12 +8,19 @@ import java.io.StringWriter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -21,6 +28,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
@@ -51,6 +59,10 @@ public class ProductDetailFragment extends Fragment {
 	private Button mPrevButton;
 	private WebView webView;
 	private Button mNextButton;
+	private ImageView mProductImage;
+	private boolean mZoomStarted;
+	private int bitmapWidth;
+	private int bitmapHeight;
 	/**
 	 * 
 	 * @param context - Context
@@ -127,6 +139,18 @@ public class ProductDetailFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		rootView = inflater.inflate(productDetailLayout, container, false);
+		mProductImage = (ImageView) rootView.findViewById(R.id.ProductImage);
+		mProductImage.setHorizontalScrollBarEnabled(true);
+		mProductImage.setVerticalScrollBarEnabled(true);
+//		mProductImage.setImageURI(Uri.parse(Consts.ASSETS_URI+productCursor.getString(productCursor.getColumnIndexOrThrow("imgLR"))));
+//		
+		mProductImage.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View pV) {
+					showLargeImage("zoom://touchend");
+			}});
+		
 		webView = (WebView) rootView.findViewById(webViewId);
 		webView.loadDataWithBaseURL(Consts.ASSETS_URI, getHTMLPage(productCursor), "text/html", "UTF-8", null);
 		webView.getSettings().setJavaScriptEnabled(true);
@@ -190,9 +214,82 @@ public class ProductDetailFragment extends Fragment {
 	}
 
 	protected void showLargeImage(String pUrl) {
+		if(pUrl.startsWith("zoom://touchstart")) {
+			mProductImage.setVisibility(View.VISIBLE);
+			mZoomStarted = true;
+			webView.setOnTouchListener(new OnTouchListener(){
+
+				@Override
+				public boolean onTouch(View pArg0, MotionEvent pArg1) {
+					// TODO Auto-generated method stub
+					return false;
+				}});
+			webView.setVerticalScrollBarEnabled(false);
+			webView.setHorizontalScrollBarEnabled(false);
+		}
+		if(pUrl.startsWith("zoom://touchend")) {
+			webView.setOnTouchListener(null);
+			webView.setVerticalScrollBarEnabled(true);
+			webView.setHorizontalScrollBarEnabled(true);
+			mZoomStarted = false;
+			mProductImage.setVisibility(View.GONE);
+		}
+		if(mZoomStarted) {
+			String [] params = pUrl.split("\\?");
+			params = params[1].split(",");
+			int x = Integer.valueOf(params[0]);
+			int y = Integer.valueOf(params[1]);
+			int maxx = Integer.valueOf(params[2]);
+			int height = Integer.valueOf(params[3]);
+			int maxy = Integer.valueOf(params[4]);
+			int width = Integer.valueOf(params[5]);
+			
+			if(x > width)
+				x = width;
+			if(y > height)
+				y = height;
+			
+			int scrollx = x - width/2;
+			int scrolly = y - height/2;
+			
+			Log.d("scroll", String.valueOf(scrollx)+" "+String.valueOf(scrolly));
+			mProductImage.scrollTo(scrollx, scrolly);
+			
+		}
 		Log.d("ZOOM", pUrl);
 	}
 
+	
+	/**
+	 * populate mProductImage with product image
+	 */
+	public void onResume() {
+		super.onResume();
+		try {
+			pic = productCursor.getString(productCursor.getColumnIndexOrThrow("imgLR"));
+			Bitmap b = BitmapFactory.decodeStream(getActivity().getAssets().open(pic));
+			this.bitmapWidth = b.getWidth();
+			this.bitmapHeight = b.getHeight();
+			mProductImage.setImageBitmap(b);
+//			mProductImage.setLayoutParams(new FrameLayout.LayoutParams(-1, bitmapHeight));
+			mProductImage.invalidate();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * for memory management purpose dispose bitmap from mProductImage
+	 */
+	public void onPause() {
+		super.onPause();
+		Drawable d = mProductImage.getDrawable();
+		if(d instanceof BitmapDrawable) {
+			BitmapDrawable bd = (BitmapDrawable) d;
+			bd.getBitmap().recycle();
+		}
+	}
 	public interface ShareProductListener {
 		public void onShareProduct(Cursor productCursor);
 	}
