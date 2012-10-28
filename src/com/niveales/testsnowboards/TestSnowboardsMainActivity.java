@@ -80,6 +80,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	private AdvancedCriteriaMainListAdapter mainAdapter;
 	private FrameLayout mSearchResultHolder;
 	private EditText mSearchEditText;
+	private Button mMainLayoutSearchButton;
 
 	@SuppressLint("NewApi")
 	@Override
@@ -113,7 +114,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		mMainActivityTabHost.setCurrentTab(mActiveTab);
 
 		// Init Search button click listener
-		Button mMainLayoutSearchButton = (Button) findViewById(R.id.MainLayoutSearchButton);
+		mMainLayoutSearchButton = (Button) findViewById(R.id.MainLayoutSearchButton);
 		mMainLayoutSearchButton.setOnClickListener(new SearchButtonClickListener());
 
 		// Right Frame Holder exists only in xlarge layouts. Other devices with
@@ -333,36 +334,42 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		if (type.equals("Numeric")) {
 			RangeCriteriaSelectorFragment f = getMyApplication()
 					.getRangeCriteriaSelectorFragment(helper, type, criteria,
-							colName, new OnRangeCriteriaChangedListener() {
-
-								@Override
-								public void onCriteriaChanged(String colName) {
-									mMainActivityCreteriaSelectionListView
-											.invalidateViews();
-
-								}
-							});
+							colName, new RangeCriteriaChangedListener());
 			this.getSupportFragmentManager().beginTransaction()
 					.replace(R.id.ContentHolder, f).addToBackStack(null)
 					.commit();
 		} else {
 			CriteriaSelectorFragment f = getMyApplication()
 					.getCriteriaSelectorFragment(helper, type, criteria,
-							colName, new OnCriteriaChangedListener() {
-
-								@Override
-								public void onCriteriaChanged(String colName) {
-									mMainActivityCreteriaSelectionListView
-											.invalidateViews();
-								}
-							});
+							colName, new CriteriaChangeListener());
 			this.getSupportFragmentManager().beginTransaction()
 					.replace(R.id.ContentHolder, f).addToBackStack(null)
 					.commit();
 		}
 	}
 
+	public class RangeCriteriaChangedListener implements OnRangeCriteriaChangedListener {
+
+		@Override
+		public void onCriteriaChanged(String colName) {
+			mMainLayoutSearchButton.setOnClickListener(new SearchButtonClickListener());
+			mMainLayoutSearchButton.setText(R.string.main_layout_search_button_label);
+			mMainActivityCreteriaSelectionListView
+					.invalidateViews();
+
+		}
+	}
 	
+	public class CriteriaChangeListener implements OnCriteriaChangedListener {
+
+		@Override
+		public void onCriteriaChanged(String colName) {
+			mMainLayoutSearchButton.setOnClickListener(new SearchButtonClickListener());
+			mMainLayoutSearchButton.setText(R.string.main_layout_search_button_label);
+			mMainActivityCreteriaSelectionListView
+					.invalidateViews();
+		}
+	}
 
 	private void showShareDialog(Cursor productCursor) {
 		final ShareDialogFragment dialog = ShareDialogFragment.getInstance(
