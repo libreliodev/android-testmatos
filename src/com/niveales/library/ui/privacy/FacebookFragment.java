@@ -1,0 +1,39 @@
+package com.niveales.library.ui.privacy;
+
+import android.annotation.SuppressLint;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+
+import com.niveales.testsnowboards.R;
+
+public class FacebookFragment extends Fragment {
+
+
+	private WebView webView;
+
+	@SuppressLint("SetJavaScriptEnabled")
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+		View rootView = inflater.inflate(R.layout.about_fragment_layout,  container, false);
+		webView = (WebView) rootView.findViewById(R.id.AboutDialogWebView);
+		webView.setWebViewClient(new WebViewClient() {
+			@Override
+	        public boolean shouldOverrideUrlLoading( WebView view, String url )
+	        {
+				
+	            return false;
+	        }
+		});
+		
+		webView.loadUrl("http://www.facebook.com");
+		webView.getSettings().setJavaScriptEnabled(true);
+		
+		return rootView;
+	}
+	
+}
