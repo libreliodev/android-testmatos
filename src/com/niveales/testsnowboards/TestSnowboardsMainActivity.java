@@ -53,6 +53,8 @@ import com.niveales.library.ui.criteraselectors.CriteriaSelectorFragment;
 import com.niveales.library.ui.criteraselectors.CriteriaSelectorFragment.OnCriteriaChangedListener;
 import com.niveales.library.ui.criteraselectors.RangeCriteriaSelectorFragment;
 import com.niveales.library.ui.criteraselectors.RangeCriteriaSelectorFragment.OnRangeCriteriaChangedListener;
+import com.niveales.library.ui.privacy.AboutFragment;
+import com.niveales.library.ui.privacy.FacebookFragment;
 import com.niveales.library.ui.privacy.PrivacyActivity;
 import com.niveales.library.ui.productdetail.ProductDetailFragment;
 import com.niveales.library.ui.productdetail.ProductDetailFragment.ShareProductListener;
@@ -419,7 +421,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 			@Override
 			public boolean onMenuItemClick(MenuItem arg0) {
-				showAboutDialog();
+				showAboutPage();
 				return false;
 			}
 		});
@@ -438,20 +440,60 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		return true;
 	}
 
-	protected void showAboutDialog() {
-		Intent intent = new Intent(this, PrivacyActivity.class);
-		Bundle extras = new Bundle();
-		extras.putString("url", Consts.ASSETS_URI + "Privacy.html");
-		intent.putExtras(extras);
-		startActivity(intent);
+	protected void showAboutPage() {
+		
+		Fragment oldAbout = getSupportFragmentManager().findFragmentByTag("about");
+		if(oldAbout != null){
+			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+			ft.remove(oldAbout).commit();
+		}
+		if(findViewById(R.id.ProductDetailsHolder) != null) {
+			// we are on a tablet
+			AboutFragment f = new AboutFragment();
+			getSupportFragmentManager().beginTransaction()
+			.replace(R.id.ProductDetailsHolder, f, "about")
+			.addToBackStack(null)
+			.commit();
+		} else {
+			AboutFragment f = new AboutFragment();
+			getSupportFragmentManager().beginTransaction()
+			.replace(R.id.ContentHolder, f, "about")
+			.addToBackStack(null)
+			.commit();
+		}
+//		Intent intent = new Intent(this, PrivacyActivity.class);
+//		Bundle extras = new Bundle();
+//		extras.putString("url", Consts.ASSETS_URI + "Privacy.html");
+//		intent.putExtras(extras);
+//		startActivity(intent);
 	}
 
 	protected void showFacebookPage() {
-		Intent intent = new Intent(this, PrivacyActivity.class);
-		Bundle extras = new Bundle();
-		extras.putString("url", "http://www.facebook.com");
-		intent.putExtras(extras);
-		startActivity(intent);
+
+		Fragment oldAbout = getSupportFragmentManager().findFragmentByTag("facebook");
+		if(oldAbout != null){
+			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+			ft.remove(oldAbout).commit();
+		}
+		if(findViewById(R.id.ProductDetailsHolder) != null) {
+			// we are on a tablet
+			FacebookFragment f = new FacebookFragment();
+			getSupportFragmentManager().beginTransaction()
+			.replace(R.id.ProductDetailsHolder, f, "facebook")
+			.addToBackStack(null)
+			.commit();
+		} else {
+			FacebookFragment f = new FacebookFragment();
+			getSupportFragmentManager().beginTransaction()
+			.replace(R.id.ContentHolder, f, "facebook")
+			.addToBackStack(null)
+			.commit();
+		}
+//		Intent intent = new Intent(this, PrivacyActivity.class);
+//		Bundle extras = new Bundle();
+//		extras.putString("url", "http://www.facebook.com");
+//		intent.putExtras(extras);
+//		startActivity(intent);
 	}
 
 	protected void shareByFacebook(final Cursor productCursor) {

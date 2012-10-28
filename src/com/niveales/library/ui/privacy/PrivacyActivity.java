@@ -19,7 +19,7 @@ public class PrivacyActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.about_dialog_fragment_ayout);
+		setContentView(R.layout.about_fragment_layout);
 		Bundle extras = this.getIntent().getExtras();
 		String url = extras.getString("url");
 		wv = (WebView) findViewById(R.id.AboutDialogWebView);
