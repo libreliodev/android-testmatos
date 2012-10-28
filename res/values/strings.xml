@@ -17,6 +17,7 @@
     <string name="productlist_sort_prix">Prix</string>
     <string name="main_layout_search_input_hint">Recherche directe</string>
     <string name="main_layout_search_button_label">AFFICHER LES RÉSULTATS</string>
+    <string name="main_layout_clear_button_label"> NOUVELLE RECHERCHE</string>
 
     <string-array name="TabsNames">
         <item>Recherche</item>

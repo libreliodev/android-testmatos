@@ -5,18 +5,17 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <FrameLayout
+    <LinearLayout
+        android:id="@+id/LinearLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/grey" >
+        android:background="@color/grey"
+        android:orientation="vertical" >
 
         <TextView
             android:id="@+id/RightPaneTitleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="30dp"
             android:text="@string/product_detail_title"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/milk" />
@@ -62,7 +61,7 @@
                 android:layout_marginLeft="5dp"
                 android:src="@drawable/share_button" />
         </LinearLayout>
-    </FrameLayout>
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/ProductDetailWebviewHolder"
@@ -82,7 +81,6 @@
             android:scaleType="center"
             android:src="@drawable/cambre_classique"
             android:visibility="gone" />
-
     </FrameLayout>
 
 </LinearLayout>

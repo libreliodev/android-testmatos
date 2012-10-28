@@ -197,6 +197,8 @@ public class ProductDetailFragment extends Fragment {
 			public void onClick(View pV) {
 				if(!productCursor.isFirst()) {
 					productCursor.move(-1);
+					recycleImageViewBitmap(mProductImage);
+					loadImageBitmap();
 					webView.loadDataWithBaseURL(Consts.ASSETS_URI, getHTMLPage(productCursor), "text/html", "UTF-8", null);
 				}
 			}});
@@ -207,6 +209,8 @@ public class ProductDetailFragment extends Fragment {
 			public void onClick(View pV) {
 				if(!productCursor.isLast()) {
 					productCursor.move(1);
+					recycleImageViewBitmap(mProductImage);
+					loadImageBitmap();
 					webView.loadDataWithBaseURL(Consts.ASSETS_URI, getHTMLPage(productCursor), "text/html", "UTF-8", null);
 				}
 			}});
@@ -265,13 +269,16 @@ public class ProductDetailFragment extends Fragment {
 	 */
 	public void onResume() {
 		super.onResume();
+		loadImageBitmap();
+	}
+	
+	public void loadImageBitmap() {
 		try {
 			pic = productCursor.getString(productCursor.getColumnIndexOrThrow("imgLR"));
 			Bitmap b = BitmapFactory.decodeStream(getActivity().getAssets().open(pic));
 			this.bitmapWidth = b.getWidth();
 			this.bitmapHeight = b.getHeight();
 			mProductImage.setImageBitmap(b);
-//			mProductImage.setLayoutParams(new FrameLayout.LayoutParams(-1, bitmapHeight));
 			mProductImage.invalidate();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -284,11 +291,16 @@ public class ProductDetailFragment extends Fragment {
 	 */
 	public void onPause() {
 		super.onPause();
-		Drawable d = mProductImage.getDrawable();
+		recycleImageViewBitmap(mProductImage);
+	}
+	
+	public void recycleImageViewBitmap(ImageView i) {
+		Drawable d = i.getDrawable();
 		if(d instanceof BitmapDrawable) {
 			BitmapDrawable bd = (BitmapDrawable) d;
 			bd.getBitmap().recycle();
 		}
+		
 	}
 	public interface ShareProductListener {
 		public void onShareProduct(Cursor productCursor);

@@ -1,10 +1,5 @@
 package com.niveales.testsnowboards;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
@@ -16,14 +11,12 @@ import twitter4j.TwitterFactory;
 import twitter4j.http.AccessToken;
 import twitter4j.http.RequestToken;
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -121,12 +114,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 		// Init Search button click listener
 		Button mMainLayoutSearchButton = (Button) findViewById(R.id.MainLayoutSearchButton);
-		mMainLayoutSearchButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				onSearchButtonPressed();
-			}
-		});
+		mMainLayoutSearchButton.setOnClickListener(new SearchButtonClickListener());
 
 		// Right Frame Holder exists only in xlarge layouts. Other devices with
 		// screen size
@@ -271,6 +259,11 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 					.commit();
 		}
 	}
+	
+	public void onSearchClearPressed() {
+		helper.rawQuery("delete from UserSearchInputs", null);
+		mMainActivityCreteriaSelectionListView.invalidateViews();
+	}
 
 	/**
 	 * called when user clicks on search input field
@@ -369,37 +362,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		}
 	}
 
-	private String copyFileToExternalDirectory(String pic) {
-		String state = Environment.getExternalStorageState();
-		if (Environment.MEDIA_MOUNTED.equals(state)) {
-			File externalDir = Environment
-					.getExternalStoragePublicDirectory("Download");
-			if (externalDir.canWrite()) {
-				try {
-					String fileName = pic.split("/")[pic.split("/").length - 1];
-					File newPic = File.createTempFile("pic", fileName);
-					byte[] buffer = new byte[1024];
-					BufferedOutputStream bos = new BufferedOutputStream(
-							new FileOutputStream(newPic));
-					BufferedInputStream bis = new BufferedInputStream(
-							getAssets().open(pic));
-					int count = 0;
-					while ((count = bis.read(buffer, 0, 1024)) > 0) {
-						bos.write(buffer, 0, count);
-					}
-					bos.close();
-					bis.close();
-					return newPic.getAbsolutePath();
-				} catch (IOException e) {
-					e.printStackTrace();
-					return null;
-				}
-			} else {
-				return null;
-			}
-		}
-		return null;
-	}
+	
 
 	private void showShareDialog(Cursor productCursor) {
 		final ShareDialogFragment dialog = ShareDialogFragment.getInstance(
@@ -651,7 +614,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			//
 			e1.printStackTrace();
 		}
-		String newURI = "file://" + copyFileToExternalDirectory(pic);
+		String newURI = "file://" + TestSnowboardsApplication.copyFileToExternalDirectory(pic, getAssets());
 		Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("text/html");
 		intent.setType(HTTP.PLAIN_TEXT_TYPE);
@@ -808,6 +771,26 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 //		else
 //			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+	}
+	
+	public class SearchButtonClickListener implements OnClickListener {
+		@Override
+		public void onClick(View pView) {
+			Button b = (Button) pView;
+			b.setText(R.string.main_layout_clear_button_label);
+			b.setOnClickListener(new ClearSearchButtonClickListener());
+			onSearchButtonPressed();
+		}
+	}
+	
+	public class ClearSearchButtonClickListener implements OnClickListener {
+		@Override
+		public void onClick(View pView) {
+			Button b = (Button) pView;
+			b.setText(R.string.main_layout_search_button_label);
+			b.setOnClickListener(new SearchButtonClickListener());
+			onSearchClearPressed();
+		}
 	}
 
 }

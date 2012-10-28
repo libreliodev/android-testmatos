@@ -3,7 +3,11 @@
  */
 package com.niveales.testsnowboards;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Hashtable;
@@ -32,12 +36,14 @@ import com.niveales.testsnowboards.R;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.net.http.AndroidHttpClient;
+import android.os.Environment;
 
 /**
  * @author Dmitry Valetin
@@ -326,6 +332,36 @@ public class TestSnowboardsApplication extends Application {
 		return 0;
 	}
 
-	
+	public static String copyFileToExternalDirectory(String pic, AssetManager assets) {
+		String state = Environment.getExternalStorageState();
+		if (Environment.MEDIA_MOUNTED.equals(state)) {
+			File externalDir = Environment
+					.getExternalStoragePublicDirectory("Download");
+			if (externalDir.canWrite()) {
+				try {
+					String fileName = pic.split("/")[pic.split("/").length - 1];
+					File newPic = File.createTempFile("pic", fileName);
+					byte[] buffer = new byte[1024];
+					BufferedOutputStream bos = new BufferedOutputStream(
+							new FileOutputStream(newPic));
+					BufferedInputStream bis = new BufferedInputStream(
+							assets.open(pic));
+					int count = 0;
+					while ((count = bis.read(buffer, 0, 1024)) > 0) {
+						bos.write(buffer, 0, count);
+					}
+					bos.close();
+					bis.close();
+					return newPic.getAbsolutePath();
+				} catch (IOException e) {
+					e.printStackTrace();
+					return null;
+				}
+			} else {
+				return null;
+			}
+		}
+		return null;
+	}
 
 }
