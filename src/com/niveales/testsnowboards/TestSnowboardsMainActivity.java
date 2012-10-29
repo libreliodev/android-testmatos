@@ -11,11 +11,15 @@ import twitter4j.TwitterFactory;
 import twitter4j.http.AccessToken;
 import twitter4j.http.RequestToken;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.DialogFragment;
@@ -49,13 +53,14 @@ import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
 import com.facebook.android.Util;
 import com.niveales.library.ui.FacebookImagePostPreviewDialogFragment;
+import com.niveales.library.ui.TwitterPostPreviewDialogFragment;
+import com.niveales.library.ui.activity.TwitterAuthActivity;
 import com.niveales.library.ui.criteraselectors.CriteriaSelectorFragment;
 import com.niveales.library.ui.criteraselectors.CriteriaSelectorFragment.OnCriteriaChangedListener;
 import com.niveales.library.ui.criteraselectors.RangeCriteriaSelectorFragment;
 import com.niveales.library.ui.criteraselectors.RangeCriteriaSelectorFragment.OnRangeCriteriaChangedListener;
 import com.niveales.library.ui.privacy.AboutFragment;
 import com.niveales.library.ui.privacy.FacebookFragment;
-import com.niveales.library.ui.privacy.PrivacyActivity;
 import com.niveales.library.ui.productdetail.ProductDetailFragment;
 import com.niveales.library.ui.productdetail.ProductDetailFragment.ShareProductListener;
 import com.niveales.library.ui.productdetail.ShareDialogFragment;
@@ -65,6 +70,7 @@ import com.niveales.library.ui.productlist.ProductListFragment;
 import com.niveales.library.ui.productlist.ProductListFragment.ProductSelectedListener;
 import com.niveales.library.ui.productsearch.ProductSearchFragment;
 import com.niveales.library.ui.productsearch.ProductSearchFragment.OnProductSearchSelectedListener;
+import com.niveales.library.utils.BitlyAndroid;
 import com.niveales.library.utils.Consts;
 import com.niveales.library.utils.adapters.AdvancedCriteriaMainListAdapter;
 import com.niveales.library.utils.db.DBHelper;
@@ -74,6 +80,9 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 	private static final String DIALOG_TAG = null;
 	private static final int TWITTER_CALLBACK_ID = 9890;
+	private static final String TAG = TestSnowboardsMainActivity.class
+			.getSimpleName();
+	public static String mTwitterMessage;
 	private DBHelper helper;
 	private int mActiveTab;
 	private TabHost mMainActivityTabHost;
@@ -83,6 +92,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	private FrameLayout mSearchResultHolder;
 	private EditText mSearchEditText;
 	private Button mMainLayoutSearchButton;
+	public ProgressDialog mProgressDialog;
 
 	@SuppressLint("NewApi")
 	@Override
@@ -117,7 +127,8 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 		// Init Search button click listener
 		mMainLayoutSearchButton = (Button) findViewById(R.id.MainLayoutSearchButton);
-		mMainLayoutSearchButton.setOnClickListener(new SearchButtonClickListener());
+		mMainLayoutSearchButton
+				.setOnClickListener(new SearchButtonClickListener());
 
 		// Right Frame Holder exists only in xlarge layouts. Other devices with
 		// screen size
@@ -209,7 +220,6 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 				@Override
 				public void showProductDetails(Cursor c) {
 
-					
 					showProductDetail(c);
 				}
 			});
@@ -262,7 +272,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 					.commit();
 		}
 	}
-	
+
 	public void onSearchClearPressed() {
 		helper.rawQuery("delete from UserSearchInputs", null);
 		mMainActivityCreteriaSelectionListView.invalidateViews();
@@ -304,14 +314,17 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 							});
 			int orientation = getResources().getConfiguration().orientation;
 			int layout = getResources().getConfiguration().screenLayout;
-			if(orientation == Configuration.ORIENTATION_PORTRAIT && ((layout & Configuration.SCREENLAYOUT_SIZE_XLARGE) != 0))
+			if (orientation == Configuration.ORIENTATION_PORTRAIT
+					&& ((layout & Configuration.SCREENLAYOUT_SIZE_XLARGE) != 0))
+				this.getSupportFragmentManager()
+						.beginTransaction()
+						.replace(R.id.ProductDetailsHolder,
+								productDetailFragment)
+						.addToBackStack("Selection").commit();
+			else
 				this.getSupportFragmentManager().beginTransaction()
-				.replace(R.id.ProductDetailsHolder, productDetailFragment)
-				.addToBackStack("Selection").commit();
-			else 
-				this.getSupportFragmentManager().beginTransaction()
-					.replace(R.id.ContentHolder, productDetailFragment)
-					.addToBackStack("Selection").commit();
+						.replace(R.id.ContentHolder, productDetailFragment)
+						.addToBackStack("Selection").commit();
 		} else {
 			// start a new LexiqueActivity
 			Intent intent = new Intent(this, LexiqueActivity.class);
@@ -350,36 +363,41 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		}
 	}
 
-	public class RangeCriteriaChangedListener implements OnRangeCriteriaChangedListener {
+	public class RangeCriteriaChangedListener implements
+			OnRangeCriteriaChangedListener {
 
 		@Override
 		public void onCriteriaChanged(String colName) {
-			mMainLayoutSearchButton.setOnClickListener(new SearchButtonClickListener());
-			mMainLayoutSearchButton.setText(R.string.main_layout_search_button_label);
-			mMainActivityCreteriaSelectionListView
-					.invalidateViews();
+			mMainLayoutSearchButton
+					.setOnClickListener(new SearchButtonClickListener());
+			mMainLayoutSearchButton
+					.setText(R.string.main_layout_search_button_label);
+			mMainActivityCreteriaSelectionListView.invalidateViews();
 
 		}
 	}
-	
+
 	public class CriteriaChangeListener implements OnCriteriaChangedListener {
 
 		@Override
 		public void onCriteriaChanged(String colName) {
-			mMainLayoutSearchButton.setOnClickListener(new SearchButtonClickListener());
-			mMainLayoutSearchButton.setText(R.string.main_layout_search_button_label);
-			mMainActivityCreteriaSelectionListView
-					.invalidateViews();
+			mMainLayoutSearchButton
+					.setOnClickListener(new SearchButtonClickListener());
+			mMainLayoutSearchButton
+					.setText(R.string.main_layout_search_button_label);
+			mMainActivityCreteriaSelectionListView.invalidateViews();
 		}
 	}
 
 	private void showShareDialog(Cursor productCursor) {
 		final ShareDialogFragment dialog = ShareDialogFragment.getInstance(
 				R.layout.share_dialog_fragment_layout,
-				R.id.ShareDialogListView, productCursor, new ShareDialogListener() {
+				R.id.ShareDialogListView, productCursor,
+				new ShareDialogListener() {
 
 					@Override
-					public void onShareItemSelected(int pos, Cursor productCursor) {
+					public void onShareItemSelected(int pos,
+							Cursor productCursor) {
 						switch (pos) {
 						case 0: {
 							shareByFacebook(productCursor);
@@ -387,7 +405,9 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 						}
 						case 1: {
 							// twitter
-							shareByTwitter(productCursor);
+							TwitterSharingTask t = new TwitterSharingTask();
+							t.execute(new Cursor[] { productCursor });
+							// shareByTwitter(productCursor);
 							break;
 						}
 						case 2: {
@@ -441,59 +461,59 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	}
 
 	protected void showAboutPage() {
-		
-		Fragment oldAbout = getSupportFragmentManager().findFragmentByTag("about");
-		if(oldAbout != null){
-			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+		Fragment oldAbout = getSupportFragmentManager().findFragmentByTag(
+				"about");
+		if (oldAbout != null) {
+			FragmentTransaction ft = getSupportFragmentManager()
+					.beginTransaction();
 			ft.remove(oldAbout).commit();
 		}
-		if(findViewById(R.id.ProductDetailsHolder) != null) {
+		if (findViewById(R.id.ProductDetailsHolder) != null) {
 			// we are on a tablet
 			AboutFragment f = new AboutFragment();
 			getSupportFragmentManager().beginTransaction()
-			.replace(R.id.ProductDetailsHolder, f, "about")
-			.addToBackStack(null)
-			.commit();
+					.replace(R.id.ProductDetailsHolder, f, "about")
+					.addToBackStack(null).commit();
 		} else {
 			AboutFragment f = new AboutFragment();
 			getSupportFragmentManager().beginTransaction()
-			.replace(R.id.ContentHolder, f, "about")
-			.addToBackStack(null)
-			.commit();
+					.replace(R.id.ContentHolder, f, "about")
+					.addToBackStack(null).commit();
 		}
-//		Intent intent = new Intent(this, PrivacyActivity.class);
-//		Bundle extras = new Bundle();
-//		extras.putString("url", Consts.ASSETS_URI + "Privacy.html");
-//		intent.putExtras(extras);
-//		startActivity(intent);
+		// Intent intent = new Intent(this, PrivacyActivity.class);
+		// Bundle extras = new Bundle();
+		// extras.putString("url", Consts.ASSETS_URI + "Privacy.html");
+		// intent.putExtras(extras);
+		// startActivity(intent);
 	}
 
 	protected void showFacebookPage() {
 
-		Fragment oldAbout = getSupportFragmentManager().findFragmentByTag("facebook");
-		if(oldAbout != null){
-			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		Fragment oldAbout = getSupportFragmentManager().findFragmentByTag(
+				"facebook");
+		if (oldAbout != null) {
+			FragmentTransaction ft = getSupportFragmentManager()
+					.beginTransaction();
 			ft.remove(oldAbout).commit();
 		}
-		if(findViewById(R.id.ProductDetailsHolder) != null) {
+		if (findViewById(R.id.ProductDetailsHolder) != null) {
 			// we are on a tablet
 			FacebookFragment f = new FacebookFragment();
 			getSupportFragmentManager().beginTransaction()
-			.replace(R.id.ProductDetailsHolder, f, "facebook")
-			.addToBackStack(null)
-			.commit();
+					.replace(R.id.ProductDetailsHolder, f, "facebook")
+					.addToBackStack(null).commit();
 		} else {
 			FacebookFragment f = new FacebookFragment();
 			getSupportFragmentManager().beginTransaction()
-			.replace(R.id.ContentHolder, f, "facebook")
-			.addToBackStack(null)
-			.commit();
+					.replace(R.id.ContentHolder, f, "facebook")
+					.addToBackStack(null).commit();
 		}
-//		Intent intent = new Intent(this, PrivacyActivity.class);
-//		Bundle extras = new Bundle();
-//		extras.putString("url", "http://www.facebook.com");
-//		intent.putExtras(extras);
-//		startActivity(intent);
+		// Intent intent = new Intent(this, PrivacyActivity.class);
+		// Bundle extras = new Bundle();
+		// extras.putString("url", "http://www.facebook.com");
+		// intent.putExtras(extras);
+		// startActivity(intent);
 	}
 
 	protected void shareByFacebook(final Cursor productCursor) {
@@ -501,7 +521,8 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		if (TestSnowboardsApplication.mFacebook == null) {
 			TestSnowboardsApplication.mFacebook = new Facebook(
 					Consts.FACEBOOK_APP_ID);
-			TestSnowboardsApplication.mAsyncRunner = new AsyncFacebookRunner(TestSnowboardsApplication.mFacebook);
+			TestSnowboardsApplication.mAsyncRunner = new AsyncFacebookRunner(
+					TestSnowboardsApplication.mFacebook);
 		}
 		if (!TestSnowboardsApplication.mFacebook.isSessionValid()) {
 			TestSnowboardsApplication.mFacebook.authorize(this,
@@ -567,73 +588,81 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			Log.d("SHARE", shareString);
 			Bundle params = new Bundle();
 
-//			params.putString("caption", getString(R.string.app_name));
-//            params.putString("description", getString(R.string.app_desc));
-//            params.putString("picture", Utility.HACK_ICON_URL);
-//            params.putString("name", getString(R.string.app_action));
-//			try {
-//				params.putByteArray("photo", TestSnowboardsApplication
-//						.scaleImage(getApplicationContext(), pic));
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
+			// params.putString("caption", getString(R.string.app_name));
+			// params.putString("description", getString(R.string.app_desc));
+			// params.putString("picture", Utility.HACK_ICON_URL);
+			// params.putString("name", getString(R.string.app_action));
+			// try {
+			// params.putByteArray("photo", TestSnowboardsApplication
+			// .scaleImage(getApplicationContext(), pic));
+			// } catch (IOException e) {
+			// e.printStackTrace();
+			// }
 			params.putString("caption", title);
 			params.putString("description", message);
-//			params.putString("name", "name");
-//			params.putString("picture", pic);
+			// params.putString("name", "name");
+			// params.putString("picture", pic);
 			params.putString("link", url);
 			FacebookImagePostPreviewDialogFragment f = new FacebookImagePostPreviewDialogFragment();
 			f.setMessage(title + "\n" + url);
 			f.setPicUri(pic);
 			f.show(dismissDialogs(), DIALOG_TAG);
-//			TestSnowboardsApplication.mFacebook.dialog(this, "feed", params, new FacebookUpdateStatusListener());
+			// TestSnowboardsApplication.mFacebook.dialog(this, "feed", params,
+			// new FacebookUpdateStatusListener());
 
 		}
 
 	}
-	
+
 	/*
-     * callback for the feed dialog which updates the profile status
-     */
-    public class FacebookUpdateStatusListener implements Facebook.DialogListener {
-        @Override
-        public void onComplete(Bundle values) {
-            final String postId = values.getString("post_id");
-            if (postId != null) {
-//                AlertDialog.Builder b = new AlertDialog.Builder(TestSnowboardsMainActivity.this);
-//                b.setTitle("").setIcon(R.drawable.facebook_icon)
-//                .create()
-//                .show();
-            } else {
-                Toast toast = Toast.makeText(getApplicationContext(), "No wall post made",
-                        Toast.LENGTH_SHORT);
-                toast.show();
-            }
-        }
+	 * callback for the feed dialog which updates the profile status
+	 */
+	public class FacebookUpdateStatusListener implements
+			Facebook.DialogListener {
+		@Override
+		public void onComplete(Bundle values) {
+			final String postId = values.getString("post_id");
+			if (postId != null) {
+				// AlertDialog.Builder b = new
+				// AlertDialog.Builder(TestSnowboardsMainActivity.this);
+				// b.setTitle("").setIcon(R.drawable.facebook_icon)
+				// .create()
+				// .show();
+			} else {
+				Toast toast = Toast.makeText(getApplicationContext(),
+						"No wall post made", Toast.LENGTH_SHORT);
+				toast.show();
+			}
+		}
 
-        @Override
-        public void onFacebookError(FacebookError error) {
-            Toast.makeText(getApplicationContext(), "Facebook Error: " + error.getMessage(),
-                    Toast.LENGTH_SHORT).show();
-        }
+		@Override
+		public void onFacebookError(FacebookError error) {
+			Toast.makeText(getApplicationContext(),
+					"Facebook Error: " + error.getMessage(), Toast.LENGTH_SHORT)
+					.show();
+		}
 
-        @Override
-        public void onCancel() {
-            Toast toast = Toast.makeText(getApplicationContext(), "Update status cancelled",
-                    Toast.LENGTH_SHORT);
-            toast.show();
-        }
+		@Override
+		public void onCancel() {
+			Toast toast = Toast.makeText(getApplicationContext(),
+					"Update status cancelled", Toast.LENGTH_SHORT);
+			toast.show();
+		}
 
-		/* (non-Javadoc)
-		 * @see com.facebook.android.Facebook.DialogListener#onError(com.facebook.android.DialogError)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * com.facebook.android.Facebook.DialogListener#onError(com.facebook
+		 * .android.DialogError)
 		 */
 		@Override
 		public void onError(DialogError pArg0) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
-    }
+	}
 
 	/**
 	 * 
@@ -663,7 +692,9 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			//
 			e1.printStackTrace();
 		}
-		String newURI = "file://" + TestSnowboardsApplication.copyFileToExternalDirectory(pic, getAssets());
+		String newURI = "file://"
+				+ TestSnowboardsApplication.copyFileToExternalDirectory(pic,
+						getAssets());
 		Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("text/html");
 		intent.setType(HTTP.PLAIN_TEXT_TYPE);
@@ -676,74 +707,66 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 	/**
 	 * @param pProductId
+	 * @return
 	 */
-	protected void shareByTwitter(Cursor productCursor) {
-		if (getMyApplication().mTwitter == null) {
-			Twitter mTwitter = null;
-			try {
-				mTwitter = new TwitterFactory().getInstance();
-				mTwitter.setOAuthConsumer(Consts.TWITTER_CONSUMER_KEY,
-						Consts.TWITTER_SECRET);
-				if (getMyApplication().mTwitterAccessToken == null) {
-					// TODO: wrap in async task
-					RequestToken t = mTwitter
-							.getOAuthRequestToken(Consts.TWITTER_CALLBACK_URL);
-					Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(t
-							.getAuthenticationURL()));
-					intent.putExtra("productid", productCursor.getInt(productCursor.getColumnIndexOrThrow("id_modele")));
-					startActivityForResult(intent, TWITTER_CALLBACK_ID);
-					getMyApplication().rToken = t;
-				} else {
-					// we has been authenticated before
-					mTwitter = new TwitterFactory().getOAuthAuthorizedInstance(
-							Consts.TWITTER_CONSUMER_KEY, Consts.TWITTER_SECRET,
-							getMyApplication().mTwitterAccessToken);
-					Cursor cursor = productCursor;
-					String pic = cursor.getString(cursor
-							.getColumnIndexOrThrow("imgLR"));
-					String shareString = "";
-					String title = "";
-					String message = "";
-					String url = "";
-					try {
-						shareString = cursor.getString(cursor
-								.getColumnIndexOrThrow("Lien_Partage"));
-						Uri uri = Uri.parse(shareString);
-						title = URLDecoder.decode(
-								uri.getQueryParameter("watitle"), "utf-8");
-						message = URLDecoder.decode(
-								uri.getQueryParameter("watext"), "utf-8");
-						url = URLDecoder.decode(
-								uri.getQueryParameter("walink"), "utf-8");
-					} catch (UnsupportedEncodingException e1) {
-						e1.printStackTrace();
-					} catch (IllegalArgumentException e1) {
-						//
-						e1.printStackTrace();
-					}
-					Log.d("SHARE", shareString);
-					mTwitter.updateStatus(shareString);
-				}
-			} catch (TwitterException e) {
-				e.printStackTrace();
-			}
+	@SuppressWarnings("unused")
+	protected String shareByTwitter(Cursor productCursor) throws Exception {
+		if (TestSnowboardsApplication.mTwitter == null) {
+			TestSnowboardsApplication.mTwitter =  new TwitterFactory().getInstance();
+			TestSnowboardsApplication.mTwitter.setOAuthConsumer(
+					TestSnowboardsApplication.TWITTER_CONSUMER_KEY,
+					TestSnowboardsApplication.TWITTER_SECRET);
+			TestSnowboardsApplication.mTwitterSession = new com.niveales.library.utils.TwitterSession(
+					this);
+			TestSnowboardsApplication.mTwitterAccessToken = TestSnowboardsApplication.mTwitterSession
+					.getAccessToken();
+			;
+			if (TestSnowboardsApplication.mTwitterAccessToken == null) {
 
-			getMyApplication().mTwitter = mTwitter;
+				Intent intent = new Intent(this, TwitterAuthActivity.class);
+				intent.putExtra("productid", productCursor.getInt(productCursor
+						.getColumnIndexOrThrow("id_modele")));
+				startActivityForResult(intent, TWITTER_CALLBACK_ID);
+
+			} else {
+
+				// we has been authenticated before
+				TestSnowboardsApplication.mTwitter = new TwitterFactory().getOAuthAuthorizedInstance(
+						TestSnowboardsApplication.TWITTER_CONSUMER_KEY,
+						TestSnowboardsApplication.TWITTER_SECRET,
+						TestSnowboardsApplication.mTwitterAccessToken);
+				Cursor cursor = productCursor;
+				String pic = cursor.getString(cursor
+						.getColumnIndexOrThrow("imgLR"));
+				String shareString = "";
+				String title = "";
+				String message = "";
+				String url = "";
+				try {
+					shareString = cursor.getString(cursor
+							.getColumnIndexOrThrow("Lien_Partage"));
+					Uri uri = Uri.parse(shareString);
+					title = URLDecoder.decode(uri.getQueryParameter("watitle"),
+							"utf-8");
+					message = URLDecoder.decode(
+							uri.getQueryParameter("watext"), "utf-8");
+					url = URLDecoder.decode(uri.getQueryParameter("walink"),
+							"utf-8").trim();
+					BitlyAndroid bitly = new BitlyAndroid(
+							TestSnowboardsApplication.BITLY_USER,
+							TestSnowboardsApplication.BITLY_API_KEY);
+					url = bitly.getShortUrl(url);
+					return new String(title + "\n" + url);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					throw new Exception("Error sending tweet");
+				}
+
+			}
 
 		}
-		new Thread() {
-			@Override
-			public void run() {
-				int what = 0;
-
-				try {
-					getMyApplication().mTwitter.updateStatus("test");
-				} catch (Exception e) {
-					what = 1;
-				}
-
-			}
-		}.start();
+		return null;
 	}
 
 	@Override
@@ -761,14 +784,17 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			final int mRes = resultCode;
 			final int mReq = requestCode;
 			final Intent i = data;
+			// Workaround for Android Support library bug , when
+			// onActivityResult runs before onResume
 			h.postDelayed(new Runnable() {
 
 				@Override
 				public void run() {
 					TestSnowboardsApplication.mFacebook.authorizeCallback(mReq,
 							mRes, i);
-				}}, 1000);
-			
+				}
+			}, 100);
+
 			break;
 		}
 
@@ -777,31 +803,28 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		 * actions
 		 */
 		case TWITTER_CALLBACK_ID: {
-			Uri uri = data.getData();
 			int productId = data.getIntExtra("productid", 0);
-			if (uri != null) {
-
-				TestSnowboardsApplication.oauthVerifier = uri
-						.getQueryParameter("oauth_verifier");
-			}
+			Log.d("OAuthTwitter KEY", TestSnowboardsApplication.ACCESS_KEY);
+			Log.d("OAuthTwitter SECRET",
+					TestSnowboardsApplication.ACCESS_SECRET);
 			try {
-				Twitter mTwitter = TestSnowboardsApplication.mTwitter;
-				if (mTwitter == null) {
-					return;
-				}
-				AccessToken at = mTwitter.getOAuthAccessToken(
-						TestSnowboardsApplication.rToken,
-						TestSnowboardsApplication.oauthVerifier);
-				String token = at.getToken();
-				String secret = at.getTokenSecret();
-				// Post to twitter.
+
 				TestSnowboardsApplication.mTwitterAccessToken = new AccessToken(
-						token, secret);
+						TestSnowboardsApplication.ACCESS_KEY,
+						TestSnowboardsApplication.ACCESS_SECRET);
 				Twitter t = new TwitterFactory().getOAuthAuthorizedInstance(
-						Consts.TWITTER_CONSUMER_KEY, Consts.TWITTER_SECRET,
+						TestSnowboardsApplication.TWITTER_CONSUMER_KEY,
+						TestSnowboardsApplication.TWITTER_SECRET,
 						TestSnowboardsApplication.mTwitterAccessToken);
 				TestSnowboardsApplication.mTwitter = t;
-				this.shareByTwitter(helper.rawQuery("select from modele where modele_id=?", new String [] { String.valueOf(productId) }));
+				TestSnowboardsApplication.mTwitterSession = new com.niveales.library.utils.TwitterSession(
+						this);
+				TestSnowboardsApplication.mTwitterSession
+						.storeAccessToken(TestSnowboardsApplication.mTwitterAccessToken);
+				// Avoid Android HONEYCOMB+ NetworkOnUIThreadException
+				new TwitterSharingTask().execute(helper
+						.getAllFromTableWithWhereAndOrder("Detail",
+								"id_modele='" + productId + "'", null));
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -818,10 +841,10 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		// Configuration.SCREENLAYOUT_SIZE_XLARGE;
 		if ((newConfig.screenLayout & Configuration.SCREENLAYOUT_SIZE_XLARGE) == 0)
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-//		else
-//			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		// else
+		// setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 	}
-	
+
 	public class SearchButtonClickListener implements OnClickListener {
 		@Override
 		public void onClick(View pView) {
@@ -831,7 +854,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			onSearchButtonPressed();
 		}
 	}
-	
+
 	public class ClearSearchButtonClickListener implements OnClickListener {
 		@Override
 		public void onClick(View pView) {
@@ -839,6 +862,53 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			b.setText(R.string.main_layout_search_button_label);
 			b.setOnClickListener(new SearchButtonClickListener());
 			onSearchClearPressed();
+		}
+	}
+
+	public class TwitterSharingTask extends AsyncTask<Cursor, Integer, String> {
+		String error;
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#doInBackground(Params[])
+		 */
+		@Override
+		protected String doInBackground(Cursor... pParams) {
+
+			try {
+				return shareByTwitter(pParams[0]);
+
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				error = e.getMessage();
+				return null;
+			}
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			if (result == null) {
+				AlertDialog.Builder b = new AlertDialog.Builder(
+						TestSnowboardsMainActivity.this);
+				b.setTitle("Twitter error:");
+				b.setMessage(error)
+						.setPositiveButton("OK",
+								new DialogInterface.OnClickListener() {
+
+									@Override
+									public void onClick(
+											DialogInterface pDialog, int pWhich) {
+										pDialog.dismiss();
+
+									}
+								}).create().show();
+			} else {
+				TwitterPostPreviewDialogFragment f = new TwitterPostPreviewDialogFragment();
+				f.setMessage(result);
+				f.show(getSupportFragmentManager(), null);
+			}
 		}
 	}
 

@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Hashtable;
 
+import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
+import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
+
 import org.json.JSONObject;
 
 import twitter4j.Twitter;
@@ -30,6 +33,8 @@ import com.niveales.library.ui.productdetail.ProductDetailFragment.ShareProductL
 import com.niveales.library.ui.productlist.FavoriteProductListFragment;
 import com.niveales.library.ui.productlist.ProductListFragment;
 import com.niveales.library.ui.productsearch.ProductSearchFragment;
+import com.niveales.library.utils.Consts;
+import com.niveales.library.utils.TwitterSession;
 import com.niveales.library.utils.adapters.CursorViewBinder;
 import com.niveales.library.utils.db.DBHelper;
 import com.niveales.testsnowboards.R;
@@ -50,37 +55,61 @@ import android.os.Environment;
  * 
  */
 public class TestSnowboardsApplication extends Application {
+	
+	// Global staff for TestsSnowboards
 	public static String dbName = "snowsurf_tests2013_.sqlite";
-	public static Facebook mFacebook;
+	
+	
+	// Twitter staff
+	public static TwitterSession mTwitterSession;
 	public static Twitter mTwitter;
+	public static AccessToken mTwitterAccessToken;
+	public static String ACCESS_KEY = null;
+	public static String ACCESS_SECRET = null;
+	public static final String REQUEST_URL = "http://twitter.com/oauth/request_token";
+	public static final String ACCESS_TOKEN_URL = "http://twitter.com/oauth/access_token";
+	public static final String AUTH_URL = "http://twitter.com/oauth/authorize";
+	public static final String TWITTER_CONSUMER_KEY = "Qgs7YXW6HCw8u0Mt1102Q";
+	public static final String TWITTER_SECRET="CqOZllOATSal2bjyyBSY2hXZ1dtlwwTZBUYXeMvj0";
+	public static final String TWITTER_CALLBACK_URL = "twitter://callback";
+	public static CommonsHttpOAuthConsumer consumer = new CommonsHttpOAuthConsumer(
+			TWITTER_CONSUMER_KEY, TWITTER_SECRET);
+	public static CommonsHttpOAuthProvider provider = new CommonsHttpOAuthProvider(
+			REQUEST_URL, ACCESS_TOKEN_URL, AUTH_URL);
+	
+	
+	//Bitly staff
+	public static final String BITLY_USER = "tedted1";
+	public static final String BITLY_API_KEY = "R_d0e2739e13391fc7cc6a7c66966239b4";
+	// Facebook staff
+	public static Facebook mFacebook;
 	public static AsyncFacebookRunner mAsyncRunner;
-	public static JSONObject mFriendsList;
-	public static String userUID = null;
-	public static String objectID = null;
-	public static AndroidHttpClient httpclient = null;
 	public static String[] facebookPermissions = { "offline_access",
 			"publish_stream", "user_photos", "publish_checkins", "photo_upload" };
 
 	public static Hashtable<String, String> currentPermissions = new Hashtable<String, String>();
 
+	// Used to downscale pictures while posting to facebook
 	private static int MAX_IMAGE_DIMENSION = 720;
-	public static final String HACK_ICON_URL = "http://www.facebookmobileweb.com/hackbook/img/facebook_icon_large.png";
 	public static String oauthVerifier;
-	public static RequestToken rToken;
-	public static AccessToken mTwitterAccessToken;
 
+
+
+	// UI function helpers to help customize future apps
 	public ProductDetailFragment getProductDetailFragment(DBHelper helper,
 			Cursor c, ShareProductListener l) {
 		return ProductDetailFragment.getInstance(this, helper,
 				R.layout.product_detail_layout, R.id.ProductDetailsWebView,
-				R.string.ProductDetailWebPage, c, new String[] { "Marque",
+				R.string.ProductDetailWebPage, c, 
+				// List of fields in product html file
+				new String[] { "Marque",
 						"Modele", "Prix_String", "imgLR", "Gamme",
 						"test_Taille_testee", "Tailles", "type_de_cambre_text",
 						"Test_baseline", "Description_Test", "Test_avantages",
 						"test_inconvenients", "icone_genre", "icone_cambres",
 						"icone_wide", "icone_top", "img_niveau",
 						"img_polyvalence", "Caractéristiques",
-
+				// List of Details table columns to get data from, used to fill HTML fields above
 				}, new String[] {
 						"%TAITLE%",
 						"%Modele%",
