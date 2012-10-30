@@ -11,8 +11,10 @@ import twitter4j.TwitterException;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
@@ -88,12 +90,7 @@ public class TwitterPostPreviewDialogFragment extends DialogFragment {
 
 			@Override
 			public void onClick(View pV) {
-				try {
-					mTwitter.updateStatus(mMessageEditText.getEditableText().toString());
-				} catch (TwitterException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				new TwitterSendTask().execute(mMessageEditText.getEditableText().toString());
 				dismiss();
 			}});
 	    mPostImage = (ImageView) rootView.findViewById(R.id.PostImage);
@@ -117,10 +114,41 @@ public class TwitterPostPreviewDialogFragment extends DialogFragment {
 	    
 	    return builder.create();
 	}
-	
-	@Override
-	public void onResume() {
-		super.onResume();
-		mTwitter = ((TestSnowboardsApplication)getActivity().getApplication()).mTwitter;
+
+	class TwitterSendTask extends AsyncTask<String, Void, String> {
+		@Override
+		protected void onPreExecute(){
+			
+		}
+		/* (non-Javadoc)
+		 * @see android.os.AsyncTask#doInBackground(Params[])
+		 */
+		@Override
+		protected String doInBackground(String... pArg0) {
+			try {
+				mTwitter.updateStatus(mMessageEditText.getEditableText().toString());
+			} catch (TwitterException e) {
+				e.printStackTrace();
+				return e.getMessage();
+			}
+			return null;
+		}
+		@Override
+		protected void onPostExecute(String args) {
+			if(args != null) {
+				AlertDialog.Builder b = new AlertDialog.Builder(getActivity());
+				b.setTitle("Tweet failed:");
+				b.setMessage(args);
+				b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface pDialog, int pWhich) {
+						pDialog.dismiss();
+						
+					}
+				})
+				.create().show();
+			}
+		}
 	}
 }
