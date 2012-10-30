@@ -46,7 +46,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
-import android.net.http.AndroidHttpClient;
 import android.os.Environment;
 
 /**
@@ -86,6 +85,7 @@ public class TestSnowboardsApplication extends Application {
 	
 	
 	// Facebook staff
+	public static final String FACEBOOK_APP_ID = "367597189994678";
 	public static Facebook mFacebook;
 	public static AsyncFacebookRunner mAsyncRunner;
 	public static String[] facebookPermissions = { "offline_access",
@@ -124,7 +124,7 @@ public class TestSnowboardsApplication extends Application {
 	public static final String SELECTED = "Selected.png";
 	public static final String UNSELECTED = "NotSelected.png";
 	public static final String NUMERIC = "Numeric";
-	public static final String FACEBOOK_APP_ID = "217286221626265";
+
 	
 
 	
