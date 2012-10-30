@@ -98,7 +98,8 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		if (savedInstanceState != null) {
-			mActiveTab = savedInstanceState.getInt(TestSnowboardsApplication.MAIN_TAB_ID);
+			mActiveTab = savedInstanceState
+					.getInt(TestSnowboardsApplication.MAIN_TAB_ID);
 		}
 
 		// Set our layout
@@ -711,7 +712,8 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	@SuppressWarnings("unused")
 	protected String shareByTwitter(Cursor productCursor) throws Exception {
 		if (TestSnowboardsApplication.mTwitter == null) {
-			TestSnowboardsApplication.mTwitter =  new TwitterFactory().getInstance();
+			TestSnowboardsApplication.mTwitter = new TwitterFactory()
+					.getInstance();
 			TestSnowboardsApplication.mTwitter.setOAuthConsumer(
 					TestSnowboardsApplication.TWITTER_CONSUMER_KEY,
 					TestSnowboardsApplication.TWITTER_SECRET);
@@ -719,49 +721,48 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 					this);
 			TestSnowboardsApplication.mTwitterAccessToken = TestSnowboardsApplication.mTwitterSession
 					.getAccessToken();
-			;
-			if (TestSnowboardsApplication.mTwitterAccessToken == null) {
+		}
+		if (TestSnowboardsApplication.mTwitterAccessToken == null) {
 
-				Intent intent = new Intent(this, TwitterAuthActivity.class);
-				intent.putExtra("productid", productCursor.getInt(productCursor
-						.getColumnIndexOrThrow("id_modele")));
-				startActivityForResult(intent, TWITTER_CALLBACK_ID);
+			Intent intent = new Intent(this, TwitterAuthActivity.class);
+			intent.putExtra("productid", productCursor.getInt(productCursor
+					.getColumnIndexOrThrow("id_modele")));
+			startActivityForResult(intent, TWITTER_CALLBACK_ID);
 
-			} else {
+		} else {
 
-				// we has been authenticated before
-				TestSnowboardsApplication.mTwitter = new TwitterFactory().getOAuthAuthorizedInstance(
-						TestSnowboardsApplication.TWITTER_CONSUMER_KEY,
-						TestSnowboardsApplication.TWITTER_SECRET,
-						TestSnowboardsApplication.mTwitterAccessToken);
-				Cursor cursor = productCursor;
-				String pic = cursor.getString(cursor
-						.getColumnIndexOrThrow("imgLR"));
-				String shareString = "";
-				String title = "";
-				String message = "";
-				String url = "";
-				try {
-					shareString = cursor.getString(cursor
-							.getColumnIndexOrThrow("Lien_Partage"));
-					Uri uri = Uri.parse(shareString);
-					title = URLDecoder.decode(uri.getQueryParameter("watitle"),
-							"utf-8");
-					message = URLDecoder.decode(
-							uri.getQueryParameter("watext"), "utf-8");
-					url = URLDecoder.decode(uri.getQueryParameter("walink"),
-							"utf-8").trim();
-					BitlyAndroid bitly = new BitlyAndroid(
-							TestSnowboardsApplication.BITLY_USER,
-							TestSnowboardsApplication.BITLY_API_KEY);
-					url = bitly.getShortUrl(url);
-					return new String(title + "\n" + url);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					throw new Exception("Error sending tweet");
-				}
-
+			// we has been authenticated before
+			TestSnowboardsApplication.mTwitter = new TwitterFactory()
+					.getOAuthAuthorizedInstance(
+							TestSnowboardsApplication.TWITTER_CONSUMER_KEY,
+							TestSnowboardsApplication.TWITTER_SECRET,
+							TestSnowboardsApplication.mTwitterAccessToken);
+			Cursor cursor = productCursor;
+			String pic = cursor
+					.getString(cursor.getColumnIndexOrThrow("imgLR"));
+			String shareString = "";
+			String title = "";
+			String message = "";
+			String url = "";
+			try {
+				shareString = cursor.getString(cursor
+						.getColumnIndexOrThrow("Lien_Partage"));
+				Uri uri = Uri.parse(shareString);
+				title = URLDecoder.decode(uri.getQueryParameter("watitle"),
+						"utf-8");
+				message = URLDecoder.decode(uri.getQueryParameter("watext"),
+						"utf-8");
+				url = URLDecoder.decode(uri.getQueryParameter("walink"),
+						"utf-8").trim();
+				BitlyAndroid bitly = new BitlyAndroid(
+						TestSnowboardsApplication.BITLY_USER,
+						TestSnowboardsApplication.BITLY_API_KEY);
+				url = bitly.getShortUrl(url);
+				return new String(title + "\n" + url);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				throw new Exception("Error sending tweet");
 			}
 
 		}

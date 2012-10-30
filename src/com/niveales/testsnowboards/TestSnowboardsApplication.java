@@ -14,18 +14,23 @@ import java.util.Hashtable;
 
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
-
-import org.json.JSONObject;
-
 import twitter4j.Twitter;
 import twitter4j.http.AccessToken;
-import twitter4j.http.RequestToken;
+import android.app.Application;
+import android.content.Context;
+import android.content.res.AssetManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.net.Uri;
+import android.os.Environment;
 
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.Facebook;
 import com.niveales.library.ui.criteraselectors.CriteriaSelectorFragment;
-import com.niveales.library.ui.criteraselectors.RangeCriteriaSelectorFragment;
 import com.niveales.library.ui.criteraselectors.CriteriaSelectorFragment.OnCriteriaChangedListener;
+import com.niveales.library.ui.criteraselectors.RangeCriteriaSelectorFragment;
 import com.niveales.library.ui.criteraselectors.RangeCriteriaSelectorFragment.OnRangeCriteriaChangedListener;
 import com.niveales.library.ui.lexique.LexiqueFragment;
 import com.niveales.library.ui.productdetail.ProductDetailFragment;
@@ -36,17 +41,6 @@ import com.niveales.library.ui.productsearch.ProductSearchFragment;
 import com.niveales.library.utils.TwitterSession;
 import com.niveales.library.utils.adapters.CursorViewBinder;
 import com.niveales.library.utils.db.DBHelper;
-import com.niveales.testsnowboards.R;
-
-import android.app.Application;
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.net.Uri;
-import android.os.Environment;
 
 /**
  * @author Dmitry Valetin
