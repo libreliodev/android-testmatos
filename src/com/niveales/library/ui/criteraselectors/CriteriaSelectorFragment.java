@@ -9,11 +9,11 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.niveales.library.utils.Consts;
 import com.niveales.library.utils.adapters.CheckedCriteriaViewBinder;
 import com.niveales.library.utils.adapters.checked.CheckedCriteriaAdapter;
 import com.niveales.library.utils.adapters.checked.CheckedCriteriaAdapter.CriteriaChangeListener;
 import com.niveales.library.utils.db.DBHelper;
+import com.niveales.testsnowboards.TestSnowboardsApplication;
 
 
 
@@ -73,7 +73,7 @@ public class CriteriaSelectorFragment extends Fragment {
 		this.listViewId = listViewId;
 		this.itemLayoutId = itemLayoutId;
 		this.itemTextViewId = textViewId;
-		if (type.equals(Consts.NUMERIC)) {
+		if (type.equals(TestSnowboardsApplication.NUMERIC)) {
 			this.itemEditViewId = editableId;
 		} else {
 			this.itemCheckBoxId = editableId;
@@ -90,7 +90,7 @@ public class CriteriaSelectorFragment extends Fragment {
 		title.setText(criteria);
 		ListView mCreteriaSelectorListView = (ListView) rootView
 				.findViewById(listViewId);
-		if (!type.equals(Consts.NUMERIC)) {
+		if (!type.equals(TestSnowboardsApplication.NUMERIC)) {
 			mAdapter = new CheckedCriteriaAdapter(context, helper.getColumn(colName), itemLayoutId, 
 					new CheckedCriteriaViewBinder(context, new String [] {
 							colName,

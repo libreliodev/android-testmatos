@@ -71,7 +71,6 @@ import com.niveales.library.ui.productlist.ProductListFragment.ProductSelectedLi
 import com.niveales.library.ui.productsearch.ProductSearchFragment;
 import com.niveales.library.ui.productsearch.ProductSearchFragment.OnProductSearchSelectedListener;
 import com.niveales.library.utils.BitlyAndroid;
-import com.niveales.library.utils.Consts;
 import com.niveales.library.utils.adapters.AdvancedCriteriaMainListAdapter;
 import com.niveales.library.utils.db.DBHelper;
 import com.niveales.testsnowboards.lexique.LexiqueActivity;
@@ -99,7 +98,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		if (savedInstanceState != null) {
-			mActiveTab = savedInstanceState.getInt(Consts.MAIN_TAB_ID);
+			mActiveTab = savedInstanceState.getInt(TestSnowboardsApplication.MAIN_TAB_ID);
 		}
 
 		// Set our layout
@@ -520,7 +519,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 		if (TestSnowboardsApplication.mFacebook == null) {
 			TestSnowboardsApplication.mFacebook = new Facebook(
-					Consts.FACEBOOK_APP_ID);
+					TestSnowboardsApplication.FACEBOOK_APP_ID);
 			TestSnowboardsApplication.mAsyncRunner = new AsyncFacebookRunner(
 					TestSnowboardsApplication.mFacebook);
 		}

@@ -32,9 +32,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
-import com.niveales.library.utils.Consts;
 import com.niveales.library.utils.db.DBHelper;
 import com.niveales.testsnowboards.R;
+import com.niveales.testsnowboards.TestSnowboardsApplication;
 
 
 
@@ -121,11 +121,11 @@ public class ProductDetailFragment extends Fragment {
 		for (int i = 0; i < columnKeys.length; i++) {
 			String value = c.getString(c.getColumnIndexOrThrow(columnKeys[i]));
 			if (htmlKeys[i].startsWith("%icone") && !value.equals("")) {
-				value = "<img src=\"" + Consts.ASSETS_URI + value + "\"/>";
+				value = "<img src=\"" + TestSnowboardsApplication.ASSETS_URI + value + "\"/>";
 			} else {
 				if (value.endsWith("png") || value.endsWith("jpg")) {
 					// product image
-					value = Consts.ASSETS_URI + value;
+					value = TestSnowboardsApplication.ASSETS_URI + value;
 				}
 			}
 			htmlString = htmlString.replace(htmlKeys[i], value);
@@ -152,7 +152,7 @@ public class ProductDetailFragment extends Fragment {
 			}});
 		
 		webView = (WebView) rootView.findViewById(webViewId);
-		webView.loadDataWithBaseURL(Consts.ASSETS_URI, getHTMLPage(productCursor), "text/html", "UTF-8", null);
+		webView.loadDataWithBaseURL(TestSnowboardsApplication.ASSETS_URI, getHTMLPage(productCursor), "text/html", "UTF-8", null);
 		webView.getSettings().setJavaScriptEnabled(true);
 		webView.setWebViewClient(new WebViewClient() {
 			@Override
@@ -199,7 +199,7 @@ public class ProductDetailFragment extends Fragment {
 					productCursor.move(-1);
 					recycleImageViewBitmap(mProductImage);
 					loadImageBitmap();
-					webView.loadDataWithBaseURL(Consts.ASSETS_URI, getHTMLPage(productCursor), "text/html", "UTF-8", null);
+					webView.loadDataWithBaseURL(TestSnowboardsApplication.ASSETS_URI, getHTMLPage(productCursor), "text/html", "UTF-8", null);
 				}
 			}});
 		mNextButton = (Button) rootView.findViewById(R.id.NextButton);
@@ -211,7 +211,7 @@ public class ProductDetailFragment extends Fragment {
 					productCursor.move(1);
 					recycleImageViewBitmap(mProductImage);
 					loadImageBitmap();
-					webView.loadDataWithBaseURL(Consts.ASSETS_URI, getHTMLPage(productCursor), "text/html", "UTF-8", null);
+					webView.loadDataWithBaseURL(TestSnowboardsApplication.ASSETS_URI, getHTMLPage(productCursor), "text/html", "UTF-8", null);
 				}
 			}});
 		return rootView;

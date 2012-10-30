@@ -10,8 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 
-import com.niveales.library.utils.Consts;
 import com.niveales.testsnowboards.R;
+import com.niveales.testsnowboards.TestSnowboardsApplication;
 
 public class AboutFragment extends Fragment {
 
@@ -20,7 +20,7 @@ public class AboutFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 		View rootView = inflater.inflate(R.layout.about_fragment_layout,  container, false);
 		WebView webView = (WebView) rootView.findViewById(R.id.AboutDialogWebView);
-		webView.loadUrl(Consts.ASSETS_URI+"Privacy.html");
+		webView.loadUrl(TestSnowboardsApplication.ASSETS_URI+"Privacy.html");
 		return rootView;
 	}
 }
