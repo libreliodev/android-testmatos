@@ -117,6 +117,7 @@ public class ProductDetailFragment extends Fragment {
 	}
 
 	String getHTMLPage(Cursor c) {
+		productId = c.getInt(c.getColumnIndexOrThrow("id_modele"));
 		String htmlString = new String(htmlBasePage);
 		for (int i = 0; i < columnKeys.length; i++) {
 			String value = c.getString(c.getColumnIndexOrThrow(columnKeys[i]));
