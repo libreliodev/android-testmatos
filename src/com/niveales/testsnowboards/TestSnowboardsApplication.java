@@ -48,6 +48,134 @@ import com.niveales.library.utils.db.DBHelper;
  */
 public class TestSnowboardsApplication extends Application {
 	
+
+
+	private static class ProductDetailConstants {
+		/**
+		 * 
+		 */
+		private static final int PRODUCT_DETAIL_SHARE_BUTTON_VIEW_ID = R.id.ShareButton;
+
+
+		/**
+		 * 
+		 */
+		private static final int PRODUCT_DETAIL_FAVORITE_CKECKBOX_VIEW_ID = R.id.FavoriteCkeckBox;
+
+
+		/**
+		 * 
+		 */
+		private static final String[] PRODUCT_DETAIL_HTML_FILE_KEYS = new String[] {
+				"%TAITLE%",
+				"%Modele%",
+				"%Budget%",
+				"%img%", // product image
+				"%GAMME%", "%TAILLE TESTEE%", "%TAILLES DISPONIBLES%",
+				"%type_de_cambre_text%", "%Test_baseline%",
+				"%Description_Test%", "%Test_avantages%",
+				"%test_inconvenients%", "%icone_genre%",
+				"%icone_cambres%", "%icone_wide%", "%icone_top%",
+				"%img_niveau%", "%img_polyvalence%",
+				"%Caractéristiques%",
+
+		};
+
+
+		/**
+		 * 
+		 */
+		private static final String[] PRODUCT_DETAIL_COLUMN_KEYS = // List of fields in product html file
+		new String[] { "Marque",
+				"Modele", "Prix_String", "imgLR", "Gamme",
+				"test_Taille_testee", "Tailles", "type_de_cambre_text",
+				"Test_baseline", "Description_Test", "Test_avantages",
+				"test_inconvenients", "icone_genre", "icone_cambres",
+				"icone_wide", "icone_top", "img_niveau",
+				"img_polyvalence", "Caractéristiques",
+		// List of Details table columns to get data from, used to fill HTML fields above
+		};
+
+
+		/**
+		 * 
+		 */
+		private static final int PRODUCT_DETAIL_WEBPAGE_FILE_URI = R.string.ProductDetailWebPage;
+
+
+		/**
+		 * 
+		 */
+		private static final int PRODUCT_DETAIL_WEBVIEW_VIEW_ID = R.id.ProductDetailsWebView;
+
+
+		/**
+		 * 
+		 */
+		private static final int PRODUCT_DETAIL_LAYOUT = R.layout.product_detail_layout;
+	}
+	
+	
+
+
+	/**
+	 * 
+	 */
+	private static final String DETAIL_TABLE_NAME = "Detail";
+
+
+	
+	private static class ProductListConstants {
+
+		/**
+		 * 
+		 */
+		private static final String[] PRODUCT_LIST_DISPLAY_COLUMNS = new String[] {
+				DBHelper.MODELE_MARQUE_KEY, DBHelper.MODELE_MODELE_KEY,
+				"icone_genre", "icone_cambres", "Gamme", "Prix_String",
+				"icone_wide", "icone_top", "imgLR"
+		// DBHelper.MODELE_PRIX_DE_REFERENCE_KEY,
+		// DBHelper.MODELE_GENRE_KEY,
+		// DBHelper.MODELE_IMG_KEY
+				};
+		/**
+		 * 
+		 */
+		private static final int[] PRODUCT_LIST_DISPLAY_VIEW_IDS = new int[] { R.id.productListItemGenre,
+						R.id.productListItemModele,
+						R.id.productListItemFemale,
+						R.id.productListItemChambre,
+						R.id.productListItemGamme,
+						R.id.productListItemBudget,
+						R.id.productListItemWide,
+						R.id.productListItemPop,
+						R.id.productListItemPicture };
+		/**
+		 * 
+		 */
+		private static final int PRODUCT_LIST_FAGMENT_LAYOUT = R.layout.product_list_fagment_layout;
+		/**
+		 * 
+		 */
+		private static final int PRODUCT_LIST_LISTVIEW_ITEM_LAYOUT = R.layout.product_list_item_layout;
+		/**
+		 * 
+		 */
+		private static final int PRODUCT_LIST_LISTVIEW_VIEW_ID = R.id.ProductListView;
+		/**
+		 * list of button ids in product list layout
+		 */
+		private static final int[] PRODUCT_LIST_SORT_BUTTON_IDS = new int[] { R.id.ProductListMarqueSortButton,
+				R.id.ProductListGammeSortButton,
+				R.id.ProductListPrixSortButton };
+		/**
+		 * 
+		 */
+		private static final String[] PRODUCT_LIST_SORT_COLUMNS = new String[] {
+		"Marque", "Gamme", "Prix_de_reference" };
+		
+	}
+	
 	// Global staff for TestsSnowboards
 	public static String dbName = "snowsurf_tests2013_.sqlite";
 	
@@ -119,6 +247,9 @@ public class TestSnowboardsApplication extends Application {
 	public static final String UNSELECTED = "NotSelected.png";
 	public static final String NUMERIC = "Numeric";
 
+
+	private static DBHelper mDBHelper;
+
 	
 
 	
@@ -127,60 +258,19 @@ public class TestSnowboardsApplication extends Application {
 
 
 	// UI function helpers to help customize future apps
-	public ProductDetailFragment getProductDetailFragment(DBHelper helper,
-			Cursor c, ShareProductListener l) {
-		return ProductDetailFragment.getInstance(this, helper,
-				R.layout.product_detail_layout, R.id.ProductDetailsWebView,
-				R.string.ProductDetailWebPage, c, 
-				// List of fields in product html file
-				new String[] { "Marque",
-						"Modele", "Prix_String", "imgLR", "Gamme",
-						"test_Taille_testee", "Tailles", "type_de_cambre_text",
-						"Test_baseline", "Description_Test", "Test_avantages",
-						"test_inconvenients", "icone_genre", "icone_cambres",
-						"icone_wide", "icone_top", "img_niveau",
-						"img_polyvalence", "Caractéristiques",
-				// List of Details table columns to get data from, used to fill HTML fields above
-				}, new String[] {
-						"%TAITLE%",
-						"%Modele%",
-						"%Budget%",
-						"%img%", // product image
-						"%GAMME%", "%TAILLE TESTEE%", "%TAILLES DISPONIBLES%",
-						"%type_de_cambre_text%", "%Test_baseline%",
-						"%Description_Test%", "%Test_avantages%",
-						"%test_inconvenients%", "%icone_genre%",
-						"%icone_cambres%", "%icone_wide%", "%icone_top%",
-						"%img_niveau%", "%img_polyvalence%",
-						"%Caractéristiques%",
-
-				}, R.id.FavoriteCkeckBox, R.id.ShareButton, l);
+	public ProductDetailFragment getProductDetailFragment(Cursor pCursor,
+			ShareProductListener pListener) {
+		return ProductDetailFragment.getInstance(ProductDetailConstants.PRODUCT_DETAIL_LAYOUT, ProductDetailConstants.PRODUCT_DETAIL_WEBVIEW_VIEW_ID,
+				ProductDetailConstants.PRODUCT_DETAIL_WEBPAGE_FILE_URI, pCursor,
+				ProductDetailConstants.PRODUCT_DETAIL_COLUMN_KEYS, ProductDetailConstants.PRODUCT_DETAIL_HTML_FILE_KEYS, 
+				ProductDetailConstants.PRODUCT_DETAIL_FAVORITE_CKECKBOX_VIEW_ID, ProductDetailConstants.PRODUCT_DETAIL_SHARE_BUTTON_VIEW_ID, pListener);
 	}
 	
-	public ProductListFragment getProductListFragment(DBHelper helper) {
-		return ProductListFragment.getInstance(helper,
-				"Detail", R.layout.product_list_fagment_layout,
-				R.id.ProductListView, R.layout.product_list_item_layout,
-				new int[] { R.id.ProductListMarqueSortButton,
-						R.id.ProductListGammeSortButton,
-						R.id.ProductListPrixSortButton }, new String[] {
-						"Marque", "Gamme", "Prix_de_reference" },
-				new CursorViewBinder(this, new String[] {
-						DBHelper.MODELE_MARQUE_KEY, DBHelper.MODELE_MODELE_KEY,
-						"icone_genre", "icone_cambres", "Gamme", "Prix_String",
-						"icone_wide", "icone_top", "imgLR"
-				// DBHelper.MODELE_PRIX_DE_REFERENCE_KEY,
-				// DBHelper.MODELE_GENRE_KEY,
-				// DBHelper.MODELE_IMG_KEY
-						}, new int[] { R.id.productListItemGenre,
-								R.id.productListItemModele,
-								R.id.productListItemFemale,
-								R.id.productListItemChambre,
-								R.id.productListItemGamme,
-								R.id.productListItemBudget,
-								R.id.productListItemWide,
-								R.id.productListItemPop,
-								R.id.productListItemPicture }));
+	public ProductListFragment getProductListFragment() {
+		return ProductListFragment.getInstance(DETAIL_TABLE_NAME,
+				ProductListConstants.PRODUCT_LIST_FAGMENT_LAYOUT, ProductListConstants.PRODUCT_LIST_LISTVIEW_VIEW_ID,
+				ProductListConstants.PRODUCT_LIST_LISTVIEW_ITEM_LAYOUT, ProductListConstants.PRODUCT_LIST_SORT_BUTTON_IDS,
+				ProductListConstants.PRODUCT_LIST_SORT_COLUMNS, new CursorViewBinder(this, ProductListConstants.PRODUCT_LIST_DISPLAY_COLUMNS, ProductListConstants.PRODUCT_LIST_DISPLAY_VIEW_IDS));
 	}
 	/**
 	 * @param pHelper
@@ -189,34 +279,16 @@ public class TestSnowboardsApplication extends Application {
 	public FavoriteProductListFragment getFavoriteProductListFragment(DBHelper pHelper) {
 		// TODO Auto-generated method stub
 		return FavoriteProductListFragment.getInstance(pHelper,
-				"Detail", R.layout.product_list_fagment_layout,
-				R.id.ProductListView, R.layout.product_list_item_layout,
-				new int[] { R.id.ProductListMarqueSortButton,
-						R.id.ProductListGammeSortButton,
-						R.id.ProductListPrixSortButton }, new String[] {
-						"Marque", "Gamme", "Prix_de_reference" },
-				new CursorViewBinder(this, new String[] {
-						DBHelper.MODELE_MARQUE_KEY, DBHelper.MODELE_MODELE_KEY,
-						"icone_genre", "icone_cambres", "Gamme", "Prix_String",
-						"icone_wide", "icone_top", "imgLR"
-				// DBHelper.MODELE_PRIX_DE_REFERENCE_KEY,
-				// DBHelper.MODELE_GENRE_KEY,
-				// DBHelper.MODELE_IMG_KEY
-						}, new int[] { R.id.productListItemGenre,
-								R.id.productListItemModele,
-								R.id.productListItemFemale,
-								R.id.productListItemChambre,
-								R.id.productListItemGamme,
-								R.id.productListItemBudget,
-								R.id.productListItemWide,
-								R.id.productListItemPop,
-								R.id.productListItemPicture }));
+				DETAIL_TABLE_NAME, ProductListConstants.PRODUCT_LIST_FAGMENT_LAYOUT,
+				ProductListConstants.PRODUCT_LIST_LISTVIEW_VIEW_ID, ProductListConstants.PRODUCT_LIST_LISTVIEW_ITEM_LAYOUT,
+				ProductListConstants.PRODUCT_LIST_SORT_BUTTON_IDS, ProductListConstants.PRODUCT_LIST_SORT_COLUMNS,
+				new CursorViewBinder(this, ProductListConstants.PRODUCT_LIST_DISPLAY_COLUMNS, ProductListConstants.PRODUCT_LIST_DISPLAY_VIEW_IDS));
 	}
 
 	public ProductSearchFragment getProductSearchFragment(DBHelper helper, int searchEditTextId) {
 		return ProductSearchFragment.getInstance(helper,
-				"Detail", R.layout.product_search_fagment_layout,
-				R.id.ProductListView, R.layout.product_search_item_layout,
+				DETAIL_TABLE_NAME, R.layout.product_search_fagment_layout,
+				ProductListConstants.PRODUCT_LIST_LISTVIEW_VIEW_ID, R.layout.product_search_item_layout,
 				searchEditTextId, new String [] {
 				// Search columns
 							DBHelper.MODELE_MARQUE_KEY, 
@@ -422,6 +494,22 @@ public class TestSnowboardsApplication extends Application {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * @return
+	 */
+	public static DBHelper getDBHelper() {
+		// TODO Auto-generated method stub
+		return mDBHelper;
+	}
+
+	/**
+	 * @param pDbHelper
+	 */
+	public static void setDBHelper(DBHelper pDbHelper) {
+		mDBHelper = pDbHelper;
+		
 	}
 
 }

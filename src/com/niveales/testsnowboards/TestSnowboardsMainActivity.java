@@ -11,6 +11,7 @@ import twitter4j.TwitterFactory;
 import twitter4j.http.AccessToken;
 import twitter4j.http.RequestToken;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -18,6 +19,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -34,11 +36,13 @@ import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
@@ -82,7 +86,6 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	private static final String TAG = TestSnowboardsMainActivity.class
 			.getSimpleName();
 	public static String mTwitterMessage;
-	private DBHelper helper;
 	private int mActiveTab;
 	private TabHost mMainActivityTabHost;
 	private View mRightFrameFragmentHolder;
@@ -90,9 +93,10 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	private AdvancedCriteriaMainListAdapter mainAdapter;
 	private FrameLayout mSearchResultHolder;
 	private EditText mSearchEditText;
-	private Button mMainLayoutSearchButton;
+	private ImageButton mMainLayoutSearchButton;
 	public ProgressDialog mProgressDialog;
-
+	public String mRecentSearch;
+	
 	@SuppressLint("NewApi")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -107,8 +111,8 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 		getMyApplication();
 		// Init DB
-		helper = new DBHelper(this, TestSnowboardsApplication.dbName);
-		helper.open();
+		TestSnowboardsApplication.setDBHelper(new DBHelper(this, TestSnowboardsApplication.dbName));
+		TestSnowboardsApplication.getDBHelper().open();
 
 		// Init tabs
 		mMainActivityTabHost = (TabHost) findViewById(R.id.MainLayoutTabHost);
@@ -126,7 +130,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		mMainActivityTabHost.setCurrentTab(mActiveTab);
 
 		// Init Search button click listener
-		mMainLayoutSearchButton = (Button) findViewById(R.id.MainLayoutSearchButton);
+		mMainLayoutSearchButton = (ImageButton) findViewById(R.id.MainLayoutSearchButton);
 		mMainLayoutSearchButton
 				.setOnClickListener(new SearchButtonClickListener());
 
@@ -148,7 +152,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 					}
 				});
 
-		mainAdapter = new AdvancedCriteriaMainListAdapter(helper, this,
+		mainAdapter = new AdvancedCriteriaMainListAdapter(TestSnowboardsApplication.getDBHelper(), this,
 				R.layout.creteria_group_selector_item_layout,
 				R.id.CreteriaGroupTextView, R.id.CreteriaSelectedListTextView);
 		mMainActivityCreteriaSelectionListView.setAdapter(mainAdapter);
@@ -166,7 +170,8 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			public boolean onEditorAction(TextView pV, int pActionId,
 					KeyEvent pEvent) {
 				if (pActionId == 0) {
-
+					InputMethodManager imm = (InputMethodManager) TestSnowboardsMainActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+					imm.hideSoftInputFromWindow(mSearchEditText.getWindowToken(), 0);
 				}
 				return false;
 			}
@@ -215,7 +220,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			 */
 
 			FavoriteProductListFragment f = getMyApplication()
-					.getFavoriteProductListFragment(helper);
+					.getFavoriteProductListFragment(TestSnowboardsApplication.getDBHelper());
 			f.setOnProductSelectedListener(new ProductSelectedListener() {
 				@Override
 				public void showProductDetails(Cursor c) {
@@ -240,7 +245,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			if (this.mRightFrameFragmentHolder != null) {
 				// Tablet
 				Fragment lexiqueFragment = getMyApplication()
-						.getLexiqueFragment(helper);
+						.getLexiqueFragment(TestSnowboardsApplication.getDBHelper());
 				this.getSupportFragmentManager().beginTransaction()
 						.replace(R.id.ContentHolder, lexiqueFragment)
 						.addToBackStack(null).commit();
@@ -254,8 +259,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 	protected void onSearchButtonPressed() {
 
-		ProductListFragment f = getMyApplication().getProductListFragment(
-				helper);
+		ProductListFragment f = getMyApplication().getProductListFragment();
 		f.setOnProductSelectedListener(new ProductSelectedListener() {
 			@Override
 			public void showProductDetails(Cursor c) {
@@ -274,7 +278,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	}
 
 	public void onSearchClearPressed() {
-		helper.rawQuery("delete from UserSearchInputs", null);
+		TestSnowboardsApplication.getDBHelper().rawQuery("delete from UserSearchInputs", null);
 		mMainActivityCreteriaSelectionListView.invalidateViews();
 	}
 
@@ -283,11 +287,13 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	 */
 	protected void onSearchStarted() {
 		final ProductSearchFragment f = getMyApplication()
-				.getProductSearchFragment(helper, R.id.SearchEditText);
+				.getProductSearchFragment(TestSnowboardsApplication.getDBHelper(), R.id.SearchEditText);
 		f.setOnProductSearchSelectedListener(new OnProductSearchSelectedListener() {
 
 			@Override
 			public void onSearchProductSelected(Cursor c) {
+				InputMethodManager imm = (InputMethodManager) TestSnowboardsMainActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mSearchEditText.getWindowToken(), 0);
 				getSupportFragmentManager().beginTransaction().remove(f)
 						.commit();
 				showProductDetail(c);
@@ -304,14 +310,13 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		if (mRightFrameFragmentHolder != null) {
 			// we have a space to show lexique in current activity
 			ProductDetailFragment productDetailFragment = getMyApplication()
-					.getProductDetailFragment(helper, c,
-							new ShareProductListener() {
+					.getProductDetailFragment(c, new ShareProductListener() {
 
-								@Override
-								public void onShareProduct(Cursor productId) {
-									showShareDialog(productId);
-								}
-							});
+						@Override
+						public void onShareProduct(Cursor productId) {
+							showShareDialog(productId);
+						}
+					});
 			int orientation = getResources().getConfiguration().orientation;
 			int layout = getResources().getConfiguration().screenLayout;
 			if (orientation == Configuration.ORIENTATION_PORTRAIT
@@ -341,21 +346,21 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 	protected void showSelectionCategory(int position) {
 
-		Cursor cursor = helper.getAllAdvancedCriteria();
+		Cursor cursor = TestSnowboardsApplication.getDBHelper().getAllAdvancedCriteria();
 		cursor.moveToPosition(position);
 		String criteria = cursor.getString(0);
 		String type = cursor.getString(2);
 		String colName = cursor.getString(1);
 		if (type.equals("Numeric")) {
 			RangeCriteriaSelectorFragment f = getMyApplication()
-					.getRangeCriteriaSelectorFragment(helper, type, criteria,
+					.getRangeCriteriaSelectorFragment(TestSnowboardsApplication.getDBHelper(), type, criteria,
 							colName, new RangeCriteriaChangedListener());
 			this.getSupportFragmentManager().beginTransaction()
 					.replace(R.id.ContentHolder, f).addToBackStack(null)
 					.commit();
 		} else {
 			CriteriaSelectorFragment f = getMyApplication()
-					.getCriteriaSelectorFragment(helper, type, criteria,
+					.getCriteriaSelectorFragment(TestSnowboardsApplication.getDBHelper(), type, criteria,
 							colName, new CriteriaChangeListener());
 			this.getSupportFragmentManager().beginTransaction()
 					.replace(R.id.ContentHolder, f).addToBackStack(null)
@@ -371,7 +376,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			mMainLayoutSearchButton
 					.setOnClickListener(new SearchButtonClickListener());
 			mMainLayoutSearchButton
-					.setText(R.string.main_layout_search_button_label);
+					.setBackgroundResource(R.drawable.bout_aff_resultat);
 			mMainActivityCreteriaSelectionListView.invalidateViews();
 
 		}
@@ -384,7 +389,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			mMainLayoutSearchButton
 					.setOnClickListener(new SearchButtonClickListener());
 			mMainLayoutSearchButton
-					.setText(R.string.main_layout_search_button_label);
+			.setBackgroundResource(R.drawable.bout_aff_resultat);
 			mMainActivityCreteriaSelectionListView.invalidateViews();
 		}
 	}
@@ -822,7 +827,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 				TestSnowboardsApplication.mTwitterSession
 						.storeAccessToken(TestSnowboardsApplication.mTwitterAccessToken);
 				// Avoid Android HONEYCOMB+ NetworkOnUIThreadException
-				new TwitterSharingTask().execute(helper
+				new TwitterSharingTask().execute(TestSnowboardsApplication.getDBHelper()
 						.getAllFromTableWithWhereAndOrder("Detail",
 								"id_modele='" + productId + "'", null));
 
@@ -848,8 +853,8 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	public class SearchButtonClickListener implements OnClickListener {
 		@Override
 		public void onClick(View pView) {
-			Button b = (Button) pView;
-			b.setText(R.string.main_layout_clear_button_label);
+			ImageButton b = (ImageButton) pView;
+			b.setBackgroundResource(R.drawable.bout_new_recherc_vert);
 			b.setOnClickListener(new ClearSearchButtonClickListener());
 			onSearchButtonPressed();
 		}
@@ -858,8 +863,9 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	public class ClearSearchButtonClickListener implements OnClickListener {
 		@Override
 		public void onClick(View pView) {
-			Button b = (Button) pView;
-			b.setText(R.string.main_layout_search_button_label);
+			
+			ImageButton b = (ImageButton) pView;
+			b.setBackgroundResource(R.drawable.bout_aff_resultat);
 			b.setOnClickListener(new SearchButtonClickListener());
 			onSearchClearPressed();
 		}

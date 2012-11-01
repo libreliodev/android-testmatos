@@ -94,14 +94,15 @@
                                             android:text="@string/spaceholder"
                                             android:textAppearance="?android:attr/textAppearanceMedium" />
 
-                                        <Button
+                                        <ImageButton
                                             android:id="@+id/MainLayoutSearchButton"
-                                            android:layout_width="match_parent"
+                                            android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_alignParentBottom="true"
-                                            android:layout_alignParentLeft="true"
+                                            android:layout_centerHorizontal="true"
                                             android:layout_weight="1"
-                                            android:text="@string/main_layout_search_button_label" />
+                                            android:background="@drawable/bout_aff_resultat" />
+
                                     </RelativeLayout>
 
                                     <LinearLayout

@@ -84,7 +84,7 @@ public class Button3State extends Button implements OnClickListener {
 			state = 0;
 		updateStateDrawable();
 		if (listener != null)
-			listener.onStateChanged(state);
+			listener.onStateChanged(Button3State.this, state);
 	}
 
 	private void updateStateDrawable() {
@@ -114,7 +114,7 @@ public class Button3State extends Button implements OnClickListener {
 	 * @author valetin Interface for state change callbacks
 	 */
 	public interface OnStateChanged {
-		public void onStateChanged(int state);
+		public void onStateChanged(Button3State pView, int state);
 	}
 
 }

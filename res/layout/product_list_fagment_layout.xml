@@ -38,6 +38,9 @@
             android:id="@+id/ProductListMarqueSortButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/iphone_marque_unselected"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
             android:text="Marque"
             custom:state1drawable="@drawable/empty"
             custom:state2drawable="@drawable/mark_up"
@@ -47,6 +50,9 @@
             android:id="@+id/ProductListGammeSortButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/iphone_gamme_unselected"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
             android:text="Gamme"
             custom:state1drawable="@drawable/empty"
             custom:state2drawable="@drawable/mark_up"
@@ -56,10 +62,14 @@
             android:id="@+id/ProductListPrixSortButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/iphone_prix_unselected"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
             android:text="Prix"
             custom:state1drawable="@drawable/empty"
             custom:state2drawable="@drawable/mark_up"
             custom:state3drawable="@drawable/mark_down" />
+
     </LinearLayout>
 
     <ListView

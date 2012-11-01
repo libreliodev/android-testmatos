@@ -16,6 +16,8 @@ import com.niveales.library.ui.Button3State.OnStateChanged;
 import com.niveales.library.utils.adapters.BoundAdapter;
 import com.niveales.library.utils.adapters.CursorViewBinder;
 import com.niveales.library.utils.db.DBHelper;
+import com.niveales.testsnowboards.R;
+import com.niveales.testsnowboards.TestSnowboardsApplication;
 
 public class ProductListFragment extends Fragment {
 	public static final String SORT_UP="%S ASC";
@@ -42,7 +44,6 @@ public class ProductListFragment extends Fragment {
 	
 	/**
 	 * 
-	 * @param helper - instance of DBHelper
 	 * @param table - String with product list table name in DB
 	 * @param productListFagmentLayout - id of the layout 
 	 * @param productlistview -  id if the ListView instance which will hold the products info
@@ -51,12 +52,12 @@ public class ProductListFragment extends Fragment {
 	 * @param sortColumns - array of strings with columns to sort by pressing @param sortButtonIds
 	 * @return
 	 */
-	public static ProductListFragment getInstance(DBHelper helper,
-			String table, int productListFagmentLayout, int productlistview,
-			int productListItemLayout, int [] sortButtonIds, String [] sortColumns, CursorViewBinder binder) {
+	public static ProductListFragment getInstance(String table,
+			int productListFagmentLayout, int productlistview, int productListItemLayout,
+			int [] sortButtonIds, String [] sortColumns, CursorViewBinder binder) {
 
 		ProductListFragment f = new ProductListFragment();
-		f.init(helper, table, productListFagmentLayout, productlistview, productListItemLayout, sortButtonIds, sortColumns, binder);
+		f.init(table, productListFagmentLayout, productlistview, productListItemLayout, sortButtonIds, sortColumns, binder);
 		return f;
 	}
 	/**
@@ -71,9 +72,9 @@ public class ProductListFragment extends Fragment {
 	 * @param binder - CursorViewBinder to bind views
 	 * @return
 	 */
-	public ProductListFragment init(DBHelper pHelper, String table, int layoutId, int listViewId, int itemLayoutId, int [] sortButtonsIds, String [] sortColumns, 
+	public ProductListFragment init(String table, int layoutId, int listViewId, int itemLayoutId, int [] sortButtonsIds, String [] sortColumns, 
 			CursorViewBinder binder){
-		helper = pHelper;
+		helper = TestSnowboardsApplication.getDBHelper();
 		this.table = table;
 		this.layoutId = layoutId;
 		this.listViewId = listViewId;
@@ -145,19 +146,22 @@ public class ProductListFragment extends Fragment {
 		this.mMarqueSortButton.setOnStateChangeListener(new OnStateChanged() {
 
 			@Override
-			public void onStateChanged(int state) {
+			public void onStateChanged(Button3State pView, int state) {
 				switch (state) {
 				case 0: {
 					mSortOrder = null;
+					pView.setBackgroundResource(R.drawable.iphone_marque_unselected);
 					NotifySortOrderChanged();
 					break;
 				}
 				case 1: {
+					pView.setBackgroundResource(R.drawable.iphone_marque_selected);
 					mSortOrder = SORT_UP.replace("%S", sortColumns[0]);
 					NotifySortOrderChanged();
 					break;
 				}
 				case 2: {
+					pView.setBackgroundResource(R.drawable.iphone_marque_selected);
 					mSortOrder = SORT_DOWN.replace("%S", sortColumns[0]);
 					NotifySortOrderChanged();
 					break;
@@ -170,19 +174,22 @@ public class ProductListFragment extends Fragment {
 		mGammeSortButton.setOnStateChangeListener(new OnStateChanged() {
 
 			@Override
-			public void onStateChanged(int state) {
+			public void onStateChanged(Button3State pView, int state) {
 				switch (state) {
 				case 0: {
+					pView.setBackgroundResource(R.drawable.iphone_gamme_unselected);
 					mSortOrder = null;
 					NotifySortOrderChanged();
 					break;
 				}
 				case 1: {
+					pView.setBackgroundResource(R.drawable.iphone_gamme_selected);
 					mSortOrder = SORT_UP.replace("%S", sortColumns[1]);
 					NotifySortOrderChanged();
 					break;
 				}
 				case 2: {
+					pView.setBackgroundResource(R.drawable.iphone_gamme_selected);
 					mSortOrder = SORT_DOWN.replace("%S", sortColumns[1]);
 					NotifySortOrderChanged();
 					break;
@@ -197,19 +204,22 @@ public class ProductListFragment extends Fragment {
 		mPrixSortButton.setOnStateChangeListener(new OnStateChanged() {
 
 			@Override
-			public void onStateChanged(int state) {
+			public void onStateChanged(Button3State pView, int state) {
 				switch (state) {
 				case 0: {
+					pView.setBackgroundResource(R.drawable.iphone_prix_unselected);
 					mSortOrder = null;
 					NotifySortOrderChanged();
 					break;
 				}
 				case 1: {
+					pView.setBackgroundResource(R.drawable.iphone_prix_selected);
 					mSortOrder = SORT_UP.replace("%S", sortColumns[2]);
 					NotifySortOrderChanged();
 					break;
 				}
 				case 2: {
+					pView.setBackgroundResource(R.drawable.iphone_prix_selected);
 					mSortOrder = SORT_DOWN.replace("%S", sortColumns[2]);
 					NotifySortOrderChanged();
 					break;

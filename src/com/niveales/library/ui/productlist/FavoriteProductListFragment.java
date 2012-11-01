@@ -36,7 +36,7 @@ public class FavoriteProductListFragment extends ProductListFragment {
 			int productListItemLayout, int [] sortButtonIds, String [] sortColumns, CursorViewBinder binder) {
 
 		FavoriteProductListFragment f = new FavoriteProductListFragment();
-		f.init(helper, table, productListFagmentLayout, productlistview, productListItemLayout, sortButtonIds, sortColumns, binder);
+		f.init(table, productListFagmentLayout, productlistview, productListItemLayout, sortButtonIds, sortColumns, binder);
 		return f;
 	}
 	
