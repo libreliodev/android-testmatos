@@ -97,7 +97,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	private ImageButton mMainLayoutSearchButton;
 	public ProgressDialog mProgressDialog;
 	public String mRecentSearch;
-	
+
 	@SuppressLint("NewApi")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -112,7 +112,8 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 		getMyApplication();
 		// Init DB
-		TestSnowboardsApplication.setDBHelper(new DBHelper(this, TestSnowboardsApplication.dbName));
+		TestSnowboardsApplication.setDBHelper(new DBHelper(this,
+				TestSnowboardsApplication.dbName));
 		TestSnowboardsApplication.getDBHelper().open();
 
 		// Init tabs
@@ -153,7 +154,8 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 					}
 				});
 
-		mainAdapter = new AdvancedCriteriaMainListAdapter(TestSnowboardsApplication.getDBHelper(), this,
+		mainAdapter = new AdvancedCriteriaMainListAdapter(
+				TestSnowboardsApplication.getDBHelper(), this,
 				R.layout.creteria_group_selector_item_layout,
 				R.id.CreteriaGroupTextView, R.id.CreteriaSelectedListTextView);
 		mMainActivityCreteriaSelectionListView.setAdapter(mainAdapter);
@@ -171,8 +173,10 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			public boolean onEditorAction(TextView pV, int pActionId,
 					KeyEvent pEvent) {
 				if (pActionId == 0) {
-					InputMethodManager imm = (InputMethodManager) TestSnowboardsMainActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
-					imm.hideSoftInputFromWindow(mSearchEditText.getWindowToken(), 0);
+					InputMethodManager imm = (InputMethodManager) TestSnowboardsMainActivity.this
+							.getSystemService(Activity.INPUT_METHOD_SERVICE);
+					imm.hideSoftInputFromWindow(
+							mSearchEditText.getWindowToken(), 0);
 				}
 				return false;
 			}
@@ -195,10 +199,10 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		b.setBackgroundResource(R.drawable.tab_button);
 		b.setTextColor(Color.WHITE);
 		b.setText(tabNames[0]);
-		
+
 		spec.setIndicator(b);
 		spec.setContent(R.id.main_list_tab);
-//		spec1.setIndicator(tabNames[0]);
+		// spec1.setIndicator(tabNames[0]);
 		pTabHost.addTab(spec);
 
 		spec = pTabHost.newTabSpec(tabNames[1]);
@@ -235,7 +239,8 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			 */
 
 			FavoriteProductListFragment f = getMyApplication()
-					.getFavoriteProductListFragment(TestSnowboardsApplication.getDBHelper());
+					.getFavoriteProductListFragment(
+							TestSnowboardsApplication.getDBHelper());
 			f.setOnProductSelectedListener(new ProductSelectedListener() {
 				@Override
 				public void showProductDetails(Cursor c) {
@@ -260,7 +265,8 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			if (this.mRightFrameFragmentHolder != null) {
 				// Tablet
 				Fragment lexiqueFragment = getMyApplication()
-						.getLexiqueFragment(TestSnowboardsApplication.getDBHelper());
+						.getLexiqueFragment(
+								TestSnowboardsApplication.getDBHelper());
 				this.getSupportFragmentManager().beginTransaction()
 						.replace(R.id.ContentHolder, lexiqueFragment)
 						.addToBackStack(null).commit();
@@ -293,7 +299,8 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	}
 
 	public void onSearchClearPressed() {
-		TestSnowboardsApplication.getDBHelper().rawQuery("delete from UserSearchInputs", null);
+		TestSnowboardsApplication.getDBHelper().rawQuery(
+				"delete from UserSearchInputs", null);
 		mMainActivityCreteriaSelectionListView.invalidateViews();
 	}
 
@@ -302,12 +309,15 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	 */
 	protected void onSearchStarted() {
 		final ProductSearchFragment f = getMyApplication()
-				.getProductSearchFragment(TestSnowboardsApplication.getDBHelper(), R.id.SearchEditText);
+				.getProductSearchFragment(
+						TestSnowboardsApplication.getDBHelper(),
+						R.id.SearchEditText);
 		f.setOnProductSearchSelectedListener(new OnProductSearchSelectedListener() {
 
 			@Override
 			public void onSearchProductSelected(Cursor c) {
-				InputMethodManager imm = (InputMethodManager) TestSnowboardsMainActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+				InputMethodManager imm = (InputMethodManager) TestSnowboardsMainActivity.this
+						.getSystemService(Activity.INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(mSearchEditText.getWindowToken(), 0);
 				getSupportFragmentManager().beginTransaction().remove(f)
 						.commit();
@@ -328,8 +338,8 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 					.getProductDetailFragment(c, new ShareProductListener() {
 
 						@Override
-						public void onShareProduct(Cursor productId) {
-							showShareDialog(productId);
+						public void onShareProduct(Cursor productId, String site) {
+							showShareDialog(productId, site);
 						}
 					});
 			int orientation = getResources().getConfiguration().orientation;
@@ -361,22 +371,26 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 	protected void showSelectionCategory(int position) {
 
-		Cursor cursor = TestSnowboardsApplication.getDBHelper().getAllAdvancedCriteria();
+		Cursor cursor = TestSnowboardsApplication.getDBHelper()
+				.getAllAdvancedCriteria();
 		cursor.moveToPosition(position);
 		String criteria = cursor.getString(0);
 		String type = cursor.getString(2);
 		String colName = cursor.getString(1);
 		if (type.equals("Numeric")) {
 			RangeCriteriaSelectorFragment f = getMyApplication()
-					.getRangeCriteriaSelectorFragment(TestSnowboardsApplication.getDBHelper(), type, criteria,
-							colName, new RangeCriteriaChangedListener());
+					.getRangeCriteriaSelectorFragment(
+							TestSnowboardsApplication.getDBHelper(), type,
+							criteria, colName,
+							new RangeCriteriaChangedListener());
 			this.getSupportFragmentManager().beginTransaction()
 					.replace(R.id.ContentHolder, f).addToBackStack(null)
 					.commit();
 		} else {
 			CriteriaSelectorFragment f = getMyApplication()
-					.getCriteriaSelectorFragment(TestSnowboardsApplication.getDBHelper(), type, criteria,
-							colName, new CriteriaChangeListener());
+					.getCriteriaSelectorFragment(
+							TestSnowboardsApplication.getDBHelper(), type,
+							criteria, colName, new CriteriaChangeListener());
 			this.getSupportFragmentManager().beginTransaction()
 					.replace(R.id.ContentHolder, f).addToBackStack(null)
 					.commit();
@@ -404,41 +418,26 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			mMainLayoutSearchButton
 					.setOnClickListener(new SearchButtonClickListener());
 			mMainLayoutSearchButton
-			.setBackgroundResource(R.drawable.bout_aff_resultat);
+					.setBackgroundResource(R.drawable.bout_aff_resultat);
 			mMainActivityCreteriaSelectionListView.invalidateViews();
 		}
 	}
 
-	private void showShareDialog(Cursor productCursor) {
-		final ShareDialogFragment dialog = ShareDialogFragment.getInstance(
-				R.layout.share_dialog_fragment_layout,
-				R.id.ShareDialogListView, productCursor,
-				new ShareDialogListener() {
+	private void showShareDialog(Cursor productCursor, String site) {
 
-					@Override
-					public void onShareItemSelected(int pos,
-							Cursor productCursor) {
-						switch (pos) {
-						case 0: {
-							shareByFacebook(productCursor);
-							break;
-						}
-						case 1: {
-							// twitter
-							TwitterSharingTask t = new TwitterSharingTask();
-							t.execute(new Cursor[] { productCursor });
-							// shareByTwitter(productCursor);
-							break;
-						}
-						case 2: {
-							// emal
-							shareByEmail(productCursor);
-							break;
-						}
-						}
-					}
-				});
-		dialog.show(dismissDialogs(), DIALOG_TAG);
+		if (site.toLowerCase().equals("facebook")) {
+			shareByFacebook(productCursor);
+		}
+		if (site.toLowerCase().equals("twitter")) {
+			// twitter
+			TwitterSharingTask t = new TwitterSharingTask();
+			t.execute(new Cursor[] { productCursor });
+
+		}
+		if (site.toLowerCase().equals("mail")) {
+			// emal
+			shareByEmail(productCursor);
+		}
 	}
 
 	private FragmentTransaction dismissDialogs() {
@@ -456,7 +455,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main_menu, menu);
 		MenuItem aboutMenuItem = menu.findItem(R.id.MenuItemAbout);
-		aboutMenuItem.setIcon(android.R.drawable.ic_menu_info_details);
+		// aboutMenuItem.setIcon(android.R.drawable.ic_menu_info_details);
 		aboutMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 
 			@Override
@@ -842,7 +841,8 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 				TestSnowboardsApplication.mTwitterSession
 						.storeAccessToken(TestSnowboardsApplication.mTwitterAccessToken);
 				// Avoid Android HONEYCOMB+ NetworkOnUIThreadException
-				new TwitterSharingTask().execute(TestSnowboardsApplication.getDBHelper()
+				new TwitterSharingTask().execute(TestSnowboardsApplication
+						.getDBHelper()
 						.getAllFromTableWithWhereAndOrder("Detail",
 								"id_modele='" + productId + "'", null));
 
@@ -878,7 +878,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	public class ClearSearchButtonClickListener implements OnClickListener {
 		@Override
 		public void onClick(View pView) {
-			
+
 			ImageButton b = (ImageButton) pView;
 			b.setBackgroundResource(R.drawable.bout_aff_resultat);
 			b.setOnClickListener(new SearchButtonClickListener());

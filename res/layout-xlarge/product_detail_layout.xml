@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ProductDetailsRootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/rightpane"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/RightPaneTitleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:text="@string/product_detail_title"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/milk"
+        android:textSize="40dp"
+        android:textStyle="bold"
+        android:typeface="normal" />
+
+    <LinearLayout
+        android:id="@+id/dirButtonsHolder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/RightPaneTitleTextView"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="5dp" >
+
+        <Button
+            android:id="@+id/PrevButton"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/left_round_button"/>
+
+        <Button
+            android:id="@+id/NextButton"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/ImageButton1"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/ImageButton1"
+            android:background="@drawable/right_round_button"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/shareHolder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/dirButtonsHolder"
+        android:layout_alignParentRight="true"
+        android:gravity="bottom"
+        android:paddingRight="10dp" >
+
+        <CheckBox
+            android:id="@+id/FavoriteCkeckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:button="@drawable/favorite_checkbox_button" />
+
+        <ImageView
+            android:id="@+id/ShareButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/share_button" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/ProductDetailWebviewHolder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/dirButtonsHolder"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:visibility="visible" >
+
+        <WebView
+            android:id="@+id/ProductDetailsWebView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ImageView
+            android:id="@+id/ProductImage"
+            android:layout_width="770dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:scaleType="center"
+            android:src="@drawable/cambre_classique"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/ShareHolder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|top"
+            android:layout_marginTop="-5dp"
+            android:background="@drawable/popover_share"
+            android:orientation="vertical"
+            android:paddingBottom="30dp"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingTop="30dp"
+            android:visibility="visible" >
+
+            <LinearLayout
+                android:id="@+id/ShareButtonsHolder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="vertical" >
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+
+</RelativeLayout>

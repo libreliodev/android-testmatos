@@ -1,60 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ProductDetailsRootView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey"
+    android:background="@color/rightpane"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/RightPaneTitleTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:text="@string/product_detail_title"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/milk" />
-
     <LinearLayout
-        android:id="@+id/dirButtonsHolder"
-        android:layout_width="wrap_content"
+        android:id="@+id/ttt"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/RightPaneTitleTextView"
-        android:layout_centerHorizontal="true" >
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="5dp" >
 
-        <Button
-            android:id="@+id/PrevButton"
-            style="?android:attr/buttonStyleSmall"
+        <LinearLayout
+            android:id="@+id/dirButtonsHolder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:drawableBottom="@drawable/mark_up"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp" />
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="30dp"
+            android:paddingBottom="5dp" >
 
-        <Button
-            android:id="@+id/NextButton"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
+            <Button
+                android:id="@+id/PrevButton"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/left_round_button"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"/>
+
+            <Button
+                android:id="@+id/NextButton"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/ImageButton1"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/ImageButton1"
+                android:background="@drawable/right_round_button" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/shareHolder"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/PrevButton"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/PrevButton"
-            android:drawableBottom="@drawable/mark_down"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp" />
+            android:layout_alignBottom="@id/dirButtonsHolder"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="bottom|right"
+            android:gravity="bottom|right"
+            android:paddingRight="10dp" >
+
+            <CheckBox
+                android:id="@+id/FavoriteCkeckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:button="@drawable/favorite_checkbox_button" />
+
+            <ImageView
+                android:id="@+id/ShareButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/share_button" />
+        </LinearLayout>
     </LinearLayout>
 
     <FrameLayout
         android:id="@+id/ProductDetailWebviewHolder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/dirButtonsHolder"
-        android:layout_weight="1" >
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:visibility="visible" >
 
         <WebView
             android:id="@+id/ProductDetailsWebView"
@@ -69,26 +91,29 @@
             android:scaleType="center"
             android:src="@drawable/cambre_classique"
             android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/ShareHolder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|top"
+            android:layout_marginTop="-5dp"
+            android:background="@drawable/popover_share"
+            android:orientation="vertical"
+            android:paddingBottom="30dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="30dp"
+            android:visibility="gone" >
+
+            <LinearLayout
+                android:id="@+id/ShareButtonsHolder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="vertical" >
+            </LinearLayout>
+        </LinearLayout>
     </FrameLayout>
 
-    <ImageView
-        android:id="@+id/ShareButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/dirButtonsHolder"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/RightPaneTitleTextView"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="10dp"
-        android:src="@drawable/share_button" />
-
-    <CheckBox
-        android:id="@+id/FavoriteCkeckBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/ShareButton"
-        android:layout_marginRight="5dp"
-        android:layout_toLeftOf="@+id/ShareButton"
-        android:button="@drawable/favorite_checkbox_button" />
-
-</RelativeLayout>
+</LinearLayout>

@@ -2,13 +2,14 @@
 
     <item
         android:id="@+id/MenuItemFacebook"
-        android:icon="@drawable/facebook_icon"
-        android:showAsAction="ifRoom"
+        android:icon="@drawable/ico_facebook_white"
+        android:showAsAction="always"
         android:title="@string/facebook">
     </item>
     <item
         android:id="@+id/MenuItemAbout"
-        android:showAsAction="ifRoom"
+        android:icon="@drawable/information"
+        android:showAsAction="always"
         android:title="@string/MenuItemAbout">
     </item>
 

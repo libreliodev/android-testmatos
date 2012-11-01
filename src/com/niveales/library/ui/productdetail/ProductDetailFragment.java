@@ -4,13 +4,17 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -26,7 +30,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.niveales.library.utils.db.DBHelper;
 import com.niveales.testsnowboards.R;
@@ -57,6 +63,8 @@ public class ProductDetailFragment extends Fragment {
 	private int bitmapWidth;
 	private int bitmapHeight;
 	private int webPageStringResourceId;
+	private ViewGroup mShareHolder;
+	private LinearLayout mShareButtonsHolder;
 
 	/**
 	 * 
@@ -187,7 +195,8 @@ public class ProductDetailFragment extends Fragment {
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				listener.onShareProduct(productCursor);
+//				listener.onShareProduct(productCursor, null);
+				mShareHolder.setVisibility(View.VISIBLE);
 			}
 		});
 		CheckBox favoriteCkeckBox = (CheckBox) rootView
@@ -241,6 +250,34 @@ public class ProductDetailFragment extends Fragment {
 				}
 			}
 		});
+		
+		mShareHolder = (ViewGroup) rootView.findViewById(R.id.ShareHolder);
+		mShareButtonsHolder = (LinearLayout) rootView.findViewById(R.id.ShareButtonsHolder);
+		String shareString = productCursor.getString(productCursor.getColumnIndexOrThrow("Lien_Partage"));
+		Uri uri = Uri.parse(shareString);
+		try {
+			String [] sites = URLDecoder.decode(uri.getQueryParameter("wasites"),
+					"utf-8").split(",");
+			for(int i = 0; i < sites.length; i++) {
+				Button b = new Button(getActivity());
+				b.setText("Share on "+sites[i]);
+				b.setTag(sites[i]);
+				b.setBackgroundColor(Color.WHITE);
+				b.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View pV) {
+						mShareHolder.setVisibility(View.GONE);
+						listener.onShareProduct(productCursor, (String) pV.getTag());
+					}});
+				b.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+				mShareButtonsHolder.addView(b);
+			}
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return rootView;
 	}
 
@@ -332,8 +369,12 @@ public class ProductDetailFragment extends Fragment {
 		}
 
 	}
+	
+	public void onShareStarted() {
+		
+	}
 
 	public interface ShareProductListener {
-		public void onShareProduct(Cursor productCursor);
+		public void onShareProduct(Cursor productCursor, String site);
 	}
 }
