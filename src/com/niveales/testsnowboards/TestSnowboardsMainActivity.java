@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -189,20 +190,34 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		String[] tabNames = this.getResources().getStringArray(
 				R.array.TabsNames);
 		pTabHost.setup();
-		TabHost.TabSpec spec1 = pTabHost.newTabSpec(tabNames[0]);
-		spec1.setContent(R.id.main_list_tab);
-		spec1.setIndicator(tabNames[0]);
-		pTabHost.addTab(spec1);
+		TabHost.TabSpec spec = pTabHost.newTabSpec(tabNames[0]);
+		Button b = new Button(this);
+		b.setBackgroundResource(R.drawable.tab_button);
+		b.setTextColor(Color.WHITE);
+		b.setText(tabNames[0]);
+		
+		spec.setIndicator(b);
+		spec.setContent(R.id.main_list_tab);
+//		spec1.setIndicator(tabNames[0]);
+		pTabHost.addTab(spec);
 
-		spec1 = pTabHost.newTabSpec(tabNames[1]);
-		spec1.setContent(R.id.favorites_tab);
-		spec1.setIndicator(tabNames[1]);
-		pTabHost.addTab(spec1);
+		spec = pTabHost.newTabSpec(tabNames[1]);
+		spec.setContent(R.id.favorites_tab);
+		b = new Button(this);
+		b.setBackgroundResource(R.drawable.tab_button);
+		b.setTextColor(Color.WHITE);
+		b.setText(tabNames[1]);
+		spec.setIndicator(b);
+		pTabHost.addTab(spec);
 
-		spec1 = pTabHost.newTabSpec(tabNames[2]);
-		spec1.setContent(R.id.terms_tab);
-		spec1.setIndicator(tabNames[2]);
-		pTabHost.addTab(spec1);
+		spec = pTabHost.newTabSpec(tabNames[2]);
+		spec.setContent(R.id.terms_tab);
+		b = new Button(this);
+		b.setBackgroundResource(R.drawable.tab_button);
+		b.setTextColor(Color.WHITE);
+		b.setText(tabNames[2]);
+		spec.setIndicator(b);
+		pTabHost.addTab(spec);
 
 	}
 
