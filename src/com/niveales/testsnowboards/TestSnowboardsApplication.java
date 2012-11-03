@@ -49,24 +49,26 @@ import com.niveales.library.utils.db.DBHelper;
 public class TestSnowboardsApplication extends Application {
 	
 
-
-	private static class ProductDetailConstants {
+	public static final String FACEBOOK_TAB_PAGE_URL ="http://www.facebook.com/Snowsurf.mag";
+	public static final String INFO_TAB_PAGE_URL="http://www.snowsurf.com";
+	
+	public static class ProductDetailConstants {
 		/**
 		 * 
 		 */
-		private static final int PRODUCT_DETAIL_SHARE_BUTTON_VIEW_ID = R.id.ShareButton;
-
-
-		/**
-		 * 
-		 */
-		private static final int PRODUCT_DETAIL_FAVORITE_CKECKBOX_VIEW_ID = R.id.FavoriteCkeckBox;
+		public static final int PRODUCT_DETAIL_SHARE_BUTTON_VIEW_ID = R.id.ShareButton;
 
 
 		/**
 		 * 
 		 */
-		private static final String[] PRODUCT_DETAIL_HTML_FILE_KEYS = new String[] {
+		public static final int PRODUCT_DETAIL_FAVORITE_CKECKBOX_VIEW_ID = R.id.FavoriteCkeckBox;
+
+
+		/**
+		 * 
+		 */
+		public static final String[] PRODUCT_DETAIL_HTML_FILE_KEYS = new String[] {
 				"%TAITLE%",
 				"%Modele%",
 				"%Budget%",
@@ -85,7 +87,7 @@ public class TestSnowboardsApplication extends Application {
 		/**
 		 * 
 		 */
-		private static final String[] PRODUCT_DETAIL_COLUMN_KEYS = // List of fields in product html file
+		public static final String[] PRODUCT_DETAIL_COLUMN_KEYS = // List of fields in product html file
 		new String[] { "Marque",
 				"Modele", "Prix_String", "imgLR", "Gamme",
 				"test_Taille_testee", "Tailles", "type_de_cambre_text",
@@ -100,19 +102,56 @@ public class TestSnowboardsApplication extends Application {
 		/**
 		 * 
 		 */
-		private static final int PRODUCT_DETAIL_WEBPAGE_FILE_URI = R.string.ProductDetailWebPage;
+		public static final int PRODUCT_DETAIL_WEBPAGE_FILE_URI = R.string.ProductDetailWebPage;
 
 
 		/**
 		 * 
 		 */
-		private static final int PRODUCT_DETAIL_WEBVIEW_VIEW_ID = R.id.ProductDetailsWebView;
+		public static final int PRODUCT_DETAIL_WEBVIEW_VIEW_ID = R.id.ProductDetailsWebView;
 
 
 		/**
 		 * 
 		 */
-		private static final int PRODUCT_DETAIL_LAYOUT = R.layout.product_detail_layout;
+		public static final int PRODUCT_DETAIL_LAYOUT = R.layout.product_detail_layout;
+		
+
+		/**
+		 * 
+		 */
+		public static final int PRODUCTDETAIL_SHAREBUTTONSHOLDER_VIEW_ID = R.id.ShareButtonsHolder;
+		/**
+		 * 
+		 */
+		public static final int PRODUCT_DETAIL_SHAREHOLDER_VIEW_ID = R.id.ShareHolder;
+		/**
+		 * 
+		 */
+		public static final int PRODUCTDETAIL_NEXTBUTTON_VIEW_ID = R.id.NextButton;
+		/**
+		 * 
+		 */
+		public static final int PRODUCT_DETAIL_PREVBUTTON_VIEW_ID = R.id.PrevButton;
+		/**
+		 * 
+		 */
+		public static final int PRODUCTDETAIL_PRODUCTIMAGE_VIEW_ID = R.id.ProductImage;
+//		public static final String HTML_TITLE = "%TAITLE%";
+//		public static final String HTML_MODELE = "%Modele%";
+//		public static final String HTML_BUDGET = "%Budget%";
+//		public static final String HTML_GAMME = "%GAMME%";
+//		public static final String HTML_CHARACTER = "%CARACTERE%";
+//		public static final String HTML_NIVEAU_REQUIS = "%NIVEAU REQUIS%";
+//		public static final String HTML_TALLE_TESTEE = "%TAILLE TESTEE%";
+//		public static final String HTML_TEST_BASELINE = "%Test_baseline%";
+//		public static final String HTML_DESC = "%Description_Test%";
+//		public static final String HTML_TEST_ADV = "%Test_avantages%";
+//		public static final String HTML_TEST_DISADV = "%test_inconvenients%";
+//		public static final String HTML_CHARACTERISTICS = "%Caractéristiques%";
+//		public static final String HTML_ICON_TESTCHOICE = "%icone_testerchoice%";
+//		public static final String HTML_ICON_SEX = "%icone_genre%";
+//		public static final String HTML_PIC = "%img%";
 	}
 	
 	
@@ -221,23 +260,8 @@ public class TestSnowboardsApplication extends Application {
 
 	
 	// App staff
+
 	public static final String MAIN_TAB_ID = "tab_id";
-	public static final String HTML_TITLE = "%TAITLE%";
-	public static final String HTML_MODELE = "%Modele%";
-	public static final String HTML_BUDGET = "%Budget%";
-	public static final String HTML_GAMME = "%GAMME%";
-	public static final String HTML_CHARACTER = "%CARACTERE%";
-	public static final String HTML_NIVEAU_REQUIS = "%NIVEAU REQUIS%";
-	public static final String HTML_TALLE_TESTEE = "%TAILLE TESTEE%";
-	public static final String HTML_TEST_BASELINE = "%Test_baseline%";
-	public static final String HTML_DESC = "%Description_Test%";
-	public static final String HTML_TEST_ADV = "%Test_avantages%";
-	public static final String HTML_TEST_DISADV = "%test_inconvenients%";
-	public static final String HTML_CHARACTERISTICS = "%Caractéristiques%";
-	public static final String HTML_ICON_TESTCHOICE = "%icone_testerchoice%";
-	public static final String HTML_ICON_SEX = "%icone_genre%";
-	public static final String HTML_PIC = "%img%";
-	
 	public static final String ASSETS_URI = "file:///android_asset/";
 	public static final String ASSETS_PHOTOS_URI = ASSETS_URI + "Photos/";
 	public static final String SELECTED_ID = "selectedid";
@@ -260,10 +284,10 @@ public class TestSnowboardsApplication extends Application {
 	// UI function helpers to help customize future apps
 	public ProductDetailFragment getProductDetailFragment(Cursor pCursor,
 			ShareProductListener pListener) {
-		return ProductDetailFragment.getInstance(ProductDetailConstants.PRODUCT_DETAIL_LAYOUT, ProductDetailConstants.PRODUCT_DETAIL_WEBVIEW_VIEW_ID,
-				ProductDetailConstants.PRODUCT_DETAIL_WEBPAGE_FILE_URI, pCursor,
-				ProductDetailConstants.PRODUCT_DETAIL_COLUMN_KEYS, ProductDetailConstants.PRODUCT_DETAIL_HTML_FILE_KEYS, 
-				ProductDetailConstants.PRODUCT_DETAIL_FAVORITE_CKECKBOX_VIEW_ID, ProductDetailConstants.PRODUCT_DETAIL_SHARE_BUTTON_VIEW_ID, pListener);
+		ProductDetailFragment f = new ProductDetailFragment();
+		f.setOnShareProductListener(pListener);
+		f.setProductCursor(pCursor);
+		return f;
 	}
 	
 	public ProductListFragment getProductListFragment() {

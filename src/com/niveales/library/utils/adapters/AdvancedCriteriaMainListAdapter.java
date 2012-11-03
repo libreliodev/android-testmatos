@@ -1,6 +1,7 @@
 package com.niveales.library.utils.adapters;
 
 import com.niveales.library.utils.db.DBHelper;
+import com.niveales.testsnowboards.R;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -65,10 +66,13 @@ public class AdvancedCriteriaMainListAdapter extends BaseAdapter {
 		if(v == null) {
 			v = this.inflater.inflate(layout_id, viewGroup, false);
 		}
-		TextView tv = (TextView) v.findViewById(textViewId);
-		tv.setText(getItem(position).toString());
-		tv = (TextView) v.findViewById(criteriaTextView);
-		tv.setText(helper.getUserSearchINputStringByColumn(getColumnName(position)));
+		TextView mTitle = (TextView) v.findViewById(textViewId);
+		mTitle.setText(getItem(position).toString());
+		TextView mDescription = (TextView) v.findViewById(criteriaTextView);
+		mDescription.setText(helper.getUserSearchINputStringByColumn(getColumnName(position)));
+		if(mDescription.getText().length() > 0) {
+			mTitle.setTextColor(context.getResources().getColor(R.color.SelectedColor));
+		}
 		return v;
 	}
 

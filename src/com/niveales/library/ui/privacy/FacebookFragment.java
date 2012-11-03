@@ -10,6 +10,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.niveales.testsnowboards.R;
+import com.niveales.testsnowboards.TestSnowboardsApplication;
 
 public class FacebookFragment extends Fragment {
 
@@ -30,7 +31,7 @@ public class FacebookFragment extends Fragment {
 	        }
 		});
 		
-		webView.loadUrl("http://www.facebook.com");
+		webView.loadUrl(TestSnowboardsApplication.FACEBOOK_TAB_PAGE_URL);
 		webView.getSettings().setJavaScriptEnabled(true);
 		
 		return rootView;

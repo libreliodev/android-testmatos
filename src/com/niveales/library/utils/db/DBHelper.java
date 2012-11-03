@@ -41,11 +41,21 @@ public class DBHelper{
     public DBHelper open() throws SQLException { 
         mDb = mDbHelper.getWritableDatabase();
         if(mDb != null) {
-        	mDb.rawQuery("CREATE TABLE IF NOT EXISTS \"UserSearchInputs\" (\"ColName\" TEXT NOT NULL , \"UserInput\" TEXT, \"Title\" TEXT,\"QueryString\" TEXT);", null).moveToFirst();
+        	createUserSearchInputsTable();
         	mDb.rawQuery("CREATE TABLE IF NOT EXISTS \""+FAVORITES_TABLE+"\" (\"id\"  UNIQUE );", null).moveToFirst();
         }
         return this;
     }
+    
+    /**
+	 * 
+	 */
+	public void createUserSearchInputsTable() {
+		mDb.rawQuery("CREATE TABLE IF NOT EXISTS \"UserSearchInputs\" (\"ColName\" TEXT NOT NULL , \"UserInput\" TEXT, \"Title\" TEXT,\"QueryString\" TEXT);", null).moveToFirst();
+		mDb.rawQuery("CREATE TABLE IF NOT EXISTS \"UserSearchInputsOld\" (\"ColName\" TEXT NOT NULL , \"UserInput\" TEXT, \"Title\" TEXT,\"QueryString\" TEXT);", null).moveToFirst();
+	}
+
+
                                                      
     public void close() {
         mDb.close();
@@ -573,6 +583,7 @@ public class DBHelper{
 	}
 
 
+	
 	
 
 

@@ -91,7 +91,6 @@ public class TwitterPostPreviewDialogFragment extends DialogFragment {
 			@Override
 			public void onClick(View pV) {
 				new TwitterSendTask().execute(mMessageEditText.getEditableText().toString());
-				dismiss();
 			}});
 	    mPostImage = (ImageView) rootView.findViewById(R.id.PostImage);
 	    byte[] data;
@@ -135,6 +134,7 @@ public class TwitterPostPreviewDialogFragment extends DialogFragment {
 		}
 		@Override
 		protected void onPostExecute(String args) {
+			
 			if(args != null) {
 				AlertDialog.Builder b = new AlertDialog.Builder(getActivity());
 				b.setTitle("Tweet failed:");
@@ -149,6 +149,7 @@ public class TwitterPostPreviewDialogFragment extends DialogFragment {
 				})
 				.create().show();
 			}
+			TwitterPostPreviewDialogFragment.this.dismiss();
 		}
 	}
 }

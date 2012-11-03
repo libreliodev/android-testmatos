@@ -15,6 +15,7 @@ import android.widget.TextView.OnEditorActionListener;
 
 import com.niveales.library.utils.adapters.checked.CheckedCriteriaAdapter;
 import com.niveales.library.utils.db.DBHelper;
+import com.niveales.testsnowboards.R;
 
 
 public class RangeCriteriaSelectorFragment extends Fragment {
@@ -117,10 +118,27 @@ public class RangeCriteriaSelectorFragment extends Fragment {
 				saveEdit(et);
 				return true;
 			}});
+		
+		TextView description = (TextView) rootView.findViewById(R.id.CriteriaMaxDescription);
+		description.setText(criteria + " maxi:");
+		description = (TextView) rootView.findViewById(R.id.CriteriaMinDescription);
+		description.setText(criteria + " mini:");
+		description = (TextView) rootView.findViewById(R.id.CriteriaTitle);
+		if(criteria.toLowerCase().equals("prix"))
+			description.setText("Indiquez votre budget:");
+		if(criteria.toLowerCase().equals("taille"))
+			description.setText("Définissez une taille:");
 		return rootView;
 	};
 	
 	public void saveEdit(EditText et){
+		String metaIndicator = "";
+		if(criteria.toLowerCase().startsWith("prix")) {
+			metaIndicator = "€";
+		}
+		if(criteria.toLowerCase().equals("taille")) {
+			metaIndicator = "cm";
+		}
 		String tag = et.getTag().toString();
 		helper.rawQuery("delete from UserSearchInputs where ColName='"+colName+"' AND Title LIKE '%"+tag+"%'", null);
 		String value = et.getEditableText().toString();
@@ -128,7 +146,7 @@ public class RangeCriteriaSelectorFragment extends Fragment {
 			helper.rawQuery("insert into userSearchInputs values (?, ?, ?, ?)", new String [] {
 				colName,
 				value,
-				tag+":"+value,
+				tag+":"+value + metaIndicator,
 				(tag.equals("Max")) ? colName + " < " + value : colName + " > " + value,
 			});
 		}

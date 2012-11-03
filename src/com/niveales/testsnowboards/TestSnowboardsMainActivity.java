@@ -6,10 +6,8 @@ import java.net.URLDecoder;
 import org.apache.http.protocol.HTTP;
 
 import twitter4j.Twitter;
-import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.http.AccessToken;
-import twitter4j.http.RequestToken;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -20,7 +18,6 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -29,7 +26,9 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -68,8 +67,6 @@ import com.niveales.library.ui.privacy.AboutFragment;
 import com.niveales.library.ui.privacy.FacebookFragment;
 import com.niveales.library.ui.productdetail.ProductDetailFragment;
 import com.niveales.library.ui.productdetail.ProductDetailFragment.ShareProductListener;
-import com.niveales.library.ui.productdetail.ShareDialogFragment;
-import com.niveales.library.ui.productdetail.ShareDialogFragment.ShareDialogListener;
 import com.niveales.library.ui.productlist.FavoriteProductListFragment;
 import com.niveales.library.ui.productlist.ProductListFragment;
 import com.niveales.library.ui.productlist.ProductListFragment.ProductSelectedListener;
@@ -84,6 +81,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 	private static final String DIALOG_TAG = null;
 	private static final int TWITTER_CALLBACK_ID = 9890;
+	@SuppressWarnings("unused")
 	private static final String TAG = TestSnowboardsMainActivity.class
 			.getSimpleName();
 	public static String mTwitterMessage;
@@ -97,6 +95,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	private ImageButton mMainLayoutSearchButton;
 	public ProgressDialog mProgressDialog;
 	public String mRecentSearch;
+	private TextView mPrevSearchTextView;
 
 	@SuppressLint("NewApi")
 	@Override
@@ -110,12 +109,15 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		// Set our layout
 		setContentView(R.layout.main_activity_layout);
 
-		getMyApplication();
 		// Init DB
 		TestSnowboardsApplication.setDBHelper(new DBHelper(this,
 				TestSnowboardsApplication.dbName));
 		TestSnowboardsApplication.getDBHelper().open();
-
+		initViews();
+	}
+	
+	@SuppressLint("NewApi")
+	public void initViews() {
 		// Init tabs
 		mMainActivityTabHost = (TabHost) findViewById(R.id.MainLayoutTabHost);
 		initTabs(mMainActivityTabHost);
@@ -133,8 +135,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 		// Init Search button click listener
 		mMainLayoutSearchButton = (ImageButton) findViewById(R.id.MainLayoutSearchButton);
-		mMainLayoutSearchButton
-				.setOnClickListener(new SearchButtonClickListener());
+		this.initSearchButton();
 
 		// Right Frame Holder exists only in xlarge layouts. Other devices with
 		// screen size
@@ -181,13 +182,83 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 				return false;
 			}
 		});
-		mSearchEditText.setOnClickListener(new OnClickListener() {
+		mSearchEditText.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void afterTextChanged(Editable pArg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence pArg0, int pArg1,
+					int pArg2, int pArg3) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onTextChanged(CharSequence pArg0, int pArg1, int pArg2,
+					int pArg3) {
+				onSearchStarted();
+				
+			}} );
+		mPrevSearchTextView = (TextView) findViewById(R.id.PrevSearchTextView);
+		mPrevSearchTextView.setText(getPrevSearchText());
+		mPrevSearchTextView.setOnClickListener(new OnClickListener(){
 
 			@Override
 			public void onClick(View pArg0) {
-				onSearchStarted();
+				onPrevSearchPressed();
+				
+			}});
+	}
+
+	/**
+	 * 
+	 */
+	protected void onPrevSearchPressed() {
+		DBHelper helper = TestSnowboardsApplication.getDBHelper();
+		try {
+			helper.rawQuery("delete from UserSearchInputs" , null);
+			helper.rawQuery("insert into UserSearchInputs select * from UserSearchInputsOld", null);
+			this.mMainActivityCreteriaSelectionListView.invalidateViews();
+			this.mMainLayoutSearchButton.setVisibility(View.VISIBLE);
+			onSearchButtonPressed();
+			
+		} catch (Exception e) {
+			// table does not exists, do nothing
+			e.printStackTrace();
+		}
+		
+		
+	}
+	public String getPrevSearchText() {
+		String text="";
+		try {
+			Cursor crit = TestSnowboardsApplication.getDBHelper().getAllFromTable("AdvancedCriteria");
+			while(!crit.isAfterLast()) {
+				String result = "";
+				String title = crit.getString(crit.getColumnIndexOrThrow("Title"));
+				String critColName = crit.getString(crit.getColumnIndexOrThrow("ColName"));
+				Cursor c = TestSnowboardsApplication.getDBHelper().getAllFromTableWithWhereAndOrder("UserSearchInputsOld", "ColName LIKE '%" + critColName + "%'", null);
+				if(c!= null && c.getCount() > 0) {
+					while(!c.isAfterLast()) {
+						result += c.getString(c.getColumnIndexOrThrow("Title")) + ",";
+						c.moveToNext();
+					}
+				}  
+				if(!result.equals(""))
+					text += title+":" + result;
+				crit.moveToNext();
+				
 			}
-		});
+			if(!text.equals(""))
+				text = Html.fromHtml("<b> Ma dérniere recherche:</b> <br><br>")+text;
+		} catch (Exception e) {
+			// table does not exists, exiting
+		}
+		return text;
 	}
 
 	private void initTabs(TabHost pTabHost) {
@@ -279,7 +350,6 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	}
 
 	protected void onSearchButtonPressed() {
-
 		ProductListFragment f = getMyApplication().getProductListFragment();
 		f.setOnProductSelectedListener(new ProductSelectedListener() {
 			@Override
@@ -299,9 +369,14 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	}
 
 	public void onSearchClearPressed() {
-		TestSnowboardsApplication.getDBHelper().rawQuery(
-				"delete from UserSearchInputs", null);
+		TestSnowboardsApplication.getDBHelper().rawQuery("delete from UserSearchInputsOld", null);
+		TestSnowboardsApplication.getDBHelper().rawQuery("insert into UserSearchInputsOld select * from UserSearchInputs", null);
+		TestSnowboardsApplication.getDBHelper().rawQuery("delete from UserSearchInputs", null);
+//		TestSnowboardsApplication.getDBHelper().rawQuery(
+//				"delete from UserSearchInputs", null);
 		mMainActivityCreteriaSelectionListView.invalidateViews();
+		mPrevSearchTextView.setText(getPrevSearchText());
+		this.initSearchButton();
 	}
 
 	/**
@@ -402,23 +477,18 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 		@Override
 		public void onCriteriaChanged(String colName) {
-			mMainLayoutSearchButton
-					.setOnClickListener(new SearchButtonClickListener());
-			mMainLayoutSearchButton
-					.setBackgroundResource(R.drawable.bout_aff_resultat);
+			initSearchButton();
 			mMainActivityCreteriaSelectionListView.invalidateViews();
-
+			
 		}
+		
 	}
 
 	public class CriteriaChangeListener implements OnCriteriaChangedListener {
 
 		@Override
 		public void onCriteriaChanged(String colName) {
-			mMainLayoutSearchButton
-					.setOnClickListener(new SearchButtonClickListener());
-			mMainLayoutSearchButton
-					.setBackgroundResource(R.drawable.bout_aff_resultat);
+			initSearchButton();
 			mMainActivityCreteriaSelectionListView.invalidateViews();
 		}
 	}
@@ -726,7 +796,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 	/**
 	 * @param pProductId
-	 * @return
+	 * @return error or null if no error
 	 */
 	@SuppressWarnings("unused")
 	protected String shareByTwitter(Cursor productCursor) throws Exception {
@@ -822,6 +892,8 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		 * actions
 		 */
 		case TWITTER_CALLBACK_ID: {
+			if (resultCode != Activity.RESULT_OK)
+				return;
 			int productId = data.getIntExtra("productid", 0);
 			Log.d("OAuthTwitter KEY", TestSnowboardsApplication.ACCESS_KEY);
 			Log.d("OAuthTwitter SECRET",
@@ -859,12 +931,26 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		super.onConfigurationChanged(newConfig);
 		// int j = newConfig.screenLayout &
 		// Configuration.SCREENLAYOUT_SIZE_XLARGE;
+		setContentView(R.layout.main_activity_layout);
+		initViews();
 		if ((newConfig.screenLayout & Configuration.SCREENLAYOUT_SIZE_XLARGE) == 0)
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		// else
 		// setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 	}
 
+	
+	public void initSearchButton() {
+		Cursor c = TestSnowboardsApplication.getDBHelper().getAllFromTable("UserSearchInputs");
+		if(c.getCount() > 0) {
+			mMainLayoutSearchButton.setOnClickListener(new SearchButtonClickListener());
+			mMainLayoutSearchButton.setBackgroundResource(R.drawable.bout_aff_resultat);
+			mMainLayoutSearchButton.setVisibility(View.VISIBLE);
+		} else {
+			mMainLayoutSearchButton.setVisibility(View.INVISIBLE);
+		}
+	}
+	
 	public class SearchButtonClickListener implements OnClickListener {
 		@Override
 		public void onClick(View pView) {
@@ -878,10 +964,6 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	public class ClearSearchButtonClickListener implements OnClickListener {
 		@Override
 		public void onClick(View pView) {
-
-			ImageButton b = (ImageButton) pView;
-			b.setBackgroundResource(R.drawable.bout_aff_resultat);
-			b.setOnClickListener(new SearchButtonClickListener());
 			onSearchClearPressed();
 		}
 	}
@@ -910,7 +992,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 		@Override
 		protected void onPostExecute(String result) {
-			if (result == null) {
+			if (result == null && error != null) {
 				AlertDialog.Builder b = new AlertDialog.Builder(
 						TestSnowboardsMainActivity.this);
 				b.setTitle("Twitter error:");
@@ -926,9 +1008,11 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 									}
 								}).create().show();
 			} else {
-				TwitterPostPreviewDialogFragment f = new TwitterPostPreviewDialogFragment();
-				f.setMessage(result);
-				f.show(getSupportFragmentManager(), null);
+				if(result != null) {
+					TwitterPostPreviewDialogFragment f = new TwitterPostPreviewDialogFragment();
+					f.setMessage(result);
+					f.show(getSupportFragmentManager(), null);
+				}
 			}
 		}
 	}

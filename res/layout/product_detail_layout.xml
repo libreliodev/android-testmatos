@@ -22,18 +22,19 @@
             android:layout_marginLeft="30dp"
             android:paddingBottom="5dp" >
 
-            <Button
+            <ImageButton
                 android:id="@+id/PrevButton"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:background="@drawable/left_round_button"
+                android:background="@color/transparent"
                 android:paddingBottom="5dp"
-                android:paddingTop="5dp"/>
+                android:paddingTop="5dp"
+                android:src="@drawable/left_round_button" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/NextButton"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content"
@@ -41,7 +42,9 @@
                 android:layout_alignBaseline="@+id/ImageButton1"
                 android:layout_alignParentTop="true"
                 android:layout_toRightOf="@+id/ImageButton1"
-                android:background="@drawable/right_round_button" />
+                android:background="@color/transparent"
+                android:src="@drawable/right_round_button" />
+
         </LinearLayout>
 
         <LinearLayout

@@ -79,21 +79,22 @@
                                             android:id="@+id/MainActivityCreteriaSelectionListView"
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
-                                            android:layout_above="@+id/textView1"
+                                            android:layout_above="@+id/PrevSearchTextView"
                                             android:layout_alignParentLeft="true"
                                             android:layout_alignParentTop="true"
                                             android:layout_weight="1" >
                                         </ListView>
 
                                         <TextView
-                                            android:id="@+id/textView1"
+                                            android:id="@+id/PrevSearchTextView"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_above="@+id/MainLayoutSearchButton"
                                             android:layout_alignParentLeft="true"
                                             android:layout_weight="1"
                                             android:text="@string/spaceholder"
-                                            android:textAppearance="?android:attr/textAppearanceMedium" />
+                                            android:textAppearance="?android:attr/textAppearanceMedium"
+                                            android:textColor="@color/purple" />
 
                                         <ImageButton
                                             android:id="@+id/MainLayoutSearchButton"

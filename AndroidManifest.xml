@@ -18,7 +18,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".TestSnowboardsMainActivity"
-            android:configChanges="keyboard|orientation|screenLayout|screenSize"
+            android:configChanges="keyboard|orientation|screenSize"
             android:icon="@drawable/tests_snowboards_ic_launcher"
             android:label="@string/title_activity_test_snowboards_main"
             android:theme="@style/AppTheme"

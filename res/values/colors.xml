@@ -10,6 +10,7 @@
 
     <color name="indigo">#0077cb</color>
     <color name="purple">#df2a00</color>
+    <color name="SelectedColor">#df2a00</color>
     <color name="button_stroke">#205c88</color>
     <color name="button_gradient_start_color">#61a2d2</color>
     <color name="button_gradient_end_color">#0d5686</color>

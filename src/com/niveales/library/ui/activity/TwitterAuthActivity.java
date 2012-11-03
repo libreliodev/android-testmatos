@@ -39,7 +39,7 @@ public class TwitterAuthActivity extends Activity {
 		webView.setWebViewClient(new WebViewClient(){
 			public boolean shouldOverrideUrlLoading(WebView view, String url){
 				if(url.startsWith(TestSnowboardsApplication.TWITTER_CALLBACK_URL)) {
-					onTwitterCallback(url);
+					new TwitterAuthCallbackAsyncTask().execute(url);
 					return true;
 				}
 				return false;
@@ -85,6 +85,21 @@ public class TwitterAuthActivity extends Activity {
 		
 	}
 	
+	
+	public class TwitterAuthCallbackAsyncTask extends AsyncTask<String, Void, Void> {
+
+		/* (non-Javadoc)
+		 * @see android.os.AsyncTask#doInBackground(Params[])
+		 */
+		@Override
+		protected Void doInBackground(String... pArg0) {
+			// TODO Auto-generated method stub
+			String url = pArg0[0];
+			onTwitterCallback(url);
+			return null;
+		}
+		
+	}
 
 	public void onTwitterCallback(String url) {
 		Uri uri = Uri.parse(url);

@@ -60,24 +60,35 @@
                             android:layout_height="match_parent"
                             android:orientation="vertical" >
 
+                            <ListView
+                                android:id="@+id/MainActivityCreteriaSelectionListView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_above="@+id/PrevSearchTextView"
+                                android:layout_alignParentLeft="true"
+                                android:layout_alignParentTop="true"
+                                android:layout_weight="1" >
+                            </ListView>
+
+                            <TextView
+                                android:id="@+id/PrevSearchTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_above="@+id/MainLayoutSearchButton"
+                                android:layout_alignParentLeft="true"
+                                android:layout_weight="1"
+                                android:text="@string/spaceholder"
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                android:textColor="@color/purple" />
+
                             <ImageButton
                                 android:id="@+id/MainLayoutSearchButton"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentBottom="true"
                                 android:layout_centerHorizontal="true"
-                                android:background="@drawable/bout_aff_resultat"
-                                android:text="@string/main_layout_search_button_label" />
-
-                            <ListView
-                                android:id="@+id/MainActivityCreteriaSelectionListView"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_above="@id/MainLayoutSearchButton"
-                                android:layout_alignParentLeft="true"
-                                android:layout_alignParentTop="true"
-                                android:layout_weight="1" >
-                            </ListView>
+                                android:layout_weight="1"
+                                android:background="@drawable/bout_aff_resultat" />
                         </RelativeLayout>
 
                         <LinearLayout
@@ -98,6 +109,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" >
                         </LinearLayout>
+
                     </FrameLayout>
                 </LinearLayout>
             </TabHost>
