@@ -254,7 +254,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 				
 			}
 			if(!text.equals(""))
-				text = Html.fromHtml("<b> Ma dérniere recherche:</b> <br><br>")+text;
+				text = Html.fromHtml("<b> Ma dernière recherche:</b> <br><br>")+text;
 		} catch (Exception e) {
 			// table does not exists, exiting
 		}
