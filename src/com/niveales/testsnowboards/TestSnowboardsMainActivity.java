@@ -259,7 +259,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 				
 			}
 			if(!text.equals("")) {
-				text = Html.fromHtml("<b> Ma dérniere recherche:</b><br>")+text;
+				text = Html.fromHtml("<b>Ma dernière recherche:</b><br>")+text;
 				this.mPrevSearchTextView.setVisibility(View.VISIBLE);
 			} else {
 				this.mPrevSearchTextView.setVisibility(View.GONE);
