@@ -23,11 +23,6 @@
             android:label="@string/title_activity_test_snowboards_main"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".lexique.LexiqueActivity"
@@ -42,6 +37,11 @@
             android:theme="@style/Theme.Transparent" >
             
         </activity>
+        <activity android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" android:name="SplashScreenActivity"><intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter></activity>
     </application>
 
 </manifest>

@@ -199,6 +199,15 @@ public class ProductDetailFragment extends Fragment {
 				return false;
 			}
 		});
+		
+		webView.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View pV) {
+				mProductImage.setVisibility(View.GONE);
+				
+			}
+		});
 
 		ImageView shareButton = (ImageView) rootView.findViewById(shareId);
 		shareButton.setOnClickListener(new OnClickListener() {

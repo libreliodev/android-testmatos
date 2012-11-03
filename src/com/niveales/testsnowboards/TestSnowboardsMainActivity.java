@@ -119,6 +119,9 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	@SuppressLint("NewApi")
 	public void initViews() {
 		// Init tabs
+		Configuration newConfig = getResources().getConfiguration();
+		if ((newConfig.screenLayout & Configuration.SCREENLAYOUT_SIZE_XLARGE) == 0)
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		mMainActivityTabHost = (TabHost) findViewById(R.id.MainLayoutTabHost);
 		initTabs(mMainActivityTabHost);
 
@@ -248,13 +251,19 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 						c.moveToNext();
 					}
 				}  
-				if(!result.equals(""))
+				if(!result.equals("")) {
 					text += title+":" + result;
+					
+				}
 				crit.moveToNext();
 				
 			}
-			if(!text.equals(""))
-				text = Html.fromHtml("<b> Ma dérniere recherche:</b> <br><br>")+text;
+			if(!text.equals("")) {
+				text = Html.fromHtml("<b> Ma dérniere recherche:</b><br>")+text;
+				this.mPrevSearchTextView.setVisibility(View.VISIBLE);
+			} else {
+				this.mPrevSearchTextView.setVisibility(View.GONE);
+			}
 		} catch (Exception e) {
 			// table does not exists, exiting
 		}
@@ -933,8 +942,8 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		// Configuration.SCREENLAYOUT_SIZE_XLARGE;
 		setContentView(R.layout.main_activity_layout);
 		initViews();
-		if ((newConfig.screenLayout & Configuration.SCREENLAYOUT_SIZE_XLARGE) == 0)
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//		if ((newConfig.screenLayout & Configuration.SCREENLAYOUT_SIZE_XLARGE) == 0)
+//			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		// else
 		// setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 	}

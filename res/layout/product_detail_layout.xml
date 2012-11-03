@@ -11,39 +11,31 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginTop="5dp" >
+        android:layout_marginTop="5dp"
+        android:gravity="center_horizontal" >
 
         <LinearLayout
             android:id="@+id/dirButtonsHolder"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="30dp"
+            android:layout_weight="1"
+            android:gravity="bottom|right"
             android:paddingBottom="5dp" >
 
             <ImageButton
                 android:id="@+id/PrevButton"
-                style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:background="@color/transparent"
-                android:paddingBottom="5dp"
-                android:paddingTop="5dp"
-                android:src="@drawable/left_round_button" />
+                android:background="@drawable/left_round_button" />
 
             <ImageButton
                 android:id="@+id/NextButton"
-                style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/ImageButton1"
-                android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/ImageButton1"
-                android:background="@color/transparent"
-                android:src="@drawable/right_round_button" />
+                android:background="@drawable/right_round_button" />
 
         </LinearLayout>
 
@@ -54,6 +46,7 @@
             android:layout_alignBottom="@id/dirButtonsHolder"
             android:layout_alignParentRight="true"
             android:layout_gravity="bottom|right"
+            android:layout_weight="1"
             android:gravity="bottom|right"
             android:paddingRight="10dp" >
 

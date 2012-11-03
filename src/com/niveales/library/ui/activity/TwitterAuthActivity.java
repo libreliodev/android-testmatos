@@ -108,6 +108,11 @@ public class TwitterAuthActivity extends Activity {
 			//We get here after successful twitter login
 			Log.d("OAuthTwitter", uri.toString());
 			String verifier = uri.getQueryParameter(OAuth.OAUTH_VERIFIER);
+			if(verifier == null) {
+				// user cancelled twitter auth
+				setResult(Activity.RESULT_CANCELED, data);
+				finish();
+			}
 			Log.d("OAuthTwitter", verifier);
 			try {
 
@@ -132,6 +137,9 @@ public class TwitterAuthActivity extends Activity {
 				finish();
 			} catch (OAuthCommunicationException e) {
 				e.printStackTrace();
+				setResult(Activity.RESULT_CANCELED, data);	
+				finish();
+			} catch (Exception e) {
 				setResult(Activity.RESULT_CANCELED, data);	
 				finish();
 			}
