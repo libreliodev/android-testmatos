@@ -3,6 +3,8 @@
  */
 package com.niveales.testsnowboards;
 
+import com.niveales.library.utils.db.DBHelper;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -30,6 +32,10 @@ public class SplashScreenActivity extends Activity {
 				startActivity(new Intent(SplashScreenActivity.this, TestSnowboardsMainActivity.class));
 				finish();
 			}}, 3000);
+		DBHelper helper = new DBHelper(this, TestSnowboardsApplication.dbName);
+		helper.open();
+		helper.close();
+		
 	}
 
 }
