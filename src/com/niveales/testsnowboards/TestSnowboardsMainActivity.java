@@ -258,12 +258,14 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 				crit.moveToNext();
 				
 			}
+
 			if(!text.equals("")) {
 				text = Html.fromHtml("<b>Ma dernière recherche:</b><br>")+text;
 				this.mPrevSearchTextView.setVisibility(View.VISIBLE);
 			} else {
 				this.mPrevSearchTextView.setVisibility(View.GONE);
 			}
+
 		} catch (Exception e) {
 			// table does not exists, exiting
 		}
