@@ -25,6 +25,7 @@ import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.Html;
@@ -56,6 +57,7 @@ import com.facebook.android.Facebook;
 import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
 import com.facebook.android.Util;
+import com.niveales.library.ui.BaseNivealesFragment;
 import com.niveales.library.ui.FacebookImagePostPreviewDialogFragment;
 import com.niveales.library.ui.TwitterPostPreviewDialogFragment;
 import com.niveales.library.ui.activity.TwitterAuthActivity;
@@ -438,11 +440,11 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 				this.getSupportFragmentManager()
 						.beginTransaction()
 						.replace(R.id.ProductDetailsHolder,
-								productDetailFragment)
+								productDetailFragment, "productdetail")
 						.addToBackStack("Selection").commit();
 			else
 				this.getSupportFragmentManager().beginTransaction()
-						.replace(R.id.ContentHolder, productDetailFragment)
+						.replace(R.id.ContentHolder, productDetailFragment, "productdetail")
 						.addToBackStack("Selection").commit();
 		} else {
 			// start a new LexiqueActivity
@@ -1036,6 +1038,18 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 				}
 			}
 		}
+	}
+	
+	@Override
+	public void onBackPressed() {
+		FragmentManager fm = getSupportFragmentManager();
+		Fragment f = fm.findFragmentByTag("productdetail");
+		if(f != null && f instanceof BaseNivealesFragment) {
+			BaseNivealesFragment bf = (BaseNivealesFragment) f;
+			if(bf.onBackPressed()) 
+				return;
+		}
+		super.onBackPressed();
 	}
 
 }

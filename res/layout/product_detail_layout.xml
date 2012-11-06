@@ -36,7 +36,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/right_round_button" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -81,10 +80,11 @@
 
         <ImageView
             android:id="@+id/ProductImage"
-            android:layout_width="770dp"
-            android:layout_height="150dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:scaleType="center"
+            android:scrollbars="horizontal"
             android:src="@drawable/cambre_classique"
             android:visibility="gone" />
 
