@@ -79,18 +79,19 @@
                                             android:id="@+id/MainActivityCreteriaSelectionListView"
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
-                                            android:layout_above="@+id/PrevSearchTextView"
                                             android:layout_alignParentLeft="true"
                                             android:layout_alignParentTop="true"
+                                            android:layout_below="@id/MainActivityCreteriaSelectionListView"
                                             android:layout_weight="1" >
+
                                         </ListView>
 
                                         <TextView
                                             android:id="@+id/PrevSearchTextView"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:layout_above="@+id/MainLayoutSearchButton"
                                             android:layout_alignParentLeft="true"
+                                            android:layout_below="@id/MainActivityCreteriaSelectionListView"
                                             android:layout_weight="1"
                                             android:text="@string/spaceholder"
                                             android:textAppearance="?android:attr/textAppearanceMedium"
@@ -104,6 +105,17 @@
                                             android:layout_centerHorizontal="true"
                                             android:layout_weight="1"
                                             android:background="@drawable/bout_aff_resultat" />
+
+                                        <TextView
+                                            android:id="@+id/NewSearchTextView"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_alignParentBottom="true"
+                                            android:layout_alignParentLeft="true"
+                                            android:text="@string/NewSearchText"
+                                            android:textColor="@color/grey"
+                                            android:visibility="invisible" />
+
                                     </RelativeLayout>
 
                                     <LinearLayout

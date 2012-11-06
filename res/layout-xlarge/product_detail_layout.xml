@@ -94,7 +94,8 @@
             android:layout_height="150dp"
             android:layout_gravity="center"
             android:scaleType="center"
-            android:src="@drawable/cambre_classique" />
+            android:src="@drawable/cambre_classique"
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/ShareHolder"

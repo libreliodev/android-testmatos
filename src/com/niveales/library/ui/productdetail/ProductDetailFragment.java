@@ -16,6 +16,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -28,19 +29,33 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.niveales.library.ui.BaseNivealesFragment;
 import com.niveales.library.utils.db.DBHelper;
-import com.niveales.testsnowboards.R;
 import com.niveales.testsnowboards.TestSnowboardsApplication;
 import com.niveales.testsnowboards.TestSnowboardsApplication.ProductDetailConstants;
 
 public class ProductDetailFragment extends BaseNivealesFragment {
 
+	/**
+	 * 
+	 */
+	private static final int PRODUCT_IMAGE_TIMEOUT = 5000;
+	/**
+	 * 
+	 */
+	private static final String ZOOM_FINISH = "zoom://finish";
+	/**
+	 * 
+	 */
+	private static final String ZOOM_TOUCHSTART = "zoom://touchstart";
+	/**
+	 * 
+	 */
+	private static final String ZOOM_TOUCHEND = "zoom://touchend";
 	View rootView;
 	String htmlBasePage; // text from assets html page to customize
 	String customizedHTMLPage; // page after customization
@@ -64,33 +79,10 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 	private int webPageStringResourceId;
 	private ViewGroup mShareHolder;
 	private LinearLayout mShareButtonsHolder;
-	private ViewGroup mProductDetailWebviewHolder;
 	protected float downX;
 	protected float downY;
+	protected boolean isZoomStarted = false;
 
-	/**
-	 * 
-	 * @param productDetailLayout
-	 *            - layout id with product details
-	 * @param webViewId
-	 *            - WebView id in @param productDetailLayout
-	 * @param productId
-	 *            - id of the product in the database as of id_modele column in
-	 *            Details table
-	 * @return ProductDetailFragment instance
-	 */
-	// public static ProductDetailFragment getInstance(int productDetailLayout,
-	// int webViewId, int webPageStringResourceId, Cursor productCursor,
-	// String[] columnKeys, String[] htmlKeys, int favoriteCheckboxId,
-	// int shareButtonId, ShareProductListener l) {
-	// ProductDetailFragment f = new ProductDetailFragment();
-	//
-	// f.init(productDetailLayout, webViewId, webPageStringResourceId,
-	// productCursor, columnKeys, htmlKeys, favoriteCheckboxId,
-	// shareButtonId, l);
-	//
-	// return f;
-	// }
 
 	private void init(int productDetailLayout, int webViewId,
 			int webPageStringResourceId, String[] columnKeys,
@@ -158,6 +150,78 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 		return htmlString;
 	}
 
+	Runnable mProductImageGoneRunnable = new Runnable() {
+
+		@Override
+		public void run() {
+			mProductImage.setVisibility(View.GONE);
+			isZoomStarted = false;
+			
+		}
+	};
+	
+	Handler mProductImageGoneHandler = new Handler();
+	
+	private View.OnTouchListener mProductImageTouchListener = new View.OnTouchListener() {
+		private float mx;
+		private float my;
+		private float deltaX, deltaY;
+		int maxX = 0, maxY = 0;
+
+		@Override
+		public boolean onTouch(View pV, MotionEvent pEvent) {
+
+			float curX, curY;
+
+			switch (pEvent.getAction()) {
+
+			case MotionEvent.ACTION_DOWN:
+				mProductImageGoneHandler.postDelayed(mProductImageGoneRunnable, PRODUCT_IMAGE_TIMEOUT);
+				mx = pEvent.getX();
+				my = pEvent.getY();
+				deltaX = deltaY = 0;
+				maxX = Math.abs(bitmapWidth - mProductImage.getWidth()) / 2;
+				maxY = Math.abs(bitmapHeight - mProductImage.getHeight()) / 2;
+				break;
+			case MotionEvent.ACTION_MOVE:
+				mProductImageGoneHandler.removeCallbacks(mProductImageGoneRunnable);
+				mProductImageGoneHandler.postDelayed(mProductImageGoneRunnable, PRODUCT_IMAGE_TIMEOUT);
+				curX = pEvent.getX();
+				curY = pEvent.getY();
+				deltaX = mx - curX;
+				deltaY = my - curY;
+				mx = curX;
+				my = curY;
+				float scrollX = mProductImage.getScrollX();
+				float scrollY = mProductImage.getScrollY();
+				if (scrollX + deltaX < -maxX)
+					scrollX = -maxX;
+				else if (scrollX + deltaX > maxX)
+					scrollX = maxX;
+				else
+					scrollX += deltaX;
+
+				if (scrollY + deltaY < -maxY)
+					scrollY = -maxY;
+				else if (scrollY + deltaY > maxY)
+					scrollY = maxY;
+				else
+					scrollY += deltaY;
+
+				mProductImage.scrollTo((int) scrollX, (int) scrollY);
+				break;
+			case MotionEvent.ACTION_UP:
+				curX = pEvent.getX();
+				curY = pEvent.getY();
+				deltaX = mx - curX;
+				deltaY = my - curY;
+				break;
+			}
+
+			return true;
+		}	
+	};
+	
 	@SuppressLint("SetJavaScriptEnabled")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -174,74 +238,8 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 				.findViewById(TestSnowboardsApplication.ProductDetailConstants.PRODUCTDETAIL_PRODUCTIMAGE_VIEW_ID);
 		mProductImage.setHorizontalScrollBarEnabled(true);
 		mProductImage.setVerticalScrollBarEnabled(true);
-		// mProductImage.setImageURI(Uri.parse(Consts.ASSETS_URI+productCursor.getString(productCursor.getColumnIndexOrThrow("imgLR"))));
-		//
-		// mProductImage.setOnClickListener(new OnClickListener() {
-		//
-		// @Override
-		// public void onClick(View pV) {
-		// mZoomStarted = false;
-		// mProductImage.setVisibility(View.GONE);
-		// }
-		// });
 
-		mProductImage.setOnTouchListener(new View.OnTouchListener() {
-
-			private float mx;
-			private float my;
-			private float deltaX, deltaY;
-			int maxX = 0, maxY = 0;
-
-			@Override
-			public boolean onTouch(View pV, MotionEvent pEvent) {
-
-				float curX, curY;
-
-				switch (pEvent.getAction()) {
-
-				case MotionEvent.ACTION_DOWN:
-					mx = pEvent.getX();
-					my = pEvent.getY();
-					deltaX = deltaY = 0;
-					maxX = Math.abs(bitmapWidth - mProductImage.getWidth()) / 2;
-					maxY = Math.abs(bitmapHeight - mProductImage.getHeight()) / 2;
-					break;
-				case MotionEvent.ACTION_MOVE:
-					curX = pEvent.getX();
-					curY = pEvent.getY();
-					deltaX = mx - curX;
-					deltaY = my - curY;
-					mx = curX;
-					my = curY;
-					float scrollX = mProductImage.getScrollX();
-					float scrollY = mProductImage.getScrollY();
-					if (scrollX + deltaX < -maxX)
-						scrollX = -maxX;
-					else if (scrollX + deltaX > maxX)
-						scrollX = maxX;
-					else
-						scrollX += deltaX;
-
-					if (scrollY + deltaY < -maxY)
-						scrollY = -maxY;
-					else if (scrollY + deltaY > maxY)
-						scrollY = maxY;
-					else
-						scrollY += deltaY;
-
-					mProductImage.scrollTo((int) scrollX, (int) scrollY);
-					break;
-				case MotionEvent.ACTION_UP:
-					curX = pEvent.getX();
-					curY = pEvent.getY();
-					deltaX = mx - curX;
-					deltaY = my - curY;
-					break;
-				}
-
-				return true;
-			}
-		});
+		mProductImage.setOnTouchListener(mProductImageTouchListener);
 		htmlBasePage = readHTML();
 		webView = (WebView) rootView.findViewById(webViewId);
 		webView.loadDataWithBaseURL(TestSnowboardsApplication.ASSETS_URI,
@@ -260,26 +258,18 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 			}
 		});
 
-		webView.setOnClickListener(new View.OnClickListener() {
-
+		webView.setOnTouchListener(new View.OnTouchListener() {
+			
 			@Override
-			public void onClick(View pV) {
-				mProductImage.setVisibility(View.GONE);
-
+			public boolean onTouch(View pV, MotionEvent pEvent) {
+				if(isZoomStarted) {
+					mProductImageTouchListener.onTouch(pV, pEvent);
+					return true;
+				}
+				return false;
 			}
 		});
 
-		mProductDetailWebviewHolder = (FrameLayout) rootView
-				.findViewById(R.id.ProductDetailWebviewHolder);
-		mProductDetailWebviewHolder
-				.setOnClickListener(new View.OnClickListener() {
-
-					@Override
-					public void onClick(View pV) {
-						mProductImage.setVisibility(View.GONE);
-
-					}
-				});
 		ImageView shareButton = (ImageView) rootView.findViewById(shareId);
 		shareButton.setOnClickListener(new OnClickListener() {
 
@@ -380,10 +370,23 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 	}
 
 	protected void showLargeImage(String pUrl) {
-		if (pUrl.startsWith("zoom://touchstart")) {
+		if (pUrl.startsWith(ZOOM_TOUCHSTART)) {
 			mProductImage.setVisibility(View.VISIBLE);
+			Handler h = new Handler();
+			isZoomStarted = true;			
 		}
-
+		
+		if(pUrl.startsWith(ZOOM_FINISH)) {
+			this.mProductImageGoneHandler.removeCallbacks(mProductImageGoneRunnable);
+			mProductImage.setVisibility(View.GONE);
+			isZoomStarted = false;
+		}
+//		if(pUrl.startsWith(ZOOM_TOUCHEND)) {
+//			mProductImage.setVisibility(View.GONE);
+//			isZoomStarted = false;
+//		}
+		
+		Log.d("zoom", pUrl);
 	}
 
 	/**
@@ -437,7 +440,7 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 	@Override
 	public boolean onBackPressed() {
 		if (mProductImage.getVisibility() == View.VISIBLE) {
-			this.mProductImage.setVisibility(View.GONE);
+			showLargeImage(ZOOM_FINISH);
 			return true;
 		}
 		return false;
