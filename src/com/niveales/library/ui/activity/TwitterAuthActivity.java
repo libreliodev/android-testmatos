@@ -68,17 +68,25 @@ public class TwitterAuthActivity extends Activity {
 
 				webView.loadUrl(authURL);
 			} catch (OAuthMessageSignerException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				data.putExtra("error", e.getMessage());
+				setResult(Activity.RESULT_CANCELED, data);	
+				finish();
 			} catch (OAuthNotAuthorizedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				data.putExtra("error", e.getMessage());
+				setResult(Activity.RESULT_CANCELED, data);	
+				finish();
 			} catch (OAuthExpectationFailedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				data.putExtra("error", e.getMessage());
+				setResult(Activity.RESULT_CANCELED, data);	
+				finish();
 			} catch (OAuthCommunicationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				e.printStackTrace();				
+				data.putExtra("error", e.getMessage());
+				setResult(Activity.RESULT_CANCELED, data);	
+				finish();
 			}
 			return null;
 		}
@@ -125,21 +133,31 @@ public class TwitterAuthActivity extends Activity {
 				finish();
 			} catch (OAuthMessageSignerException e) {
 				e.printStackTrace();
+				data.putExtra("error", e.getMessage());
+
 				setResult(Activity.RESULT_CANCELED, data);	
 				finish();
 			} catch (OAuthNotAuthorizedException e) {
 				e.printStackTrace();
+				data.putExtra("error", e.getMessage());
+
 				setResult(Activity.RESULT_CANCELED, data);	
 				finish();
 			} catch (OAuthExpectationFailedException e) {
 				e.printStackTrace();
+				data.putExtra("error", e.getMessage());
+
 				setResult(Activity.RESULT_CANCELED, data);	
 				finish();
 			} catch (OAuthCommunicationException e) {
 				e.printStackTrace();
+				data.putExtra("error", e.getMessage());
+
 				setResult(Activity.RESULT_CANCELED, data);	
 				finish();
 			} catch (Exception e) {
+				data.putExtra("error", e.getMessage());
+
 				setResult(Activity.RESULT_CANCELED, data);	
 				finish();
 			}

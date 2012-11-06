@@ -913,8 +913,26 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		 * actions
 		 */
 		case TWITTER_CALLBACK_ID: {
-			if (resultCode != Activity.RESULT_OK)
+			if (resultCode != Activity.RESULT_OK) {
+				if(data != null) {
+					String message = data.getExtras().getString("error");
+					if(message == null) {
+						message = "Twitter authentication failed";
+					}
+					AlertDialog.Builder b = new AlertDialog.Builder(this);
+					b.setTitle("Twitter auth error:");
+					b.setMessage(message);
+					b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface pDialog, int pWhich) {
+							pDialog.dismiss();
+						}
+					});
+					b.create().show();
+				}
 				return;
+			}
 			int productId = data.getIntExtra("productid", 0);
 			Log.d("OAuthTwitter KEY", TestSnowboardsApplication.ACCESS_KEY);
 			Log.d("OAuthTwitter SECRET",
