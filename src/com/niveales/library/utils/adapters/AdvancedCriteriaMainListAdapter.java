@@ -2,13 +2,17 @@ package com.niveales.library.utils.adapters;
 
 import com.niveales.library.utils.db.DBHelper;
 import com.niveales.testsnowboards.R;
+import com.niveales.testsnowboards.TestSnowboardsApplication;
+import com.niveales.testsnowboards.TestSnowboardsMainActivity.SearchButtonClickListener;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class AdvancedCriteriaMainListAdapter extends BaseAdapter {
@@ -63,7 +67,7 @@ public class AdvancedCriteriaMainListAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View view, ViewGroup viewGroup) {
 		View v = view;
-		if(v == null) {
+		if ( v == null) {
 			v = this.inflater.inflate(layout_id, viewGroup, false);
 		}
 		TextView mTitle = (TextView) v.findViewById(textViewId);
@@ -72,8 +76,39 @@ public class AdvancedCriteriaMainListAdapter extends BaseAdapter {
 		mDescription.setText(helper.getUserSearchINputStringByColumn(getColumnName(position)));
 		if(mDescription.getText().length() > 0) {
 			mTitle.setTextColor(context.getResources().getColor(R.color.SelectedColor));
+		} else {
+			mTitle.setTextColor(context.getResources().getColor(R.color.black));
 		}
+		
 		return v;
 	}
 
+	public String getPrevSearchText() {
+		String text="";
+		try {
+			Cursor crit = TestSnowboardsApplication.getDBHelper().getAllFromTable("AdvancedCriteria");
+			while(!crit.isAfterLast()) {
+				String result = "";
+				String title = crit.getString(crit.getColumnIndexOrThrow("Title"));
+				String critColName = crit.getString(crit.getColumnIndexOrThrow("ColName"));
+				Cursor c = TestSnowboardsApplication.getDBHelper().getAllFromTableWithWhereAndOrder("UserSearchInputsOld", "ColName LIKE '%" + critColName + "%'", null);
+				if(c!= null && c.getCount() > 0) {
+					while(!c.isAfterLast()) {
+						result += c.getString(c.getColumnIndexOrThrow("Title")) + ",";
+						c.moveToNext();
+					}
+				}  
+				if(!result.equals("")) {
+					text += title+":" + result;
+					
+				}
+				crit.moveToNext();
+				
+			}
+
+		} catch (Exception e) {
+			// table does not exists, exiting
+		}
+		return text;
+	}
 }

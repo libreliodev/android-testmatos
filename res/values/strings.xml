@@ -41,5 +41,7 @@
     <string name="share_dialog_title">Share by:</string>
     <string name="facebook">Facebook</string>
     <string name="FacebookPageUrl">http&#58;&#47;&#47;www.facebook.com</string>
+    <string name="previouse_search_title">Ma deterniére recherche:</string>
+    <string name="NewSearchText">Pour recherche snowboard, selectionner vos criteres de recherche</string>
 
 </resources>

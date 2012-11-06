@@ -96,6 +96,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	public ProgressDialog mProgressDialog;
 	public String mRecentSearch;
 	private TextView mPrevSearchTextView;
+	private TextView mNewSearchTextView;
 
 	@SuppressLint("NewApi")
 	@Override
@@ -138,6 +139,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 		// Init Search button click listener
 		mMainLayoutSearchButton = (ImageButton) findViewById(R.id.MainLayoutSearchButton);
+		mNewSearchTextView = (TextView) findViewById(R.id.NewSearchTextView);
 		this.initSearchButton();
 
 		// Right Frame Holder exists only in xlarge layouts. Other devices with
@@ -227,6 +229,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			helper.rawQuery("insert into UserSearchInputs select * from UserSearchInputsOld", null);
 			this.mMainActivityCreteriaSelectionListView.invalidateViews();
 			this.mMainLayoutSearchButton.setVisibility(View.VISIBLE);
+			this.mNewSearchTextView.setVisibility(View.INVISIBLE);
 			onSearchButtonPressed();
 			
 		} catch (Exception e) {
@@ -459,27 +462,32 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 		Cursor cursor = TestSnowboardsApplication.getDBHelper()
 				.getAllAdvancedCriteria();
-		cursor.moveToPosition(position);
-		String criteria = cursor.getString(0);
-		String type = cursor.getString(2);
-		String colName = cursor.getString(1);
-		if (type.equals("Numeric")) {
-			RangeCriteriaSelectorFragment f = getMyApplication()
-					.getRangeCriteriaSelectorFragment(
-							TestSnowboardsApplication.getDBHelper(), type,
-							criteria, colName,
-							new RangeCriteriaChangedListener());
-			this.getSupportFragmentManager().beginTransaction()
-					.replace(R.id.ContentHolder, f).addToBackStack(null)
-					.commit();
+		if (position < cursor.getCount()) {
+			cursor.moveToPosition(position);
+			String criteria = cursor.getString(0);
+			String type = cursor.getString(2);
+			String colName = cursor.getString(1);
+			if (type.equals("Numeric")) {
+				RangeCriteriaSelectorFragment f = getMyApplication()
+						.getRangeCriteriaSelectorFragment(
+								TestSnowboardsApplication.getDBHelper(), type,
+								criteria, colName,
+								new RangeCriteriaChangedListener());
+				this.getSupportFragmentManager().beginTransaction()
+						.replace(R.id.ContentHolder, f).addToBackStack(null)
+						.commit();
+			} else {
+				CriteriaSelectorFragment f = getMyApplication()
+						.getCriteriaSelectorFragment(
+								TestSnowboardsApplication.getDBHelper(), type,
+								criteria, colName, new CriteriaChangeListener());
+				this.getSupportFragmentManager().beginTransaction()
+						.replace(R.id.ContentHolder, f).addToBackStack(null)
+						.commit();
+			}
 		} else {
-			CriteriaSelectorFragment f = getMyApplication()
-					.getCriteriaSelectorFragment(
-							TestSnowboardsApplication.getDBHelper(), type,
-							criteria, colName, new CriteriaChangeListener());
-			this.getSupportFragmentManager().beginTransaction()
-					.replace(R.id.ContentHolder, f).addToBackStack(null)
-					.commit();
+			// guess user click on prev. search item
+			onPrevSearchPressed();
 		}
 	}
 
@@ -957,8 +965,10 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			mMainLayoutSearchButton.setOnClickListener(new SearchButtonClickListener());
 			mMainLayoutSearchButton.setBackgroundResource(R.drawable.bout_aff_resultat);
 			mMainLayoutSearchButton.setVisibility(View.VISIBLE);
+			mNewSearchTextView.setVisibility(View.INVISIBLE);
 		} else {
 			mMainLayoutSearchButton.setVisibility(View.INVISIBLE);
+			mNewSearchTextView.setVisibility(View.VISIBLE);
 		}
 	}
 	
