@@ -11,6 +11,7 @@ import twitter4j.http.AccessToken;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -38,6 +39,7 @@ import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -368,22 +370,71 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	}
 
 	protected void onSearchButtonPressed() {
-		ProductListFragment f = getMyApplication().getProductListFragment();
-		f.setOnProductSelectedListener(new ProductSelectedListener() {
-			@Override
-			public void showProductDetails(Cursor c) {
-				showProductDetail(c);
+		String whereClaus = null;
+		DBHelper helper = TestSnowboardsApplication.getDBHelper();
+		Cursor tempCursor = helper.getAllFromTableWithOrder("AdvancedCriteria", "Title");
+		boolean isFirst = true;
+		while (!tempCursor.isAfterLast()) {
+			String title = tempCursor.getString(0);
+			String advColName = tempCursor.getString(1);
+			String type = tempCursor.getString(2);
+			String headerText = tempCursor.getString(3);
+			String operation;
+			if(type.toLowerCase().equals("numeric"))
+				operation = "AND";
+			else operation = type;
+			Cursor searchInputsCursor = helper
+					.rawQuery(
+							"select group_concat(querystring, \" " + operation + " \") from UserSearchInputs where colname=?",
+							new String[] {
+									advColName 
+							});
+			String tempWhere = searchInputsCursor.getString(0);
+			if (tempWhere != null) {
+				if (isFirst) {
+					whereClaus = "( " + tempWhere + ") ";
+					isFirst = false;
+				} else {
+					whereClaus += " AND " + "( " + tempWhere + ") ";
+				}
 			}
-		});
-		if (this.mRightFrameFragmentHolder != null) {
-			this.getSupportFragmentManager().beginTransaction()
-					.replace(R.id.ContentHolder, f).addToBackStack(null)
-					.commit();
-		} else {
-			this.getSupportFragmentManager().beginTransaction()
-					.replace(R.id.FragmentHolder, f).addToBackStack(null)
-					.commit();
+			tempCursor.moveToNext();
 		}
+		
+		Cursor productCursor = helper.getAllFromTableWithWhereAndOrder(TestSnowboardsApplication.DETAIL_TABLE_NAME, whereClaus, null);
+		if(productCursor.getCount() > 0) {
+			ProductListFragment f = getMyApplication().getProductListFragment();
+			f.setOnProductSelectedListener(new ProductSelectedListener() {
+				@Override
+				public void showProductDetails(Cursor c) {
+					showProductDetail(c);
+				}
+			});
+			if (this.mRightFrameFragmentHolder != null) {
+				this.getSupportFragmentManager().beginTransaction()
+						.replace(R.id.ContentHolder, f).addToBackStack(null)
+						.commit();
+			} else {
+				this.getSupportFragmentManager().beginTransaction()
+						.replace(R.id.FragmentHolder, f).addToBackStack(null)
+						.commit();
+			}
+		} else {
+			AlertDialog.Builder b = new AlertDialog.Builder(this);
+			b.setMessage(R.string.nothing_found_message);
+			b.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface pDialog, int pWhich) {
+					pDialog.dismiss();
+					
+				}
+			});
+			Dialog d = b.create();
+			d.requestWindowFeature(Window.FEATURE_NO_TITLE);
+			d.show();
+		}
+		
 	}
 
 	public void onSearchClearPressed() {

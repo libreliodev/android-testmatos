@@ -44,5 +44,6 @@
     <string name="previouse_search_title">Ma deterniére recherche:</string>
     <string name="NewSearchText">Pour recherche snowboard, selectionner vos criteres de recherche</string>
     <string name="right_pane_search_message">Recherche par marque</string>
+    <string name="nothing_found_message">Désolé, aucun produit ne correspond á votre demande </string>
 
 </resources>

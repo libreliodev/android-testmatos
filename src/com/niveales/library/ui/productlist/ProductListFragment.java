@@ -91,9 +91,13 @@ public class ProductListFragment extends Fragment {
 			String advColName = tempCursor.getString(1);
 			String type = tempCursor.getString(2);
 			String headerText = tempCursor.getString(3);
+			String operation;
+			if(type.toLowerCase().equals("numeric"))
+				operation = "AND";
+			else operation = type;
 			Cursor searchInputsCursor = helper
 					.rawQuery(
-							"select group_concat(querystring, \" OR \") from UserSearchInputs where colname=?",
+							"select group_concat(querystring, \" " + operation + " \") from UserSearchInputs where colname=?",
 							new String[] {
 									advColName 
 							});

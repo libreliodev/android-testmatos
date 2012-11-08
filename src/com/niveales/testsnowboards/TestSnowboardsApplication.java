@@ -160,7 +160,7 @@ public class TestSnowboardsApplication extends Application {
 	/**
 	 * 
 	 */
-	private static final String DETAIL_TABLE_NAME = "Detail";
+	static final String DETAIL_TABLE_NAME = "Detail";
 
 
 	
