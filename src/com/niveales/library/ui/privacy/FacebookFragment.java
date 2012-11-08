@@ -4,17 +4,17 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.niveales.library.ui.BaseNivealesFragment;
 import com.niveales.testsnowboards.R;
 import com.niveales.testsnowboards.TestSnowboardsApplication;
 
-public class FacebookFragment extends Fragment {
+public class FacebookFragment extends BaseNivealesFragment {
 
 
 	private WebView webView;
@@ -51,4 +51,12 @@ public class FacebookFragment extends Fragment {
 		return rootView;
 	}
 	
+	@Override
+	public boolean onBackPressed() {
+		if(webView.canGoBack()) {
+			webView.goBack();
+			return true;
+		}
+		return false;
+	}
 }

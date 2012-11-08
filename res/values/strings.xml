@@ -26,7 +26,7 @@
     </string-array>
 
     <string name="product_list_search_results">Votre recherche</string>
-    <string name="product_detail_title">Fiche du ski</string>
+    <string name="product_detail_title">Fiche produit</string>
     <string name="ProductDetailWebPage">detailsIphone.html</string>
     <string name="min">mini</string>
     <string name="max">maxi</string>
@@ -43,5 +43,6 @@
     <string name="FacebookPageUrl">http&#58;&#47;&#47;www.facebook.com</string>
     <string name="previouse_search_title">Ma deterniére recherche:</string>
     <string name="NewSearchText">Pour recherche snowboard, selectionner vos criteres de recherche</string>
+    <string name="right_pane_search_message">Recherche par marque</string>
 
 </resources>

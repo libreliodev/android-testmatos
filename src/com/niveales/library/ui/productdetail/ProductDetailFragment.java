@@ -266,6 +266,10 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 					mProductImageTouchListener.onTouch(pV, pEvent);
 					return true;
 				}
+				if(mShareHolder.getVisibility() == View.VISIBLE) {
+					mShareHolder.setVisibility(View.GONE);
+					return true;
+				}
 				return false;
 			}
 		});
@@ -441,6 +445,10 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 	public boolean onBackPressed() {
 		if (mProductImage.getVisibility() == View.VISIBLE) {
 			showLargeImage(ZOOM_FINISH);
+			return true;
+		}
+		if(mShareHolder.getVisibility() == View.VISIBLE) {
+			mShareHolder.setVisibility(View.GONE);
 			return true;
 		}
 		return false;

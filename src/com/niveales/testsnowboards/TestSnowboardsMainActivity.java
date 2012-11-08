@@ -29,6 +29,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.Html;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -175,6 +176,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		mSearchResultHolder = (FrameLayout) findViewById(R.id.SearchResultHolder);
 
 		mSearchEditText = (EditText) findViewById(R.id.SearchEditText);
+		mSearchEditText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 		mSearchEditText.setOnEditorActionListener(new OnEditorActionListener() {
 
 			@Override
@@ -1062,6 +1064,18 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	public void onBackPressed() {
 		FragmentManager fm = getSupportFragmentManager();
 		Fragment f = fm.findFragmentByTag("productdetail");
+		if(f != null && f instanceof BaseNivealesFragment) {
+			BaseNivealesFragment bf = (BaseNivealesFragment) f;
+			if(bf.onBackPressed()) 
+				return;
+		}
+		f = fm.findFragmentByTag("about");
+		if(f != null && f instanceof BaseNivealesFragment) {
+			BaseNivealesFragment bf = (BaseNivealesFragment) f;
+			if(bf.onBackPressed()) 
+				return;
+		}
+		f = fm.findFragmentByTag("facebook");
 		if(f != null && f instanceof BaseNivealesFragment) {
 			BaseNivealesFragment bf = (BaseNivealesFragment) f;
 			if(bf.onBackPressed()) 
