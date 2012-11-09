@@ -2,7 +2,7 @@
     package="com.niveales.testsnowboards"
     android:installLocation="preferExternal"
     android:versionCode="1"
-    android:versionName="beta 5" >
+    android:versionName="beta 7" >
 
     <uses-sdk
         android:minSdkVersion="8"

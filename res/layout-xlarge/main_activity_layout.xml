@@ -171,14 +171,6 @@
                     android:layout_height="match_parent"
                     android:layout_weight="32" >
 
-                    <TextView
-                        android:id="@+id/textView1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="@string/right_pane_search_message"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
-
                 </FrameLayout>
             </LinearLayout>
         </LinearLayout>

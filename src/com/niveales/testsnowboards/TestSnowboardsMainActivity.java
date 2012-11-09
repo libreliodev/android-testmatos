@@ -223,6 +223,9 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 				onPrevSearchClick();
 				
 			}});
+		if(this.mRightFrameFragmentHolder != null) {
+			mMainActivityCreteriaSelectionListView.setSelection(1);
+		}
 	}
 
 	/**
@@ -345,7 +348,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 						.commit();
 			} else {
 				this.getSupportFragmentManager().beginTransaction()
-						.replace(R.id.FragmentHolder, f).addToBackStack(null)
+						.replace(R.id.favorites_tab, f)
 						.commit();
 			}
 
@@ -363,8 +366,12 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 						.addToBackStack(null).commit();
 			} else {
 				// Phone
-				Intent intent = new Intent(this, LexiqueActivity.class);
-				startActivity(intent);
+				Fragment lexiqueFragment = getMyApplication()
+						.getLexiqueFragment(
+								TestSnowboardsApplication.getDBHelper());
+				this.getSupportFragmentManager().beginTransaction()
+						.replace(R.id.terms_tab, lexiqueFragment)
+						.commit();
 			}
 		}
 	}
@@ -476,16 +483,16 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	}
 
 	protected void showProductDetail(Cursor c) {
-		if (mRightFrameFragmentHolder != null) {
-			// we have a space to show lexique in current activity
-			ProductDetailFragment productDetailFragment = getMyApplication()
-					.getProductDetailFragment(c, new ShareProductListener() {
+		ProductDetailFragment productDetailFragment = getMyApplication()
+				.getProductDetailFragment(c, new ShareProductListener() {
 
-						@Override
-						public void onShareProduct(Cursor productId, String site) {
-							showShareDialog(productId, site);
-						}
-					});
+					@Override
+					public void onShareProduct(Cursor productId, String site) {
+						showShareDialog(productId, site);
+					}
+				});
+		if (mRightFrameFragmentHolder != null) {
+			
 			int orientation = getResources().getConfiguration().orientation;
 			int layout = getResources().getConfiguration().screenLayout;
 			if (orientation == Configuration.ORIENTATION_PORTRAIT
@@ -500,9 +507,10 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 						.replace(R.id.ContentHolder, productDetailFragment, "productdetail")
 						.addToBackStack("Selection").commit();
 		} else {
-			// start a new LexiqueActivity
-			Intent intent = new Intent(this, LexiqueActivity.class);
-			startActivity(intent);
+			
+			getSupportFragmentManager().beginTransaction()
+			.replace(R.id.FragmentHolder, productDetailFragment, "productdetail")
+			.addToBackStack("Selection").commit();
 		}
 	}
 
@@ -517,33 +525,35 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 		Cursor cursor = TestSnowboardsApplication.getDBHelper()
 				.getAllAdvancedCriteria();
-		if (position < cursor.getCount()) {
-			cursor.moveToPosition(position);
-			String criteria = cursor.getString(0);
-			String type = cursor.getString(2);
-			String colName = cursor.getString(1);
-			if (type.equals("Numeric")) {
-				RangeCriteriaSelectorFragment f = getMyApplication()
-						.getRangeCriteriaSelectorFragment(
-								TestSnowboardsApplication.getDBHelper(), type,
-								criteria, colName,
-								new RangeCriteriaChangedListener());
-				this.getSupportFragmentManager().beginTransaction()
-						.replace(R.id.ContentHolder, f).addToBackStack(null)
-						.commit();
-			} else {
-				CriteriaSelectorFragment f = getMyApplication()
-						.getCriteriaSelectorFragment(
-								TestSnowboardsApplication.getDBHelper(), type,
-								criteria, colName, new CriteriaChangeListener());
-				this.getSupportFragmentManager().beginTransaction()
-						.replace(R.id.ContentHolder, f).addToBackStack(null)
-						.commit();
-			}
+
+		cursor.moveToPosition(position);
+		String criteria = cursor.getString(0);
+		String type = cursor.getString(2);
+		String colName = cursor.getString(1);
+		Fragment f;
+		if (type.equals("Numeric")) {
+			f = getMyApplication().getRangeCriteriaSelectorFragment(
+					TestSnowboardsApplication.getDBHelper(), type, criteria,
+					colName, new RangeCriteriaChangedListener());
+			
 		} else {
-			// guess user click on prev. search item
-			onPrevSearchClick();
+			f = getMyApplication().getCriteriaSelectorFragment(
+					TestSnowboardsApplication.getDBHelper(), type, criteria,
+					colName, new CriteriaChangeListener());
+			
 		}
+		if(this.mRightFrameFragmentHolder != null) {
+			// Tablet
+			this.getSupportFragmentManager().beginTransaction()
+			.replace(R.id.ContentHolder, f)
+			.commit();
+		} else {
+			// phone
+			this.getSupportFragmentManager().beginTransaction()
+			.replace(R.id.FragmentHolder, f).addToBackStack(null)
+			.commit();
+		}
+
 	}
 
 	public class RangeCriteriaChangedListener implements

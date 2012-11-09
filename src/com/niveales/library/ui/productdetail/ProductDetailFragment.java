@@ -221,6 +221,14 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 			return true;
 		}	
 	};
+	private CheckBox mFavoriteCkeckBox;
+	
+	
+	public void loadProduct(Cursor c) {
+		webView.loadDataWithBaseURL(TestSnowboardsApplication.ASSETS_URI,
+				getHTMLPage(c), "text/html", "UTF-8", null);
+		mFavoriteCkeckBox.setChecked(helper.isFavorite(productId));
+	}
 	
 	@SuppressLint("SetJavaScriptEnabled")
 	@Override
@@ -242,8 +250,7 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 		mProductImage.setOnTouchListener(mProductImageTouchListener);
 		htmlBasePage = readHTML();
 		webView = (WebView) rootView.findViewById(webViewId);
-		webView.loadDataWithBaseURL(TestSnowboardsApplication.ASSETS_URI,
-				getHTMLPage(productCursor), "text/html", "UTF-8", null);
+		
 		webView.getSettings().setJavaScriptEnabled(true);
 		webView.setWebViewClient(new WebViewClient() {
 			@Override
@@ -282,10 +289,10 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 				mShareHolder.setVisibility(View.VISIBLE);
 			}
 		});
-		CheckBox favoriteCkeckBox = (CheckBox) rootView
+		mFavoriteCkeckBox = (CheckBox) rootView
 				.findViewById(favoriteId);
-		favoriteCkeckBox.setChecked(helper.isFavorite(productId));
-		favoriteCkeckBox
+		
+		mFavoriteCkeckBox
 				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 					@Override
@@ -311,10 +318,7 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 					productCursor.move(-1);
 					recycleImageViewBitmap(mProductImage);
 					loadImageBitmap();
-					webView.loadDataWithBaseURL(
-							TestSnowboardsApplication.ASSETS_URI,
-							getHTMLPage(productCursor), "text/html", "UTF-8",
-							null);
+					loadProduct(productCursor);
 				}
 			}
 		});
@@ -328,10 +332,7 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 					productCursor.move(1);
 					recycleImageViewBitmap(mProductImage);
 					loadImageBitmap();
-					webView.loadDataWithBaseURL(
-							TestSnowboardsApplication.ASSETS_URI,
-							getHTMLPage(productCursor), "text/html", "UTF-8",
-							null);
+					loadProduct(productCursor);
 				}
 			}
 		});
@@ -361,15 +362,17 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 								(String) pV.getTag());
 					}
 				});
-				b.setLayoutParams(new LinearLayout.LayoutParams(
+				LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(
 						ViewGroup.LayoutParams.MATCH_PARENT,
-						ViewGroup.LayoutParams.WRAP_CONTENT));
+						ViewGroup.LayoutParams.WRAP_CONTENT);
+				p.setMargins(1, 1, 1, 1);
+				b.setLayoutParams(p);
 				mShareButtonsHolder.addView(b);
 			}
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-
+		loadProduct(productCursor);
 		return rootView;
 	}
 
