@@ -220,7 +220,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 			@Override
 			public void onClick(View pArg0) {
-				onPrevSearchPressed();
+				onPrevSearchClick();
 				
 			}});
 	}
@@ -228,7 +228,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	/**
 	 * 
 	 */
-	protected void onPrevSearchPressed() {
+	protected void onPrevSearchClick() {
 		DBHelper helper = TestSnowboardsApplication.getDBHelper();
 		try {
 			helper.rawQuery("delete from UserSearchInputs" , null);
@@ -236,7 +236,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			this.mMainActivityCreteriaSelectionListView.invalidateViews();
 			this.mMainLayoutSearchButton.setVisibility(View.VISIBLE);
 			this.mNewSearchTextView.setVisibility(View.INVISIBLE);
-			onSearchButtonPressed();
+			onSearchButtonClick();
 			
 		} catch (Exception e) {
 			// table does not exists, do nothing
@@ -369,7 +369,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		}
 	}
 
-	protected void onSearchButtonPressed() {
+	protected void onSearchButtonClick() {
 		String whereClaus = null;
 		DBHelper helper = TestSnowboardsApplication.getDBHelper();
 		Cursor tempCursor = helper.getAllFromTableWithOrder("AdvancedCriteria", "Title");
@@ -437,7 +437,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		
 	}
 
-	public void onSearchClearPressed() {
+	public void onClearSearchClick() {
 		TestSnowboardsApplication.getDBHelper().rawQuery("delete from UserSearchInputsOld", null);
 		TestSnowboardsApplication.getDBHelper().rawQuery("insert into UserSearchInputsOld select * from UserSearchInputs", null);
 		TestSnowboardsApplication.getDBHelper().rawQuery("delete from UserSearchInputs", null);
@@ -542,7 +542,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			}
 		} else {
 			// guess user click on prev. search item
-			onPrevSearchPressed();
+			onPrevSearchClick();
 		}
 	}
 
@@ -1051,14 +1051,14 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			ImageButton b = (ImageButton) pView;
 			b.setBackgroundResource(R.drawable.bout_new_recherc_vert);
 			b.setOnClickListener(new ClearSearchButtonClickListener());
-			onSearchButtonPressed();
+			onSearchButtonClick();
 		}
 	}
 
 	public class ClearSearchButtonClickListener implements OnClickListener {
 		@Override
 		public void onClick(View pView) {
-			onSearchClearPressed();
+			onClearSearchClick();
 		}
 	}
 

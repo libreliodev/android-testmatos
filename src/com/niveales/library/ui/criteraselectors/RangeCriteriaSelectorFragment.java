@@ -142,12 +142,19 @@ public class RangeCriteriaSelectorFragment extends Fragment {
 		String tag = et.getTag().toString();
 		helper.rawQuery("delete from UserSearchInputs where ColName='"+colName+"' AND Title LIKE '%"+tag+"%'", null);
 		String value = et.getEditableText().toString();
+		String selectionColumn = colName;
 		if(!value.equals("")){
+			if(colName.toLowerCase().equals("tailles") && tag.toLowerCase().equals("max")) {
+				selectionColumn = "TailleMax";
+			}
+			if(colName.toLowerCase().equals("tailles") && tag.toLowerCase().equals("mini")) {
+				selectionColumn = "TailleMin";
+			}
 			helper.rawQuery("insert into userSearchInputs values (?, ?, ?, ?)", new String [] {
 				colName,
 				value,
 				tag+":"+value + metaIndicator,
-				(tag.equals("Max")) ? colName + " < " + value : colName + " > " + value,
+				(tag.toLowerCase().equals("max")) ? selectionColumn + " < " + value : selectionColumn + " > " + value,
 			});
 		}
 		listener.onCriteriaChanged(colName);
