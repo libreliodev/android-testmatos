@@ -1,6 +1,7 @@
 <resources>
 
-    <string name="tests_snowboards_app_name">TestSnowboards</string><string name="tests_skis_app_name">TestSkis</string>
+    <string name="tests_snowboards_app_name">TestSnowboards</string>
+    <string name="tests_skis_app_name">TestSkis</string>
     <string name="title_activity_test_snowboards_main">TestSnowboards</string>
 
     <string-array name="Genre_Fields"></string-array>
@@ -42,8 +43,8 @@
     <string name="facebook">Facebook</string>
     <string name="FacebookPageUrl">http&#58;&#47;&#47;www.facebook.com</string>
     <string name="previouse_search_title">Ma deterniére recherche:</string>
-    <string name="NewSearchText">Pour recherche snowboard, selectionner vos criteres de recherche</string>
+    <string name="NewSearchText">Pour rechercher un snowboard, selectionner vos critères de recherche</string>
     <string name="right_pane_search_message">Recherche par marque</string>
-    <string name="nothing_found_message">Désolé, aucun produit ne correspond á votre demande </string>
+    <string name="nothing_found_message">Désolé aucun produit ne correspond à votre demande</string>
 
 </resources>
