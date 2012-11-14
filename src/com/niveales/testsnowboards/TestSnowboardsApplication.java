@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Hashtable;
 
+import org.acra.ACRA;
+import org.acra.annotation.ReportsCrashes;
+
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
 import twitter4j.Twitter;
@@ -46,9 +49,21 @@ import com.niveales.library.utils.db.DBHelper;
  * @author Dmitry Valetin
  * 
  */
+
+@ReportsCrashes(formKey = "dDVpd19Uc2E4WTBaWTJXNGJHNkZEMWc6MQ") 
+
+
+
 public class TestSnowboardsApplication extends Application {
 	
+	@Override
+	  public void onCreate() {
+	      // The following line triggers the initialization of ACRA
+	      ACRA.init(this);
+	      super.onCreate();
+	  }
 
+	public static final String ACRA_FORM_ID="dDVpd19Uc2E4WTBaWTJXNGJHNkZEMWc6MQ";
 	public static final String FACEBOOK_TAB_PAGE_URL ="http://www.facebook.com/Snowsurf.mag";
 	public static final String INFO_TAB_PAGE_URL="http://www.snowsurf.com";
 	

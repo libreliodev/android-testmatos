@@ -120,6 +120,7 @@ public class TwitterAuthActivity extends Activity {
 				// user cancelled twitter auth
 				setResult(Activity.RESULT_CANCELED, data);
 				finish();
+				return;
 			}
 			Log.d("OAuthTwitter", verifier);
 			try {
