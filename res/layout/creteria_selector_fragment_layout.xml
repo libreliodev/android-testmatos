@@ -21,10 +21,33 @@
             android:textColor="@color/milk" />
     </FrameLayout>
 
-    <ListView
-        android:id="@+id/CreteriaSelectorListView"
+    <TextView
+        android:id="@+id/CriteriaTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Large Text"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <FrameLayout
+        android:id="@+id/DoNotRemove"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-    </ListView>
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp" >
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_background" >
+
+            <ListView
+                android:id="@+id/CreteriaSelectorListView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_marginLeft="5dp" >
+
+            </ListView>
+        </FrameLayout>
+    </FrameLayout>
 
 </LinearLayout>

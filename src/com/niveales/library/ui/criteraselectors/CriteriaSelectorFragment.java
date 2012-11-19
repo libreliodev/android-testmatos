@@ -1,6 +1,7 @@
 package com.niveales.library.ui.criteraselectors;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -16,7 +17,6 @@ import com.niveales.library.utils.db.DBHelper;
 import com.niveales.testsnowboards.TestSnowboardsApplication;
 
 
-
 public class CriteriaSelectorFragment extends Fragment {
 	View rootView;
 	private String colName;
@@ -29,65 +29,62 @@ public class CriteriaSelectorFragment extends Fragment {
 	private int itemLayoutId;
 	private int itemTextViewId;
 	private int itemCheckBoxId;
-	private int itemEditViewId;
 	private String type;
 	private OnCriteriaChangedListener listener;
 	private int listViewId;
 	private String criteria;
 	private int titleResourceId;
+	private String title;
 
 	/**
 	 * 
 	 * @param type - as of AcvancedCriteria "Type" column
 	 * @param criteria - 
-	 * @param helper - instance of DBHelper 
-	 * @param context - Context
 	 * @param colName - as of in AdvancedCriteria "ColName" column 
-	 * @param layoutId - Fragment layout id
-	 * @param itemLayoutId - ListView item layout is
-	 * @param listViewId - LIstView Vew id in @param layoutId
-	 * @param itemTextView - TextView View id in @param itemLayoutId
-	 * @param itemEditable - EditText View id in @param itemLayoutId if @param type equals "Numeric" or else CheckBox View id
 	 * @param l - listener to listen criteria change events
 	 * @return
 	 */
-	public static CriteriaSelectorFragment getInstance(String type, String criteria, int titleResourceId, 
-			DBHelper helper, Context context, String colName, int layoutId,
-			int itemLayoutId, int listViewId, int itemTextView, int itemEditable, OnCriteriaChangedListener l) {
+	public static CriteriaSelectorFragment getInstance(int pPosition, 
+			OnCriteriaChangedListener l) {
 		CriteriaSelectorFragment f = new CriteriaSelectorFragment();
-		f.init(type, criteria, titleResourceId, helper, context, colName, layoutId, listViewId, itemLayoutId,
-				itemTextView, itemEditable, l);
+		f.init(pPosition, l);
 		return f;
 	}
 
-	private void init(String type, String criteria, int titleResourceId, DBHelper helper, Context context,
-			String colName, int layoutId, int listViewId, int itemLayoutId, int textViewId,
-			int editableId, OnCriteriaChangedListener l) {
-		this.type = type;
-		this.criteria = criteria;
-		this.titleResourceId = titleResourceId;
-		this.helper = helper;
-		this.context = context;
-		this.colName = colName;
-		this.layoutId = layoutId;
-		this.listViewId = listViewId;
-		this.itemLayoutId = itemLayoutId;
-		this.itemTextViewId = textViewId;
-		if (type.equals(TestSnowboardsApplication.NUMERIC)) {
-			this.itemEditViewId = editableId;
-		} else {
-			this.itemCheckBoxId = editableId;
-		}
-		this.listener = l;
-	}
+	private void init(int pPosition,  OnCriteriaChangedListener l) {
 
+		Cursor cursor = TestSnowboardsApplication.getDBHelper()
+				.getAllAdvancedCriteria();
+
+		cursor.moveToPosition(pPosition);
+		this.criteria = cursor.getString(0);
+		this.type = cursor.getString(2);
+		this.colName = cursor.getString(1);
+		
+		this.title = cursor.getString(3);
+
+		this.listener = l;
+		
+		titleResourceId = TestSnowboardsApplication.CriteriaSelectorConstants.CRITERIA_SELECTOR_RIGHTPANE_TITLE_TEXTVIEW;
+		layoutId = TestSnowboardsApplication.CriteriaSelectorConstants.CRETERIA_SELECTOR_FRAGMENT_LAYOUT_ID;
+		itemLayoutId = TestSnowboardsApplication.CriteriaSelectorConstants.CHECKED_CRITERIA_SELECTOR_ITEM_LAYOUT_ID;
+		listViewId = TestSnowboardsApplication.CriteriaSelectorConstants.CRETERIA_SELECTOR_LISTVIEW_VIEW_ID;
+		itemTextViewId = TestSnowboardsApplication.CriteriaSelectorConstants.CRITERIA_SELECTOR_CRITERIA_TEXTVIEW_VIEW_ID; 
+		itemCheckBoxId = TestSnowboardsApplication.CriteriaSelectorConstants.CRITERIA_SELECTOR_CRITERIA_CHECKBOX_VIEW_ID;
+		
+	}
+	
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		rootView = inflater.inflate(layoutId, container, false);
-		TextView title = (TextView) rootView.findViewById(titleResourceId);
-		title.setText(criteria);
+		this.helper = TestSnowboardsApplication.getDBHelper();
+		this.context = getActivity();
+		TextView topTitle = (TextView) rootView.findViewById(titleResourceId);
+		topTitle.setText(criteria);
+		TextView criteriaTitle = (TextView) rootView.findViewById(TestSnowboardsApplication.CriteriaSelectorConstants.CRETERIA_SELECTOR_TITLE_VIEW_ID);
+		criteriaTitle.setText(title);
 		ListView mCreteriaSelectorListView = (ListView) rootView
 				.findViewById(listViewId);
 		if (!type.equals(TestSnowboardsApplication.NUMERIC)) {

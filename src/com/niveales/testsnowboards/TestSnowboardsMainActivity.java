@@ -538,8 +538,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			
 		} else {
 			f = getMyApplication().getCriteriaSelectorFragment(
-					TestSnowboardsApplication.getDBHelper(), type, criteria,
-					colName, new CriteriaChangeListener());
+					position, new CriteriaChangeListener());
 			
 		}
 		if(this.mRightFrameFragmentHolder != null) {
@@ -642,7 +641,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 					.beginTransaction();
 			ft.remove(oldAbout).commit();
 		}
-		if (findViewById(R.id.ProductDetailsHolder) != null) {
+		if (this.mRightFrameFragmentHolder != null) {
 			// we are on a tablet
 			AboutFragment f = new AboutFragment();
 			getSupportFragmentManager().beginTransaction()
@@ -651,7 +650,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		} else {
 			AboutFragment f = new AboutFragment();
 			getSupportFragmentManager().beginTransaction()
-					.replace(R.id.ContentHolder, f, "about")
+					.replace(R.id.FragmentHolder, f, "about")
 					.addToBackStack(null).commit();
 		}
 		// Intent intent = new Intent(this, PrivacyActivity.class);
@@ -670,7 +669,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 					.beginTransaction();
 			ft.remove(oldAbout).commit();
 		}
-		if (findViewById(R.id.ProductDetailsHolder) != null) {
+		if (this.mRightFrameFragmentHolder != null) {
 			// we are on a tablet
 			FacebookFragment f = new FacebookFragment();
 			getSupportFragmentManager().beginTransaction()
@@ -679,7 +678,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		} else {
 			FacebookFragment f = new FacebookFragment();
 			getSupportFragmentManager().beginTransaction()
-					.replace(R.id.ContentHolder, f, "facebook")
+					.replace(R.id.FragmentHolder, f, "facebook")
 					.addToBackStack(null).commit();
 		}
 		// Intent intent = new Intent(this, PrivacyActivity.class);

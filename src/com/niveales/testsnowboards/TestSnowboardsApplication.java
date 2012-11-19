@@ -56,6 +56,44 @@ import com.niveales.library.utils.db.DBHelper;
 
 public class TestSnowboardsApplication extends Application {
 	
+	
+
+	/**
+	 * 
+	 */
+	public static class CriteriaSelectorConstants {
+		/**
+		 * 
+		 */
+		public static final int CRITERIA_SELECTOR_RIGHTPANE_TITLE_TEXTVIEW = R.id.RightPaneTitleTextView;
+		/**
+		 * 
+		 */
+		public  static final int CRITERIA_SELECTOR_CRITERIA_CHECKBOX_VIEW_ID = R.id.CriteriaCheckBox;
+		/**
+		 * 
+		 */
+		public  static final int CRITERIA_SELECTOR_CRITERIA_TEXTVIEW_VIEW_ID = R.id.CriteriaTextView;
+		/**
+		 * 
+		 */
+		public  static final int CRETERIA_SELECTOR_LISTVIEW_VIEW_ID = R.id.CreteriaSelectorListView;
+		/**
+		 * 
+		 */
+		public  static final int CHECKED_CRITERIA_SELECTOR_ITEM_LAYOUT_ID = R.layout.checked_criteria_selector_item_layout;
+		/**
+		 * 
+		 */
+		public  static final int CRETERIA_SELECTOR_FRAGMENT_LAYOUT_ID = R.layout.creteria_selector_fragment_layout;
+		
+		/**
+		 * 
+		 */
+		public static final int CRETERIA_SELECTOR_TITLE_VIEW_ID = R.id.CriteriaTitle;
+	}
+
+
 	@Override
 	  public void onCreate() {
 	      // The following line triggers the initialization of ACRA
@@ -359,20 +397,17 @@ public class TestSnowboardsApplication extends Application {
 	
 	public RangeCriteriaSelectorFragment getRangeCriteriaSelectorFragment(DBHelper helper, String type, String criteria, String colName, OnRangeCriteriaChangedListener l) {
 		return RangeCriteriaSelectorFragment
-		.getInstance(type, criteria, R.id.RightPaneTitleTextView,
+		.getInstance(type, criteria, CriteriaSelectorConstants.CRITERIA_SELECTOR_RIGHTPANE_TITLE_TEXTVIEW,
 				helper, this, colName,
 				R.layout.range_criteria_selector_layout,
 				R.id.MinPriceInputField, R.id.MaxPriceInputField,
 				l);
 	}
 	
-	public CriteriaSelectorFragment getCriteriaSelectorFragment(DBHelper helper, String type, String criteria, String colName, OnCriteriaChangedListener l) {
+	public CriteriaSelectorFragment getCriteriaSelectorFragment(int pPosition, OnCriteriaChangedListener l) {
 		return CriteriaSelectorFragment.getInstance(
-				type, criteria, R.id.RightPaneTitleTextView, helper, this,
-				colName, R.layout.creteria_selector_fragment_layout,
-				R.layout.checked_criteria_selector_item_layout,
-				R.id.CreteriaSelectorListView, R.id.CriteriaTextView,
-				R.id.CriteriaCheckBox, l);
+				pPosition, l 
+				);
 	}
 	
 	public static byte[] scaleImage(Context context, Uri photoUri)
