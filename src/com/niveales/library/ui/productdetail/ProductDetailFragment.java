@@ -6,13 +6,16 @@ import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 
+import android.R;
 import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -34,6 +37,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.niveales.library.ui.BaseNivealesFragment;
+import com.niveales.library.ui.popup.ActionItem;
+import com.niveales.library.ui.popup.QuickAction;
 import com.niveales.library.utils.db.DBHelper;
 import com.niveales.testsnowboards.TestSnowboardsApplication;
 import com.niveales.testsnowboards.TestSnowboardsApplication.ProductDetailConstants;
@@ -77,11 +82,12 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 	private int bitmapWidth;
 	private int bitmapHeight;
 	private int webPageStringResourceId;
-	private ViewGroup mShareHolder;
+	private QuickAction mShareHolder;
 	private LinearLayout mShareButtonsHolder;
 	protected float downX;
 	protected float downY;
 	protected boolean isZoomStarted = false;
+	private ArrayList<ActionItem> mActionItems = new ArrayList<ActionItem>();
 
 
 	private void init(int productDetailLayout, int webViewId,
@@ -273,10 +279,6 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 					mProductImageTouchListener.onTouch(pV, pEvent);
 					return true;
 				}
-				if(mShareHolder.getVisibility() == View.VISIBLE) {
-					mShareHolder.setVisibility(View.GONE);
-					return true;
-				}
 				return false;
 			}
 		});
@@ -286,7 +288,8 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 
 			@Override
 			public void onClick(View arg0) {
-				mShareHolder.setVisibility(View.VISIBLE);
+				mShareHolder.dismiss();
+				mShareHolder.show();
 			}
 		});
 		mFavoriteCkeckBox = (CheckBox) rootView
@@ -337,11 +340,7 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 			}
 		});
 
-		mShareHolder = (ViewGroup) rootView
-				.findViewById(TestSnowboardsApplication.ProductDetailConstants.PRODUCT_DETAIL_SHAREHOLDER_VIEW_ID);
-		mShareHolder.setVisibility(View.GONE);
-		mShareButtonsHolder = (LinearLayout) rootView
-				.findViewById(TestSnowboardsApplication.ProductDetailConstants.PRODUCTDETAIL_SHAREBUTTONSHOLDER_VIEW_ID);
+		mShareHolder = new QuickAction(shareButton);
 		String shareString = productCursor.getString(productCursor
 				.getColumnIndexOrThrow("Lien_Partage"));
 		Uri uri = Uri.parse(shareString);
@@ -349,6 +348,9 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 			String[] sites = URLDecoder.decode(
 					uri.getQueryParameter("wasites"), "utf-8").split(",");
 			for (int i = 0; i < sites.length; i++) {
+				ActionItem item = new ActionItem();
+				item.setTitle("Share by "+sites[i]);
+				item.setTag(sites[i]);
 				Button b = new Button(getActivity());
 				b.setText("Share on " + sites[i]);
 				b.setTag(sites[i]);
@@ -357,7 +359,7 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 
 					@Override
 					public void onClick(View pV) {
-						mShareHolder.setVisibility(View.GONE);
+						mShareHolder.dismiss();
 						listener.onShareProduct(productCursor,
 								(String) pV.getTag());
 					}
@@ -367,7 +369,9 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 						ViewGroup.LayoutParams.WRAP_CONTENT);
 				p.setMargins(1, 1, 1, 1);
 				b.setLayoutParams(p);
-				mShareButtonsHolder.addView(b);
+//				mShareButtonsHolder.addView(b);
+				item.setActionItemView(b);
+				mShareHolder.addActionItem(item);
 			}
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
@@ -448,10 +452,6 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 	public boolean onBackPressed() {
 		if (mProductImage.getVisibility() == View.VISIBLE) {
 			showLargeImage(ZOOM_FINISH);
-			return true;
-		}
-		if(mShareHolder.getVisibility() == View.VISIBLE) {
-			mShareHolder.setVisibility(View.GONE);
 			return true;
 		}
 		return false;

@@ -173,11 +173,7 @@ public class TestSnowboardsApplication extends Application {
 		/**
 		 * 
 		 */
-		public static final int PRODUCTDETAIL_SHAREBUTTONSHOLDER_VIEW_ID = R.id.ShareButtonsHolder;
-		/**
-		 * 
-		 */
-		public static final int PRODUCT_DETAIL_SHAREHOLDER_VIEW_ID = R.id.ShareHolder;
+//		public static final int PRODUCT_DETAIL_SHAREHOLDER_VIEW_ID = R.id.ShareHolder;
 		/**
 		 * 
 		 */

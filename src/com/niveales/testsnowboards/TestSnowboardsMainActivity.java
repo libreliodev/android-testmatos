@@ -120,6 +120,9 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 				TestSnowboardsApplication.dbName));
 		TestSnowboardsApplication.getDBHelper().open();
 		initViews();
+		if(this.mRightFrameFragmentHolder != null) {
+			showSelectionCategory(1);
+		}
 	}
 	
 	@SuppressLint("NewApi")
@@ -223,9 +226,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 				onPrevSearchClick();
 				
 			}});
-		if(this.mRightFrameFragmentHolder != null) {
-			mMainActivityCreteriaSelectionListView.setSelection(1);
-		}
+		
 	}
 
 	/**
@@ -475,6 +476,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 				showProductDetail(c);
 			}
 		});
+
 		if (this.mSearchResultHolder != null) {
 			this.getSupportFragmentManager().beginTransaction()
 					.replace(R.id.SearchResultHolder, f)
