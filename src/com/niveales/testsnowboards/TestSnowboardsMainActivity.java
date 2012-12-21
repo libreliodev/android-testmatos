@@ -186,6 +186,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 		mSearchEditText = (AutoCompleteTextView) findViewById(R.id.SearchEditText);
 		mSearchEditText.setAdapter(new SearchAdapter(this));
+		mSearchEditText.setThreshold(1);
 		mSearchEditText.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
