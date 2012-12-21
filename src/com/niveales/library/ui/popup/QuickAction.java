@@ -13,6 +13,7 @@ import android.widget.ScrollView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup;
@@ -38,6 +39,7 @@ public class QuickAction extends CustomPopupWindow {
 	private ViewGroup mTrack;
 	private ScrollView scroller;
 	private ArrayList<ActionItem> actionList;
+	private LayoutParams mLayoutParams;
 	
 	public QuickAction(View anchor) {
 		super(anchor);
@@ -48,13 +50,13 @@ public class QuickAction extends CustomPopupWindow {
 		
 		root		= (ViewGroup) inflater.inflate(R.layout.popup_v, null);
 		
-		mArrowDown 	= (ImageView) root.findViewById(R.id.arrow_down);
-		mArrowUp 	= (ImageView) root.findViewById(R.id.arrow_up);
+		mArrowDown 	= (ImageView) getRootView().findViewById(R.id.arrow_down);
+		mArrowUp 	= (ImageView) getRootView().findViewById(R.id.arrow_up);
 		
-		setContentView(root);
+		setContentView(getRootView());
 	    
-		mTrack 			= (ViewGroup) root.findViewById(R.id.tracks);
-		scroller		= (ScrollView) root.findViewById(R.id.scroller);
+		mTrack 			= (ViewGroup) getRootView().findViewById(R.id.tracks);
+		scroller		= (ScrollView) getRootView().findViewById(R.id.scroller);
 		animStyle		= ANIM_AUTO;
 	}
 
@@ -80,11 +82,14 @@ public class QuickAction extends CustomPopupWindow {
 
 		createActionList();
 		
-		root.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-		root.measure(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		if(mLayoutParams == null)
+			mLayoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		getRootView().setLayoutParams(mLayoutParams);
+		getRootView().measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
+		getRootView().measure(MeasureSpec.EXACTLY | getRootView().getMeasuredWidth(), MeasureSpec.AT_MOST | getRootView().getMeasuredHeight());
 	
-		int rootHeight 		= root.getMeasuredHeight();
-		int rootWidth		= root.getMeasuredWidth();
+		int rootHeight 		= getRootView().getMeasuredHeight();
+		int rootWidth		= getRootView().getMeasuredWidth();
 		
 		int screenWidth 	= windowManager.getDefaultDisplay().getWidth();
 		int screenHeight	= windowManager.getDefaultDisplay().getHeight();
@@ -118,6 +123,7 @@ public class QuickAction extends CustomPopupWindow {
 			if (rootHeight > dyBottom) { 
 				LayoutParams l 	= scroller.getLayoutParams();
 				l.height		= dyBottom;
+				getRootView().setLayoutParams(l);
 			}
 		}
 		
@@ -226,4 +232,13 @@ public class QuickAction extends CustomPopupWindow {
 		super.dismiss();
 		mTrack.removeAllViews();
 	}
+
+	public View getRootView() {
+		return root;
+	}
+	
+	public void setLayoutParams(LayoutParams params) {
+		mLayoutParams = params;
+	}
+	
 }

@@ -17,6 +17,13 @@ public class ActionItem {
 		this.icon = icon;
 	}
 	
+	/**
+	 * @param pSearchView
+	 */
+	public ActionItem(View pView) {
+		mActionItemView = pView;
+	}
+
 	public void setTitle(String title) {
 		this.title = title;
 	}

@@ -28,6 +28,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Environment;
+import android.widget.EditText;
 
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.Facebook;
@@ -36,6 +37,7 @@ import com.niveales.library.ui.criteraselectors.CriteriaSelectorFragment.OnCrite
 import com.niveales.library.ui.criteraselectors.RangeCriteriaSelectorFragment;
 import com.niveales.library.ui.criteraselectors.RangeCriteriaSelectorFragment.OnRangeCriteriaChangedListener;
 import com.niveales.library.ui.lexique.LexiqueFragment;
+import com.niveales.library.ui.popup.SearchPopup;
 import com.niveales.library.ui.productdetail.ProductDetailFragment;
 import com.niveales.library.ui.productdetail.ProductDetailFragment.ShareProductListener;
 import com.niveales.library.ui.productlist.FavoriteProductListFragment;
@@ -43,6 +45,7 @@ import com.niveales.library.ui.productlist.ProductListFragment;
 import com.niveales.library.ui.productsearch.ProductSearchFragment;
 import com.niveales.library.utils.TwitterSession;
 import com.niveales.library.utils.adapters.CursorViewBinder;
+import com.niveales.library.utils.adapters.search.SearchAdapter;
 import com.niveales.library.utils.db.DBHelper;
 
 /**
@@ -209,7 +212,7 @@ public class TestSnowboardsApplication extends Application {
 	/**
 	 * 
 	 */
-	static final String DETAIL_TABLE_NAME = "Detail";
+	public static final String DETAIL_TABLE_NAME = "Detail";
 
 
 	
@@ -380,6 +383,25 @@ public class TestSnowboardsApplication extends Application {
 								R.id.productListItemGamme,
 								R.id.productListItemBudget
 				}));
+	}
+
+	
+	public SearchPopup getProductSearchPopup(EditText anchor) {
+		return new SearchPopup(anchor, 
+				new SearchAdapter(anchor.getContext(), getDBHelper().getAllFromTableWithWhereAndOrder(DETAIL_TABLE_NAME, null, null), 
+						R.layout.product_search_item_layout, new CursorViewBinder(this, new String[] {
+								// columns to display in search results list
+								DBHelper.MODELE_MARQUE_KEY, 
+								DBHelper.MODELE_MODELE_KEY,
+								"Gamme", 
+								"Prix_String",
+							}, new int[] { 
+									R.id.productListItemGenre,
+									R.id.productListItemModele,
+									R.id.productListItemGamme,
+									R.id.productListItemBudget
+					})));
+				
 	}
 
 	

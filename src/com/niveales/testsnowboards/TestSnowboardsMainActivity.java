@@ -39,10 +39,12 @@ import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -68,6 +70,7 @@ import com.niveales.library.ui.criteraselectors.CriteriaSelectorFragment;
 import com.niveales.library.ui.criteraselectors.CriteriaSelectorFragment.OnCriteriaChangedListener;
 import com.niveales.library.ui.criteraselectors.RangeCriteriaSelectorFragment;
 import com.niveales.library.ui.criteraselectors.RangeCriteriaSelectorFragment.OnRangeCriteriaChangedListener;
+import com.niveales.library.ui.popup.SearchPopup;
 import com.niveales.library.ui.privacy.AboutFragment;
 import com.niveales.library.ui.privacy.FacebookFragment;
 import com.niveales.library.ui.productdetail.ProductDetailFragment;
@@ -79,6 +82,7 @@ import com.niveales.library.ui.productsearch.ProductSearchFragment;
 import com.niveales.library.ui.productsearch.ProductSearchFragment.OnProductSearchSelectedListener;
 import com.niveales.library.utils.BitlyAndroid;
 import com.niveales.library.utils.adapters.AdvancedCriteriaMainListAdapter;
+import com.niveales.library.utils.adapters.search.SearchAdapter;
 import com.niveales.library.utils.db.DBHelper;
 import com.niveales.testsnowboards.lexique.LexiqueActivity;
 
@@ -96,7 +100,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	private ListView mMainActivityCreteriaSelectionListView;
 	private AdvancedCriteriaMainListAdapter mainAdapter;
 	private FrameLayout mSearchResultHolder;
-	private EditText mSearchEditText;
+	private AutoCompleteTextView mSearchEditText;
 	private ImageButton mMainLayoutSearchButton;
 	public ProgressDialog mProgressDialog;
 	public String mRecentSearch;
@@ -180,43 +184,65 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 		mSearchResultHolder = (FrameLayout) findViewById(R.id.SearchResultHolder);
 
-		mSearchEditText = (EditText) findViewById(R.id.SearchEditText);
+		mSearchEditText = (AutoCompleteTextView) findViewById(R.id.SearchEditText);
+		mSearchEditText.setAdapter(new SearchAdapter(this));
+		mSearchEditText.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> pArg0, View pArg1,
+					int pArg2, long pArg3) {
+				InputMethodManager imm = (InputMethodManager) TestSnowboardsMainActivity.this
+						.getSystemService(Activity.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(
+						mSearchEditText.getWindowToken(), 0);
+				showProductDetail((Cursor)pArg0.getAdapter().getItem(pArg2));
+				
+			}});
 		mSearchEditText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-		mSearchEditText.setOnEditorActionListener(new OnEditorActionListener() {
-
-			@Override
-			public boolean onEditorAction(TextView pV, int pActionId,
-					KeyEvent pEvent) {
-				if (pActionId == 0) {
-					InputMethodManager imm = (InputMethodManager) TestSnowboardsMainActivity.this
-							.getSystemService(Activity.INPUT_METHOD_SERVICE);
-					imm.hideSoftInputFromWindow(
-							mSearchEditText.getWindowToken(), 0);
-				}
-				return false;
-			}
-		});
-		mSearchEditText.addTextChangedListener(new TextWatcher() {
-
-			@Override
-			public void afterTextChanged(Editable pArg0) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void beforeTextChanged(CharSequence pArg0, int pArg1,
-					int pArg2, int pArg3) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onTextChanged(CharSequence pArg0, int pArg1, int pArg2,
-					int pArg3) {
-				onSearchStarted();
-				
-			}} );
+//		mSearchEditText.setOnEditorActionListener(new OnEditorActionListener() {
+//
+//			@Override
+//			public boolean onEditorAction(TextView pV, int pActionId,
+//					KeyEvent pEvent) {
+//				if (pActionId == 0) {
+//					InputMethodManager imm = (InputMethodManager) TestSnowboardsMainActivity.this
+//							.getSystemService(Activity.INPUT_METHOD_SERVICE);
+//					imm.hideSoftInputFromWindow(
+//							mSearchEditText.getWindowToken(), 0);
+//				}
+//				return false;
+//			}
+//		});
+//		mSearchEditText.setOnClickListener(new View.OnClickListener() {
+//			
+//			@Override
+//			public void onClick(View pV) {
+//				// TODO Auto-generated method stub
+//				onSearchStarted();
+//
+//			}
+//		});
+//		mSearchEditText.addTextChangedListener(new TextWatcher() {
+//
+//			@Override
+//			public void afterTextChanged(Editable pArg0) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//
+//			@Override
+//			public void beforeTextChanged(CharSequence pArg0, int pArg1,
+//					int pArg2, int pArg3) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//
+//			@Override
+//			public void onTextChanged(CharSequence pArg0, int pArg1, int pArg2,
+//					int pArg3) {
+//				onSearchStarted();
+//				
+//			}} );
 		mPrevSearchTextView = (TextView) findViewById(R.id.PrevSearchTextView);
 		mPrevSearchTextView.setText(getPrevSearchText());
 		mPrevSearchTextView.setOnClickListener(new OnClickListener(){
@@ -460,6 +486,12 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	 * called when user clicks on search input field
 	 */
 	protected void onSearchStarted() {
+		final SearchPopup mSearchPopup = getMyApplication().getProductSearchPopup(this.mSearchEditText);
+		mSearchPopup.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
+		mSearchPopup.show();
+		
+	}
+	protected void onOldSearchStarted() {
 		final ProductSearchFragment f = getMyApplication()
 				.getProductSearchFragment(
 						TestSnowboardsApplication.getDBHelper(),

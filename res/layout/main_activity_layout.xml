@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/top_logo" />
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/SearchEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
