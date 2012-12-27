@@ -53,13 +53,41 @@ import com.niveales.library.utils.db.DBHelper;
  * 
  */
 
-@ReportsCrashes(formKey = "dDVpd19Uc2E4WTBaWTJXNGJHNkZEMWc6MQ") 
-
-
-
+@ReportsCrashes(formKey = "dDVpd19Uc2E4WTBaWTJXNGJHNkZEMWc6MQ")
 public class TestSnowboardsApplication extends Application {
-	
-	
+
+	public static class ProductSearchConstants {
+
+		/**
+		 * 
+		 */
+		public static final int[] PRODUCT_SEARCH_BINDER_IDS = new int[] {
+				R.id.productListItemGenre, R.id.productListItemModele,
+				R.id.productListItemGamme, R.id.productListItemBudget };
+		/**
+		 * 
+		 */
+		public static final String[] PRODUCT_SEARCH_BINDER_COLUMNS = new String[] {
+				// columns to display in search results list
+				DBHelper.MODELE_MARQUE_KEY, DBHelper.MODELE_MODELE_KEY,
+				"Gamme", "Prix_String", };
+
+		/**
+	 * 
+	 */
+		public static final String[] PRODUCT_SEARCH_SEARCH_COLUMNS = new String[] {
+				// Search columns
+				DBHelper.MODELE_MARQUE_KEY, DBHelper.MODELE_MODELE_KEY, "Gamme" };
+		/**
+	 * 
+	 */
+		public static final int PRODUCT_SEARCH_LISTVIEW_ITEM_LAYOUT = R.layout.product_search_item_layout;
+		/**
+	 * 
+	 */
+		public static final int PRODUCT_SEARCH_FAGMENT_LAYOUT = R.layout.product_search_fagment_layout;
+
+	}
 
 	/**
 	 * 
@@ -72,54 +100,46 @@ public class TestSnowboardsApplication extends Application {
 		/**
 		 * 
 		 */
-		public  static final int CRITERIA_SELECTOR_CRITERIA_CHECKBOX_VIEW_ID = R.id.CriteriaCheckBox;
+		public static final int CRITERIA_SELECTOR_CRITERIA_CHECKBOX_VIEW_ID = R.id.CriteriaCheckBox;
 		/**
 		 * 
 		 */
-		public  static final int CRITERIA_SELECTOR_CRITERIA_TEXTVIEW_VIEW_ID = R.id.CriteriaTextView;
+		public static final int CRITERIA_SELECTOR_CRITERIA_TEXTVIEW_VIEW_ID = R.id.CriteriaTextView;
 		/**
 		 * 
 		 */
-		public  static final int CRETERIA_SELECTOR_LISTVIEW_VIEW_ID = R.id.CreteriaSelectorListView;
+		public static final int CRETERIA_SELECTOR_LISTVIEW_VIEW_ID = R.id.CreteriaSelectorListView;
 		/**
 		 * 
 		 */
-		public  static final int CHECKED_CRITERIA_SELECTOR_ITEM_LAYOUT_ID = R.layout.checked_criteria_selector_item_layout;
+		public static final int CHECKED_CRITERIA_SELECTOR_ITEM_LAYOUT_ID = R.layout.checked_criteria_selector_item_layout;
 		/**
 		 * 
 		 */
-		public  static final int CRETERIA_SELECTOR_FRAGMENT_LAYOUT_ID = R.layout.creteria_selector_fragment_layout;
-		
+		public static final int CRETERIA_SELECTOR_FRAGMENT_LAYOUT_ID = R.layout.creteria_selector_fragment_layout;
+
 		/**
 		 * 
 		 */
 		public static final int CRETERIA_SELECTOR_TITLE_VIEW_ID = R.id.CriteriaTitle;
 	}
 
-
-	@Override
-	  public void onCreate() {
-	      // The following line triggers the initialization of ACRA
-	      ACRA.init(this);
-	      super.onCreate();
-	  }
-
-	public static final String ACRA_FORM_ID="dDVpd19Uc2E4WTBaWTJXNGJHNkZEMWc6MQ";
-	public static final String FACEBOOK_TAB_PAGE_URL ="http://www.facebook.com/Snowsurf.mag";
-	public static final String INFO_TAB_PAGE_URL="http://www.snowsurf.com";
 	
+
+	public static final String ACRA_FORM_ID = "dDVpd19Uc2E4WTBaWTJXNGJHNkZEMWc6MQ";
+	public static final String FACEBOOK_TAB_PAGE_URL = "http://www.facebook.com/Snowsurf.mag";
+	public static final String INFO_TAB_PAGE_URL = "http://www.snowsurf.com/app-teasing";
+
 	public static class ProductDetailConstants {
 		/**
 		 * 
 		 */
 		public static final int PRODUCT_DETAIL_SHARE_BUTTON_VIEW_ID = R.id.ShareButton;
 
-
 		/**
 		 * 
 		 */
 		public static final int PRODUCT_DETAIL_FAVORITE_CKECKBOX_VIEW_ID = R.id.FavoriteCkeckBox;
-
 
 		/**
 		 * 
@@ -132,51 +152,49 @@ public class TestSnowboardsApplication extends Application {
 				"%GAMME%", "%TAILLE TESTEE%", "%TAILLES DISPONIBLES%",
 				"%type_de_cambre_text%", "%Test_baseline%",
 				"%Description_Test%", "%Test_avantages%",
-				"%test_inconvenients%", "%icone_genre%",
-				"%icone_cambres%", "%icone_wide%", "%icone_top%",
-				"%img_niveau%", "%img_polyvalence%",
-				"%Caractéristiques%",
+				"%test_inconvenients%", "%icone_genre%", "%icone_cambres%",
+				"%icone_wide%", "%icone_top%", "%img_niveau%",
+				"%img_polyvalence%", "%Caractéristiques%",
 
 		};
-
 
 		/**
 		 * 
 		 */
-		public static final String[] PRODUCT_DETAIL_COLUMN_KEYS = // List of fields in product html file
-		new String[] { "Marque",
-				"Modele", "Prix_String", "imgLR", "Gamme",
+		public static final String[] PRODUCT_DETAIL_COLUMN_KEYS = // List of
+																	// fields in
+																	// product
+																	// html file
+		new String[] { "Marque", "Modele", "Prix_String", "imgLR", "Gamme",
 				"test_Taille_testee", "Tailles", "type_de_cambre_text",
 				"Test_baseline", "Description_Test", "Test_avantages",
 				"test_inconvenients", "icone_genre", "icone_cambres",
-				"icone_wide", "icone_top", "img_niveau",
-				"img_polyvalence", "Caractéristiques",
-		// List of Details table columns to get data from, used to fill HTML fields above
+				"icone_wide", "icone_top", "img_niveau", "img_polyvalence",
+				"Caractéristiques",
+		// List of Details table columns to get data from, used to fill HTML
+		// fields above
 		};
-
 
 		/**
 		 * 
 		 */
 		public static final int PRODUCT_DETAIL_WEBPAGE_FILE_URI = R.string.ProductDetailWebPage;
 
-
 		/**
 		 * 
 		 */
 		public static final int PRODUCT_DETAIL_WEBVIEW_VIEW_ID = R.id.ProductDetailsWebView;
 
-
 		/**
 		 * 
 		 */
 		public static final int PRODUCT_DETAIL_LAYOUT = R.layout.product_detail_layout;
-		
 
 		/**
 		 * 
 		 */
-//		public static final int PRODUCT_DETAIL_SHAREHOLDER_VIEW_ID = R.id.ShareHolder;
+		// public static final int PRODUCT_DETAIL_SHAREHOLDER_VIEW_ID =
+		// R.id.ShareHolder;
 		/**
 		 * 
 		 */
@@ -189,33 +207,30 @@ public class TestSnowboardsApplication extends Application {
 		 * 
 		 */
 		public static final int PRODUCTDETAIL_PRODUCTIMAGE_VIEW_ID = R.id.ProductImage;
-//		public static final String HTML_TITLE = "%TAITLE%";
-//		public static final String HTML_MODELE = "%Modele%";
-//		public static final String HTML_BUDGET = "%Budget%";
-//		public static final String HTML_GAMME = "%GAMME%";
-//		public static final String HTML_CHARACTER = "%CARACTERE%";
-//		public static final String HTML_NIVEAU_REQUIS = "%NIVEAU REQUIS%";
-//		public static final String HTML_TALLE_TESTEE = "%TAILLE TESTEE%";
-//		public static final String HTML_TEST_BASELINE = "%Test_baseline%";
-//		public static final String HTML_DESC = "%Description_Test%";
-//		public static final String HTML_TEST_ADV = "%Test_avantages%";
-//		public static final String HTML_TEST_DISADV = "%test_inconvenients%";
-//		public static final String HTML_CHARACTERISTICS = "%Caractéristiques%";
-//		public static final String HTML_ICON_TESTCHOICE = "%icone_testerchoice%";
-//		public static final String HTML_ICON_SEX = "%icone_genre%";
-//		public static final String HTML_PIC = "%img%";
+		// public static final String HTML_TITLE = "%TAITLE%";
+		// public static final String HTML_MODELE = "%Modele%";
+		// public static final String HTML_BUDGET = "%Budget%";
+		// public static final String HTML_GAMME = "%GAMME%";
+		// public static final String HTML_CHARACTER = "%CARACTERE%";
+		// public static final String HTML_NIVEAU_REQUIS = "%NIVEAU REQUIS%";
+		// public static final String HTML_TALLE_TESTEE = "%TAILLE TESTEE%";
+		// public static final String HTML_TEST_BASELINE = "%Test_baseline%";
+		// public static final String HTML_DESC = "%Description_Test%";
+		// public static final String HTML_TEST_ADV = "%Test_avantages%";
+		// public static final String HTML_TEST_DISADV = "%test_inconvenients%";
+		// public static final String HTML_CHARACTERISTICS =
+		// "%Caractéristiques%";
+		// public static final String HTML_ICON_TESTCHOICE =
+		// "%icone_testerchoice%";
+		// public static final String HTML_ICON_SEX = "%icone_genre%";
+		// public static final String HTML_PIC = "%img%";
 	}
-	
-	
-
 
 	/**
 	 * 
 	 */
 	public static final String DETAIL_TABLE_NAME = "Detail";
 
-
-	
 	private static class ProductListConstants {
 
 		/**
@@ -228,19 +243,16 @@ public class TestSnowboardsApplication extends Application {
 		// DBHelper.MODELE_PRIX_DE_REFERENCE_KEY,
 		// DBHelper.MODELE_GENRE_KEY,
 		// DBHelper.MODELE_IMG_KEY
-				};
+		};
 		/**
 		 * 
 		 */
-		private static final int[] PRODUCT_LIST_DISPLAY_VIEW_IDS = new int[] { R.id.productListItemGenre,
-						R.id.productListItemModele,
-						R.id.productListItemFemale,
-						R.id.productListItemChambre,
-						R.id.productListItemGamme,
-						R.id.productListItemBudget,
-						R.id.productListItemWide,
-						R.id.productListItemPop,
-						R.id.productListItemPicture };
+		private static final int[] PRODUCT_LIST_DISPLAY_VIEW_IDS = new int[] {
+				R.id.productListItemGenre, R.id.productListItemModele,
+				R.id.productListItemFemale, R.id.productListItemChambre,
+				R.id.productListItemGamme, R.id.productListItemBudget,
+				R.id.productListItemWide, R.id.productListItemPop,
+				R.id.productListItemPicture };
 		/**
 		 * 
 		 */
@@ -256,21 +268,20 @@ public class TestSnowboardsApplication extends Application {
 		/**
 		 * list of button ids in product list layout
 		 */
-		private static final int[] PRODUCT_LIST_SORT_BUTTON_IDS = new int[] { R.id.ProductListMarqueSortButton,
-				R.id.ProductListGammeSortButton,
-				R.id.ProductListPrixSortButton };
+		private static final int[] PRODUCT_LIST_SORT_BUTTON_IDS = new int[] {
+				R.id.ProductListMarqueSortButton,
+				R.id.ProductListGammeSortButton, R.id.ProductListPrixSortButton };
 		/**
 		 * 
 		 */
 		private static final String[] PRODUCT_LIST_SORT_COLUMNS = new String[] {
-		"Marque", "Gamme", "Prix_de_reference" };
-		
+				"Marque", "Gamme", "Prix_de_reference" };
+
 	}
-	
+
 	// Global staff for TestsSnowboards
 	public static String dbName = "snowsurf_tests2013_.sqlite";
-	
-	
+
 	// Twitter staff
 	public static TwitterSession mTwitterSession;
 	public static Twitter mTwitter;
@@ -279,24 +290,23 @@ public class TestSnowboardsApplication extends Application {
 	public static String ACCESS_SECRET = null;
 	public static final String REQUEST_URL = "http://twitter.com/oauth/request_token";
 	public static final String ACCESS_TOKEN_URL = "http://twitter.com/oauth/access_token";
-	public static final String	OAUTH_CALLBACK_SCHEME	= "x-oauthflow-twitter";
-	public static final String	OAUTH_CALLBACK_HOST		= "callback";
-	public static final String	OAUTH_CALLBACK_URL		= OAUTH_CALLBACK_SCHEME + "://" + OAUTH_CALLBACK_HOST;
+	public static final String OAUTH_CALLBACK_SCHEME = "x-oauthflow-twitter";
+	public static final String OAUTH_CALLBACK_HOST = "callback";
+	public static final String OAUTH_CALLBACK_URL = OAUTH_CALLBACK_SCHEME
+			+ "://" + OAUTH_CALLBACK_HOST;
 	public static final String AUTH_URL = "http://twitter.com/oauth/authorize";
 	public static final String TWITTER_CONSUMER_KEY = "Qgs7YXW6HCw8u0Mt1102Q";
-	public static final String TWITTER_SECRET="CqOZllOATSal2bjyyBSY2hXZ1dtlwwTZBUYXeMvj0";
+	public static final String TWITTER_SECRET = "CqOZllOATSal2bjyyBSY2hXZ1dtlwwTZBUYXeMvj0";
 	public static final String TWITTER_CALLBACK_URL = "twitter://callback";
 	public static CommonsHttpOAuthConsumer consumer = new CommonsHttpOAuthConsumer(
 			TWITTER_CONSUMER_KEY, TWITTER_SECRET);
 	public static CommonsHttpOAuthProvider provider = new CommonsHttpOAuthProvider(
 			REQUEST_URL, ACCESS_TOKEN_URL, AUTH_URL);
-	
-	
-	//Bitly staff
+
+	// Bitly staff
 	public static final String BITLY_USER = "tedted1";
 	public static final String BITLY_API_KEY = "R_d0e2739e13391fc7cc6a7c66966239b4";
-	
-	
+
 	// Facebook staff
 	public static final String FACEBOOK_APP_ID = "367597189994678";
 	public static Facebook mFacebook;
@@ -310,7 +320,6 @@ public class TestSnowboardsApplication extends Application {
 	private static int MAX_IMAGE_DIMENSION = 720;
 	public static String oauthVerifier;
 
-	
 	// App staff
 
 	public static final String MAIN_TAB_ID = "tab_id";
@@ -323,15 +332,9 @@ public class TestSnowboardsApplication extends Application {
 	public static final String UNSELECTED = "NotSelected.png";
 	public static final String NUMERIC = "Numeric";
 
-
 	private static DBHelper mDBHelper;
 
-	
-
-	
-//
-
-
+	//
 
 	// UI function helpers to help customize future apps
 	public ProductDetailFragment getProductDetailFragment(Cursor pCursor,
@@ -341,93 +344,83 @@ public class TestSnowboardsApplication extends Application {
 		f.setProductCursor(pCursor);
 		return f;
 	}
-	
+
 	public ProductListFragment getProductListFragment() {
 		return ProductListFragment.getInstance(DETAIL_TABLE_NAME,
-				ProductListConstants.PRODUCT_LIST_FAGMENT_LAYOUT, ProductListConstants.PRODUCT_LIST_LISTVIEW_VIEW_ID,
-				ProductListConstants.PRODUCT_LIST_LISTVIEW_ITEM_LAYOUT, ProductListConstants.PRODUCT_LIST_SORT_BUTTON_IDS,
-				ProductListConstants.PRODUCT_LIST_SORT_COLUMNS, new CursorViewBinder(this, ProductListConstants.PRODUCT_LIST_DISPLAY_COLUMNS, ProductListConstants.PRODUCT_LIST_DISPLAY_VIEW_IDS));
+				ProductListConstants.PRODUCT_LIST_FAGMENT_LAYOUT,
+				ProductListConstants.PRODUCT_LIST_LISTVIEW_VIEW_ID,
+				ProductListConstants.PRODUCT_LIST_LISTVIEW_ITEM_LAYOUT,
+				ProductListConstants.PRODUCT_LIST_SORT_BUTTON_IDS,
+				ProductListConstants.PRODUCT_LIST_SORT_COLUMNS,
+				new CursorViewBinder(this,
+						ProductListConstants.PRODUCT_LIST_DISPLAY_COLUMNS,
+						ProductListConstants.PRODUCT_LIST_DISPLAY_VIEW_IDS));
 	}
+
 	/**
-	 * @param pHelper
 	 * @return
 	 */
-	public FavoriteProductListFragment getFavoriteProductListFragment(DBHelper pHelper) {
+	public FavoriteProductListFragment getFavoriteProductListFragment() {
 		// TODO Auto-generated method stub
-		return FavoriteProductListFragment.getInstance(pHelper,
-				DETAIL_TABLE_NAME, ProductListConstants.PRODUCT_LIST_FAGMENT_LAYOUT,
-				ProductListConstants.PRODUCT_LIST_LISTVIEW_VIEW_ID, ProductListConstants.PRODUCT_LIST_LISTVIEW_ITEM_LAYOUT,
-				ProductListConstants.PRODUCT_LIST_SORT_BUTTON_IDS, ProductListConstants.PRODUCT_LIST_SORT_COLUMNS,
-				new CursorViewBinder(this, ProductListConstants.PRODUCT_LIST_DISPLAY_COLUMNS, ProductListConstants.PRODUCT_LIST_DISPLAY_VIEW_IDS));
+		return FavoriteProductListFragment.getInstance(getDBHelper(),
+				DETAIL_TABLE_NAME,
+				ProductListConstants.PRODUCT_LIST_FAGMENT_LAYOUT,
+				ProductListConstants.PRODUCT_LIST_LISTVIEW_VIEW_ID,
+				ProductListConstants.PRODUCT_LIST_LISTVIEW_ITEM_LAYOUT,
+				ProductListConstants.PRODUCT_LIST_SORT_BUTTON_IDS,
+				ProductListConstants.PRODUCT_LIST_SORT_COLUMNS,
+				new CursorViewBinder(this,
+						ProductListConstants.PRODUCT_LIST_DISPLAY_COLUMNS,
+						ProductListConstants.PRODUCT_LIST_DISPLAY_VIEW_IDS));
 	}
 
-	public ProductSearchFragment getProductSearchFragment(DBHelper helper, int searchEditTextId) {
-		return ProductSearchFragment.getInstance(helper,
-				DETAIL_TABLE_NAME, R.layout.product_search_fagment_layout,
-				ProductListConstants.PRODUCT_LIST_LISTVIEW_VIEW_ID, R.layout.product_search_item_layout,
-				searchEditTextId, new String [] {
-				// Search columns
-							DBHelper.MODELE_MARQUE_KEY, 
-							DBHelper.MODELE_MODELE_KEY,
-							"Gamme"
-									},
-				new CursorViewBinder(this, new String[] {
-						// columns to display in search results list
-							DBHelper.MODELE_MARQUE_KEY, 
-							DBHelper.MODELE_MODELE_KEY,
-							"Gamme", 
-							"Prix_String",
-						}, new int[] { 
-								R.id.productListItemGenre,
-								R.id.productListItemModele,
-								R.id.productListItemGamme,
-								R.id.productListItemBudget
-				}));
+	public ProductSearchFragment getProductSearchFragment(int searchEditTextId) {
+		return ProductSearchFragment.getInstance(getDBHelper(),
+				DETAIL_TABLE_NAME,
+				ProductSearchConstants.PRODUCT_SEARCH_FAGMENT_LAYOUT,
+				ProductListConstants.PRODUCT_LIST_LISTVIEW_VIEW_ID,
+				ProductSearchConstants.PRODUCT_SEARCH_LISTVIEW_ITEM_LAYOUT,
+				searchEditTextId,
+				ProductSearchConstants.PRODUCT_SEARCH_SEARCH_COLUMNS,
+				new CursorViewBinder(this, ProductSearchConstants.PRODUCT_SEARCH_BINDER_COLUMNS,
+						ProductSearchConstants.PRODUCT_SEARCH_BINDER_IDS));
 	}
 
-	
 	public SearchPopup getProductSearchPopup(EditText anchor) {
-		return new SearchPopup(anchor, 
-				new SearchAdapter(anchor.getContext(), getDBHelper().getAllFromTableWithWhereAndOrder(DETAIL_TABLE_NAME, null, null), 
-						R.layout.product_search_item_layout, new CursorViewBinder(this, new String[] {
-								// columns to display in search results list
-								DBHelper.MODELE_MARQUE_KEY, 
-								DBHelper.MODELE_MODELE_KEY,
-								"Gamme", 
-								"Prix_String",
-							}, new int[] { 
-									R.id.productListItemGenre,
-									R.id.productListItemModele,
-									R.id.productListItemGamme,
-									R.id.productListItemBudget
-					})));
-				
+		return new SearchPopup(anchor, new SearchAdapter(anchor.getContext(),
+				getDBHelper().getAllFromTableWithWhereAndOrder(
+						DETAIL_TABLE_NAME, null, null),
+				ProductSearchConstants.PRODUCT_SEARCH_LISTVIEW_ITEM_LAYOUT,
+				new CursorViewBinder(this, ProductSearchConstants.PRODUCT_SEARCH_BINDER_COLUMNS,
+						ProductSearchConstants.PRODUCT_SEARCH_BINDER_IDS)));
+
 	}
 
-	
 	public LexiqueFragment getLexiqueFragment(DBHelper helper) {
 		return LexiqueFragment.getInstance(helper,
 				R.layout.lexique_fragment_layout, R.id.LexiqueListView,
 				R.layout.lexique_list_item_layout, new int[] {
-						R.id.LexiqueItemTerm,
-						R.id.LexiqueItemTermDefinition });
+						R.id.LexiqueItemTerm, R.id.LexiqueItemTermDefinition });
 	}
-	
-	public RangeCriteriaSelectorFragment getRangeCriteriaSelectorFragment(DBHelper helper, String type, String criteria, String colName, OnRangeCriteriaChangedListener l) {
+
+	public RangeCriteriaSelectorFragment getRangeCriteriaSelectorFragment(
+			DBHelper helper, String type, String criteria, String colName,
+			OnRangeCriteriaChangedListener l) {
 		return RangeCriteriaSelectorFragment
-		.getInstance(type, criteria, CriteriaSelectorConstants.CRITERIA_SELECTOR_RIGHTPANE_TITLE_TEXTVIEW,
-				helper, this, colName,
-				R.layout.range_criteria_selector_layout,
-				R.id.MinPriceInputField, R.id.MaxPriceInputField,
-				l);
+				.getInstance(
+						type,
+						criteria,
+						CriteriaSelectorConstants.CRITERIA_SELECTOR_RIGHTPANE_TITLE_TEXTVIEW,
+						helper, this, colName,
+						R.layout.range_criteria_selector_layout,
+						R.id.MinPriceInputField, R.id.MaxPriceInputField, l);
 	}
-	
-	public CriteriaSelectorFragment getCriteriaSelectorFragment(int pPosition, OnCriteriaChangedListener l) {
-		return CriteriaSelectorFragment.getInstance(
-				pPosition, l 
-				);
+
+	public CriteriaSelectorFragment getCriteriaSelectorFragment(int pPosition,
+			OnCriteriaChangedListener l) {
+		return CriteriaSelectorFragment.getInstance(pPosition, l);
 	}
-	
+
 	public static byte[] scaleImage(Context context, Uri photoUri)
 			throws IOException {
 		InputStream is = context.getContentResolver().openInputStream(photoUri);
@@ -556,7 +549,8 @@ public class TestSnowboardsApplication extends Application {
 		return 0;
 	}
 
-	public static String copyFileToExternalDirectory(String pic, AssetManager assets) {
+	public static String copyFileToExternalDirectory(String pic,
+			AssetManager assets) {
 		String state = Environment.getExternalStorageState();
 		if (Environment.MEDIA_MOUNTED.equals(state)) {
 			File externalDir = Environment
@@ -601,7 +595,14 @@ public class TestSnowboardsApplication extends Application {
 	 */
 	public static void setDBHelper(DBHelper pDbHelper) {
 		mDBHelper = pDbHelper;
-		
+
 	}
 
+	@Override
+	public void onCreate() {
+		// The following line triggers the initialization of ACRA
+		ACRA.init(this);
+		super.onCreate();
+	}
+	
 }

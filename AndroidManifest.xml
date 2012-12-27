@@ -2,7 +2,7 @@
     package="com.niveales.testsnowboards"
     android:installLocation="preferExternal"
     android:versionCode="1"
-    android:versionName="beta 7" >
+    android:versionName="beta 12" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -22,7 +22,7 @@
             android:icon="@drawable/tests_snowboards_ic_launcher"
             android:label="@string/title_activity_test_snowboards_main"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateAlwaysHidden" >
+            android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
         <activity
             android:name=".lexique.LexiqueActivity"

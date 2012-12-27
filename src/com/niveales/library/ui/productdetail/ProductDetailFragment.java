@@ -456,4 +456,12 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 		}
 		return false;
 	}
+
+	/**
+	 * @return
+	 */
+	public Cursor getCursor() {
+		// TODO Auto-generated method stub
+		return productCursor;
+	}
 }

@@ -1,4 +1,4 @@
-package com.niveales.library.ui.privacy;
+package com.niveales.library.ui.about;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;

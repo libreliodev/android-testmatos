@@ -15,6 +15,8 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -28,32 +30,25 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.text.Editable;
 import android.text.Html;
 import android.text.InputType;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import com.facebook.android.AsyncFacebookRunner;
@@ -65,26 +60,20 @@ import com.facebook.android.Util;
 import com.niveales.library.ui.BaseNivealesFragment;
 import com.niveales.library.ui.FacebookImagePostPreviewDialogFragment;
 import com.niveales.library.ui.TwitterPostPreviewDialogFragment;
+import com.niveales.library.ui.about.AboutFragment;
+import com.niveales.library.ui.about.FacebookFragment;
 import com.niveales.library.ui.activity.TwitterAuthActivity;
-import com.niveales.library.ui.criteraselectors.CriteriaSelectorFragment;
 import com.niveales.library.ui.criteraselectors.CriteriaSelectorFragment.OnCriteriaChangedListener;
-import com.niveales.library.ui.criteraselectors.RangeCriteriaSelectorFragment;
 import com.niveales.library.ui.criteraselectors.RangeCriteriaSelectorFragment.OnRangeCriteriaChangedListener;
-import com.niveales.library.ui.popup.SearchPopup;
-import com.niveales.library.ui.privacy.AboutFragment;
-import com.niveales.library.ui.privacy.FacebookFragment;
 import com.niveales.library.ui.productdetail.ProductDetailFragment;
 import com.niveales.library.ui.productdetail.ProductDetailFragment.ShareProductListener;
 import com.niveales.library.ui.productlist.FavoriteProductListFragment;
 import com.niveales.library.ui.productlist.ProductListFragment;
 import com.niveales.library.ui.productlist.ProductListFragment.ProductSelectedListener;
-import com.niveales.library.ui.productsearch.ProductSearchFragment;
-import com.niveales.library.ui.productsearch.ProductSearchFragment.OnProductSearchSelectedListener;
 import com.niveales.library.utils.BitlyAndroid;
 import com.niveales.library.utils.adapters.AdvancedCriteriaMainListAdapter;
 import com.niveales.library.utils.adapters.search.SearchAdapter;
 import com.niveales.library.utils.db.DBHelper;
-import com.niveales.testsnowboards.lexique.LexiqueActivity;
 
 public class TestSnowboardsMainActivity extends FragmentActivity {
 
@@ -99,13 +88,14 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	private View mRightFrameFragmentHolder;
 	private ListView mMainActivityCreteriaSelectionListView;
 	private AdvancedCriteriaMainListAdapter mainAdapter;
-	private FrameLayout mSearchResultHolder;
+	// private FrameLayout mSearchResultHolder;
 	private AutoCompleteTextView mSearchEditText;
 	private ImageButton mMainLayoutSearchButton;
 	public ProgressDialog mProgressDialog;
 	public String mRecentSearch;
 	private TextView mPrevSearchTextView;
 	private TextView mNewSearchTextView;
+	private int mLastSelectedMainItem = 1;
 
 	@SuppressLint("NewApi")
 	@Override
@@ -123,18 +113,23 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		TestSnowboardsApplication.setDBHelper(new DBHelper(this,
 				TestSnowboardsApplication.dbName));
 		TestSnowboardsApplication.getDBHelper().open();
+
 		initViews();
-		if(this.mRightFrameFragmentHolder != null) {
-			showSelectionCategory(1);
-		}
+		restoreAppState();
 	}
-	
+
 	@SuppressLint("NewApi")
 	public void initViews() {
-		// Init tabs
+
+		// Setup device screen configuration
 		Configuration newConfig = getResources().getConfiguration();
 		if ((newConfig.screenLayout & Configuration.SCREENLAYOUT_SIZE_XLARGE) == 0)
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		else
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+		// Init tabs
+
 		mMainActivityTabHost = (TabHost) findViewById(R.id.MainLayoutTabHost);
 		initTabs(mMainActivityTabHost);
 
@@ -182,7 +177,8 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			getActionBar().setDisplayHomeAsUpEnabled(true);
 		}
 
-		mSearchResultHolder = (FrameLayout) findViewById(R.id.SearchResultHolder);
+		// mSearchResultHolder = (FrameLayout)
+		// findViewById(R.id.SearchResultHolder);
 
 		mSearchEditText = (AutoCompleteTextView) findViewById(R.id.SearchEditText);
 		mSearchEditText.setAdapter(new SearchAdapter(this));
@@ -194,66 +190,23 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 					int pArg2, long pArg3) {
 				InputMethodManager imm = (InputMethodManager) TestSnowboardsMainActivity.this
 						.getSystemService(Activity.INPUT_METHOD_SERVICE);
-				imm.hideSoftInputFromWindow(
-						mSearchEditText.getWindowToken(), 0);
-				showProductDetail((Cursor)pArg0.getAdapter().getItem(pArg2));
-				
-			}});
+				imm.hideSoftInputFromWindow(mSearchEditText.getWindowToken(), 0);
+				showProductDetail((Cursor) pArg0.getAdapter().getItem(pArg2));
+
+			}
+		});
 		mSearchEditText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-//		mSearchEditText.setOnEditorActionListener(new OnEditorActionListener() {
-//
-//			@Override
-//			public boolean onEditorAction(TextView pV, int pActionId,
-//					KeyEvent pEvent) {
-//				if (pActionId == 0) {
-//					InputMethodManager imm = (InputMethodManager) TestSnowboardsMainActivity.this
-//							.getSystemService(Activity.INPUT_METHOD_SERVICE);
-//					imm.hideSoftInputFromWindow(
-//							mSearchEditText.getWindowToken(), 0);
-//				}
-//				return false;
-//			}
-//		});
-//		mSearchEditText.setOnClickListener(new View.OnClickListener() {
-//			
-//			@Override
-//			public void onClick(View pV) {
-//				// TODO Auto-generated method stub
-//				onSearchStarted();
-//
-//			}
-//		});
-//		mSearchEditText.addTextChangedListener(new TextWatcher() {
-//
-//			@Override
-//			public void afterTextChanged(Editable pArg0) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//
-//			@Override
-//			public void beforeTextChanged(CharSequence pArg0, int pArg1,
-//					int pArg2, int pArg3) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//
-//			@Override
-//			public void onTextChanged(CharSequence pArg0, int pArg1, int pArg2,
-//					int pArg3) {
-//				onSearchStarted();
-//				
-//			}} );
 		mPrevSearchTextView = (TextView) findViewById(R.id.PrevSearchTextView);
 		mPrevSearchTextView.setText(getPrevSearchText());
-		mPrevSearchTextView.setOnClickListener(new OnClickListener(){
+		mPrevSearchTextView.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View pArg0) {
 				onPrevSearchClick();
-				
-			}});
-		
+
+			}
+		});
+
 	}
 
 	/**
@@ -262,45 +215,55 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	protected void onPrevSearchClick() {
 		DBHelper helper = TestSnowboardsApplication.getDBHelper();
 		try {
-			helper.rawQuery("delete from UserSearchInputs" , null);
-			helper.rawQuery("insert into UserSearchInputs select * from UserSearchInputsOld", null);
+			helper.rawQuery("delete from UserSearchInputs", null);
+			helper.rawQuery(
+					"insert into UserSearchInputs select * from UserSearchInputsOld",
+					null);
 			this.mMainActivityCreteriaSelectionListView.invalidateViews();
 			this.mMainLayoutSearchButton.setVisibility(View.VISIBLE);
 			this.mNewSearchTextView.setVisibility(View.INVISIBLE);
 			onSearchButtonClick();
-			
+
 		} catch (Exception e) {
 			// table does not exists, do nothing
 			e.printStackTrace();
 		}
-		
-		
+
 	}
+
 	public String getPrevSearchText() {
-		String text="";
+		String text = "";
 		try {
-			Cursor crit = TestSnowboardsApplication.getDBHelper().getAllFromTable("AdvancedCriteria");
-			while(!crit.isAfterLast()) {
+			Cursor crit = TestSnowboardsApplication.getDBHelper()
+					.getAllFromTable("AdvancedCriteria");
+			while (!crit.isAfterLast()) {
 				String result = "";
-				String title = crit.getString(crit.getColumnIndexOrThrow("Title"));
-				String critColName = crit.getString(crit.getColumnIndexOrThrow("ColName"));
-				Cursor c = TestSnowboardsApplication.getDBHelper().getAllFromTableWithWhereAndOrder("UserSearchInputsOld", "ColName LIKE '%" + critColName + "%'", null);
-				if(c!= null && c.getCount() > 0) {
-					while(!c.isAfterLast()) {
-						result += c.getString(c.getColumnIndexOrThrow("Title")) + ",";
+				String title = crit.getString(crit
+						.getColumnIndexOrThrow("Title"));
+				String critColName = crit.getString(crit
+						.getColumnIndexOrThrow("ColName"));
+				Cursor c = TestSnowboardsApplication.getDBHelper()
+						.getAllFromTableWithWhereAndOrder(
+								"UserSearchInputsOld",
+								"ColName LIKE '%" + critColName + "%'", null);
+				if (c != null && c.getCount() > 0) {
+					while (!c.isAfterLast()) {
+						result += c.getString(c.getColumnIndexOrThrow("Title"))
+								+ ",";
 						c.moveToNext();
 					}
-				}  
-				if(!result.equals("")) {
-					text += title+":" + result;
-					
+				}
+				if (!result.equals("")) {
+					text += title + ":" + result;
+
 				}
 				crit.moveToNext();
-				
+
 			}
 
-			if(!text.equals("")) {
-				text = Html.fromHtml("<b>Ma dernière recherche:</b><br>")+text;
+			if (!text.equals("")) {
+				text = Html.fromHtml("<b>Ma dernière recherche:</b><br>")
+						+ text;
 				this.mPrevSearchTextView.setVisibility(View.VISIBLE);
 			} else {
 				this.mPrevSearchTextView.setVisibility(View.GONE);
@@ -348,6 +311,8 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	}
 
 	private void changeTab(String tabId) {
+		SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+		prefs.edit().putString("TAB_ID", tabId).commit();
 		String[] tabNames = this.getResources().getStringArray(
 				R.array.TabsNames);
 		if (tabId.equals(tabNames[0])) {
@@ -361,8 +326,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			 */
 
 			FavoriteProductListFragment f = getMyApplication()
-					.getFavoriteProductListFragment(
-							TestSnowboardsApplication.getDBHelper());
+					.getFavoriteProductListFragment();
 			f.setOnProductSelectedListener(new ProductSelectedListener() {
 				@Override
 				public void showProductDetails(Cursor c) {
@@ -370,15 +334,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 					showProductDetail(c);
 				}
 			});
-			if (this.mRightFrameFragmentHolder != null) {
-				this.getSupportFragmentManager().beginTransaction()
-						.replace(R.id.ContentHolder, f).addToBackStack(null)
-						.commit();
-			} else {
-				this.getSupportFragmentManager().beginTransaction()
-						.replace(R.id.favorites_tab, f)
-						.commit();
-			}
+			attachFavorites(f, "favorite");
 
 		} else if (tabId.equals(tabNames[2])) {
 			/**
@@ -398,16 +354,32 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 						.getLexiqueFragment(
 								TestSnowboardsApplication.getDBHelper());
 				this.getSupportFragmentManager().beginTransaction()
-						.replace(R.id.terms_tab, lexiqueFragment)
-						.commit();
+						.replace(R.id.terms_tab, lexiqueFragment).commit();
 			}
+		}
+	}
+
+	/**
+	 * @param f
+	 * @param fragmentTag
+	 */
+	private void attachFavorites(FavoriteProductListFragment f,
+			String fragmentTag) {
+		if (this.mRightFrameFragmentHolder != null) {
+			this.getSupportFragmentManager().beginTransaction()
+					.replace(R.id.ContentHolder, f, fragmentTag)
+					.addToBackStack(fragmentTag).commit();
+		} else {
+			this.getSupportFragmentManager().beginTransaction()
+					.replace(R.id.favorites_tab, f, fragmentTag).commit();
 		}
 	}
 
 	protected void onSearchButtonClick() {
 		String whereClaus = null;
 		DBHelper helper = TestSnowboardsApplication.getDBHelper();
-		Cursor tempCursor = helper.getAllFromTableWithOrder("AdvancedCriteria", "Title");
+		Cursor tempCursor = helper.getAllFromTableWithOrder("AdvancedCriteria",
+				"Title");
 		boolean isFirst = true;
 		while (!tempCursor.isAfterLast()) {
 			String title = tempCursor.getString(0);
@@ -415,15 +387,14 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			String type = tempCursor.getString(2);
 			String headerText = tempCursor.getString(3);
 			String operation;
-			if(type.toLowerCase().equals("numeric"))
+			if (type.toLowerCase().equals("numeric"))
 				operation = "AND";
-			else operation = type;
-			Cursor searchInputsCursor = helper
-					.rawQuery(
-							"select group_concat(querystring, \" " + operation + " \") from UserSearchInputs where colname=?",
-							new String[] {
-									advColName 
-							});
+			else
+				operation = type;
+			Cursor searchInputsCursor = helper.rawQuery(
+					"select group_concat(querystring, \" " + operation
+							+ " \") from UserSearchInputs where colname=?",
+					new String[] { advColName });
 			String tempWhere = searchInputsCursor.getString(0);
 			if (tempWhere != null) {
 				if (isFirst) {
@@ -435,9 +406,10 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			}
 			tempCursor.moveToNext();
 		}
-		
-		Cursor productCursor = helper.getAllFromTableWithWhereAndOrder(TestSnowboardsApplication.DETAIL_TABLE_NAME, whereClaus, null);
-		if(productCursor.getCount() > 0) {
+
+		Cursor productCursor = helper.getAllFromTableWithWhereAndOrder(
+				TestSnowboardsApplication.DETAIL_TABLE_NAME, whereClaus, null);
+		if (productCursor.getCount() > 0) {
 			ProductListFragment f = getMyApplication().getProductListFragment();
 			f.setOnProductSelectedListener(new ProductSelectedListener() {
 				@Override
@@ -445,77 +417,78 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 					showProductDetail(c);
 				}
 			});
-			if (this.mRightFrameFragmentHolder != null) {
-				this.getSupportFragmentManager().beginTransaction()
-						.replace(R.id.ContentHolder, f).addToBackStack(null)
-						.commit();
-			} else {
-				this.getSupportFragmentManager().beginTransaction()
-						.replace(R.id.FragmentHolder, f).addToBackStack(null)
-						.commit();
-			}
+			attachSearchResults(f, "searchresults");
 		} else {
 			AlertDialog.Builder b = new AlertDialog.Builder(this);
 			b.setMessage(R.string.nothing_found_message);
 			b.setPositiveButton("Close", new DialogInterface.OnClickListener() {
-				
+
 				@Override
 				public void onClick(DialogInterface pDialog, int pWhich) {
 					pDialog.dismiss();
-					
+
 				}
 			});
 			Dialog d = b.create();
 			d.requestWindowFeature(Window.FEATURE_NO_TITLE);
 			d.show();
 		}
-		
+
 	}
 
 	public void onClearSearchClick() {
-		TestSnowboardsApplication.getDBHelper().rawQuery("delete from UserSearchInputsOld", null);
-		TestSnowboardsApplication.getDBHelper().rawQuery("insert into UserSearchInputsOld select * from UserSearchInputs", null);
-		TestSnowboardsApplication.getDBHelper().rawQuery("delete from UserSearchInputs", null);
-//		TestSnowboardsApplication.getDBHelper().rawQuery(
-//				"delete from UserSearchInputs", null);
+		TestSnowboardsApplication.getDBHelper().rawQuery(
+				"delete from UserSearchInputsOld", null);
+		TestSnowboardsApplication
+				.getDBHelper()
+				.rawQuery(
+						"insert into UserSearchInputsOld select * from UserSearchInputs",
+						null);
+		TestSnowboardsApplication.getDBHelper().rawQuery(
+				"delete from UserSearchInputs", null);
+		// TestSnowboardsApplication.getDBHelper().rawQuery(
+		// "delete from UserSearchInputs", null);
 		mMainActivityCreteriaSelectionListView.invalidateViews();
 		mPrevSearchTextView.setText(getPrevSearchText());
 		this.initSearchButton();
 	}
 
-	/**
-	 * called when user clicks on search input field
-	 */
-	protected void onSearchStarted() {
-		final SearchPopup mSearchPopup = getMyApplication().getProductSearchPopup(this.mSearchEditText);
-		mSearchPopup.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
-		mSearchPopup.show();
-		
-	}
-	protected void onOldSearchStarted() {
-		final ProductSearchFragment f = getMyApplication()
-				.getProductSearchFragment(
-						TestSnowboardsApplication.getDBHelper(),
-						R.id.SearchEditText);
-		f.setOnProductSearchSelectedListener(new OnProductSearchSelectedListener() {
-
-			@Override
-			public void onSearchProductSelected(Cursor c) {
-				InputMethodManager imm = (InputMethodManager) TestSnowboardsMainActivity.this
-						.getSystemService(Activity.INPUT_METHOD_SERVICE);
-				imm.hideSoftInputFromWindow(mSearchEditText.getWindowToken(), 0);
-				getSupportFragmentManager().beginTransaction().remove(f)
-						.commit();
-				showProductDetail(c);
-			}
-		});
-
-		if (this.mSearchResultHolder != null) {
-			this.getSupportFragmentManager().beginTransaction()
-					.replace(R.id.SearchResultHolder, f)
-					.addToBackStack("search").commit();
-		}
-	}
+	// /**
+	// * called when user clicks on search input field
+	// */
+	// protected void onSearchStarted() {
+	// final SearchPopup mSearchPopup =
+	// getMyApplication().getProductSearchPopup(this.mSearchEditText);
+	// mSearchPopup.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
+	// LayoutParams.MATCH_PARENT));
+	// mSearchPopup.show();
+	//
+	// }
+	// protected void onOldSearchStarted() {
+	// final ProductSearchFragment f = getMyApplication()
+	// .getProductSearchFragment(
+	// R.id.SearchEditText);
+	// f.setOnProductSearchSelectedListener(new
+	// OnProductSearchSelectedListener() {
+	//
+	// @Override
+	// public void onSearchProductSelected(Cursor c) {
+	// InputMethodManager imm = (InputMethodManager)
+	// TestSnowboardsMainActivity.this
+	// .getSystemService(Activity.INPUT_METHOD_SERVICE);
+	// imm.hideSoftInputFromWindow(mSearchEditText.getWindowToken(), 0);
+	// getSupportFragmentManager().beginTransaction().remove(f)
+	// .commit();
+	// showProductDetail(c);
+	// }
+	// });
+	//
+	// if (this.mSearchResultHolder != null) {
+	// this.getSupportFragmentManager().beginTransaction()
+	// .replace(R.id.SearchResultHolder, f)
+	// .addToBackStack("search").commit();
+	// }
+	// }
 
 	protected void showProductDetail(Cursor c) {
 		ProductDetailFragment productDetailFragment = getMyApplication()
@@ -526,8 +499,17 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 						showShareDialog(productId, site);
 					}
 				});
+		attachProductDetailFragment(productDetailFragment, "productdetail");
+	}
+
+	/**
+	 * @param productDetailFragment
+	 * @param fragmentTag
+	 */
+	private void attachProductDetailFragment(Fragment productDetailFragment,
+			String fragmentTag) {
 		if (mRightFrameFragmentHolder != null) {
-			
+
 			int orientation = getResources().getConfiguration().orientation;
 			int layout = getResources().getConfiguration().screenLayout;
 			if (orientation == Configuration.ORIENTATION_PORTRAIT
@@ -535,17 +517,35 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 				this.getSupportFragmentManager()
 						.beginTransaction()
 						.replace(R.id.ProductDetailsHolder,
-								productDetailFragment, "productdetail")
-						.addToBackStack("Selection").commit();
+								productDetailFragment, fragmentTag)
+						.addToBackStack(fragmentTag).commit();
 			else
-				this.getSupportFragmentManager().beginTransaction()
-						.replace(R.id.ContentHolder, productDetailFragment, "productdetail")
-						.addToBackStack("Selection").commit();
+				this.getSupportFragmentManager()
+						.beginTransaction()
+						.replace(R.id.ContentHolder, productDetailFragment,
+								fragmentTag).addToBackStack(fragmentTag)
+						.commit();
 		} else {
-			
-			getSupportFragmentManager().beginTransaction()
-			.replace(R.id.FragmentHolder, productDetailFragment, "productdetail")
-			.addToBackStack("Selection").commit();
+
+			getSupportFragmentManager()
+					.beginTransaction()
+					.replace(R.id.FragmentHolder, productDetailFragment,
+							fragmentTag).addToBackStack(fragmentTag).commit();
+		}
+	}
+
+	/**
+	 * @param pFragment
+	 */
+	private void attachSearchResults(Fragment pFragment, String fragmentTag) {
+		if (this.mRightFrameFragmentHolder != null) {
+			this.getSupportFragmentManager().beginTransaction()
+					.replace(R.id.ContentHolder, pFragment, fragmentTag)
+					.addToBackStack(fragmentTag).commit();
+		} else {
+			this.getSupportFragmentManager().beginTransaction()
+					.replace(R.id.FragmentHolder, pFragment, fragmentTag)
+					.addToBackStack(fragmentTag).commit();
 		}
 	}
 
@@ -557,6 +557,8 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	}
 
 	protected void showSelectionCategory(int position) {
+
+		mLastSelectedMainItem = position;
 
 		Cursor cursor = TestSnowboardsApplication.getDBHelper()
 				.getAllAdvancedCriteria();
@@ -570,24 +572,31 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			f = getMyApplication().getRangeCriteriaSelectorFragment(
 					TestSnowboardsApplication.getDBHelper(), type, criteria,
 					colName, new RangeCriteriaChangedListener());
-			
+
 		} else {
-			f = getMyApplication().getCriteriaSelectorFragment(
-					position, new CriteriaChangeListener());
-			
+			f = getMyApplication().getCriteriaSelectorFragment(position,
+					new CriteriaChangeListener());
+
 		}
-		if(this.mRightFrameFragmentHolder != null) {
+		attachCriteriaFragment(f, "criteriacategory");
+
+	}
+
+	/**
+	 * @param f
+	 *            - Fragment
+	 */
+	private void attachCriteriaFragment(Fragment f, String fragmentTag) {
+		if (this.mRightFrameFragmentHolder != null) {
 			// Tablet
 			this.getSupportFragmentManager().beginTransaction()
-			.replace(R.id.ContentHolder, f)
-			.commit();
+					.replace(R.id.ContentHolder, f, fragmentTag).commit();
 		} else {
 			// phone
 			this.getSupportFragmentManager().beginTransaction()
-			.replace(R.id.FragmentHolder, f).addToBackStack(null)
-			.commit();
+					.replace(R.id.FragmentHolder, f, fragmentTag)
+					.addToBackStack(fragmentTag).commit();
 		}
-
 	}
 
 	public class RangeCriteriaChangedListener implements
@@ -597,9 +606,9 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		public void onCriteriaChanged(String colName) {
 			initSearchButton();
 			mMainActivityCreteriaSelectionListView.invalidateViews();
-			
+
 		}
-		
+
 	}
 
 	public class CriteriaChangeListener implements OnCriteriaChangedListener {
@@ -681,12 +690,12 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			AboutFragment f = new AboutFragment();
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.ProductDetailsHolder, f, "about")
-					.addToBackStack(null).commit();
+					.addToBackStack("about").commit();
 		} else {
 			AboutFragment f = new AboutFragment();
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.FragmentHolder, f, "about")
-					.addToBackStack(null).commit();
+					.addToBackStack("about").commit();
 		}
 		// Intent intent = new Intent(this, PrivacyActivity.class);
 		// Bundle extras = new Bundle();
@@ -709,12 +718,12 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			FacebookFragment f = new FacebookFragment();
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.ProductDetailsHolder, f, "facebook")
-					.addToBackStack(null).commit();
+					.addToBackStack("facebook").commit();
 		} else {
 			FacebookFragment f = new FacebookFragment();
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.FragmentHolder, f, "facebook")
-					.addToBackStack(null).commit();
+					.addToBackStack("facebook").commit();
 		}
 		// Intent intent = new Intent(this, PrivacyActivity.class);
 		// Bundle extras = new Bundle();
@@ -1011,21 +1020,23 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		 */
 		case TWITTER_CALLBACK_ID: {
 			if (resultCode != Activity.RESULT_OK) {
-				if(data != null) {
+				if (data != null) {
 					String message = data.getExtras().getString("error");
-					if(message == null) {
+					if (message == null) {
 						message = "Twitter authentication failed";
 					}
 					AlertDialog.Builder b = new AlertDialog.Builder(this);
 					b.setTitle("Twitter auth error:");
 					b.setMessage(message);
-					b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-						
-						@Override
-						public void onClick(DialogInterface pDialog, int pWhich) {
-							pDialog.dismiss();
-						}
-					});
+					b.setPositiveButton("OK",
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface pDialog,
+										int pWhich) {
+									pDialog.dismiss();
+								}
+							});
 					b.create().show();
 				}
 				return;
@@ -1067,20 +1078,25 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		super.onConfigurationChanged(newConfig);
 		// int j = newConfig.screenLayout &
 		// Configuration.SCREENLAYOUT_SIZE_XLARGE;
+		saveFragments();
 		setContentView(R.layout.main_activity_layout);
 		initViews();
-//		if ((newConfig.screenLayout & Configuration.SCREENLAYOUT_SIZE_XLARGE) == 0)
-//			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		restoreAppState();
+		// if ((newConfig.screenLayout & Configuration.SCREENLAYOUT_SIZE_XLARGE)
+		// == 0)
+		// setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		// else
 		// setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 	}
 
-	
 	public void initSearchButton() {
-		Cursor c = TestSnowboardsApplication.getDBHelper().getAllFromTable("UserSearchInputs");
-		if(c.getCount() > 0) {
-			mMainLayoutSearchButton.setOnClickListener(new SearchButtonClickListener());
-			mMainLayoutSearchButton.setBackgroundResource(R.drawable.bout_aff_resultat);
+		Cursor c = TestSnowboardsApplication.getDBHelper().getAllFromTable(
+				"UserSearchInputs");
+		if (c.getCount() > 0) {
+			mMainLayoutSearchButton
+					.setOnClickListener(new SearchButtonClickListener());
+			mMainLayoutSearchButton
+					.setBackgroundResource(R.drawable.bout_aff_resultat);
 			mMainLayoutSearchButton.setVisibility(View.VISIBLE);
 			mNewSearchTextView.setVisibility(View.INVISIBLE);
 		} else {
@@ -1088,7 +1104,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			mNewSearchTextView.setVisibility(View.VISIBLE);
 		}
 	}
-	
+
 	public class SearchButtonClickListener implements OnClickListener {
 		@Override
 		public void onClick(View pView) {
@@ -1146,7 +1162,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 									}
 								}).create().show();
 			} else {
-				if(result != null) {
+				if (result != null) {
 					TwitterPostPreviewDialogFragment f = new TwitterPostPreviewDialogFragment();
 					f.setMessage(result);
 					f.show(getSupportFragmentManager(), null);
@@ -1154,29 +1170,127 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			}
 		}
 	}
-	
+
 	@Override
 	public void onBackPressed() {
 		FragmentManager fm = getSupportFragmentManager();
 		Fragment f = fm.findFragmentByTag("productdetail");
-		if(f != null && f instanceof BaseNivealesFragment) {
-			BaseNivealesFragment bf = (BaseNivealesFragment) f;
-			if(bf.onBackPressed()) 
-				return;
-		}
+		SharedPreferences prefs = this.getPreferences(MODE_PRIVATE);
+		Boolean isProcessed = false;
+
 		f = fm.findFragmentByTag("about");
-		if(f != null && f instanceof BaseNivealesFragment) {
+		if (f != null && f instanceof BaseNivealesFragment) {
 			BaseNivealesFragment bf = (BaseNivealesFragment) f;
-			if(bf.onBackPressed()) 
-				return;
+			isProcessed |= bf.onBackPressed();
 		}
 		f = fm.findFragmentByTag("facebook");
-		if(f != null && f instanceof BaseNivealesFragment) {
+		if (!isProcessed && f != null && f instanceof BaseNivealesFragment) {
 			BaseNivealesFragment bf = (BaseNivealesFragment) f;
-			if(bf.onBackPressed()) 
-				return;
+			isProcessed |= bf.onBackPressed();
 		}
+		if (isProcessed)
+			return;
+
 		super.onBackPressed();
+		fm.executePendingTransactions();
+		if (fm.getBackStackEntryCount() > 0) {
+			String name = fm.getBackStackEntryAt(
+					fm.getBackStackEntryCount() - 1).getName();
+			prefs.edit().putString("FRAGMENT_TAG", name).commit();
+		} else {
+			prefs.edit().remove("FRAGMENT_TAG").commit();
+		}
+
 	}
 
+	@Override
+	public void onAttachFragment(Fragment fragment) {
+		// TODO Auto-generated method stub
+		super.onAttachFragment(fragment);
+		SharedPreferences prefs = this.getPreferences(MODE_PRIVATE);
+		// prefs.edit().putString("FRAGMENT", fragment.getTag()).commit();
+		// BackStackEntry e =
+		// this.getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount
+		// () - 1);
+		prefs.edit().putInt("FRAGEMENT_ID", fragment.getId())
+				.putString("FRAGMENT_TAG", fragment.getTag()).commit();
+		// Toast.makeText(getApplicationContext(), fragment.getId(),
+		// Toast.LENGTH_SHORT).show();
+
+	}
+
+	public void saveFragments() {
+		SharedPreferences prefs = this.getPreferences(MODE_PRIVATE);
+		Editor e = prefs.edit();
+		if (this.getSupportFragmentManager().getBackStackEntryCount() > 0) {
+			String tag = this
+					.getSupportFragmentManager()
+					.getBackStackEntryAt(
+							this.getSupportFragmentManager()
+									.getBackStackEntryCount() - 1).getName();
+			e.putString("FRAGMENT_TAG", tag);
+		} else {
+			e.remove("FRAGMENT_TAG");
+		}
+		e.putInt("MAIN_POSITION", mLastSelectedMainItem);
+		e.commit();
+	}
+
+	public void restoreAppState() {
+		SharedPreferences prefs = this.getPreferences(MODE_PRIVATE);
+		String[] tabNames = this.getResources().getStringArray(
+				R.array.TabsNames);
+		String tabId = prefs.getString("TAB_ID", tabNames[0]);
+		changeTab(tabId);
+		if (!tabId.equals(tabNames[0]))
+			return;
+		mLastSelectedMainItem = prefs.getInt("MAIN_POSITION",
+				mLastSelectedMainItem);
+		String mFragmentTag = prefs.getString("FRAGMENT_TAG", "");
+		if (this.mRightFrameFragmentHolder != null) {
+			showSelectionCategory(mLastSelectedMainItem);
+		}
+		// I give up restoring correct app state with all fragments, thus all state restore has been commented out
+		
+//		if (mFragmentTag.equals("facebook")) {
+//			showFacebookPage();
+//		}
+//		if (mFragmentTag.equals("about")) {
+//			showAboutPage();
+//		}
+//		if (mFragmentTag.equals("productdetail")) {
+//			FragmentManager fm = getSupportFragmentManager();
+//			ProductDetailFragment f = (ProductDetailFragment) fm
+//					.findFragmentByTag(mFragmentTag);
+//			if (f != null) {
+//				Cursor c = f.getCursor();
+//				this.showProductDetail(c);
+//				fm.beginTransaction().remove(f).commit();
+//				fm.executePendingTransactions();
+//				// attachProductDetailFragment(f, mFragmentTag);
+//			}
+//		}
+//		if (mFragmentTag.equals("searchresults")) {
+//			FragmentManager fm = getSupportFragmentManager();
+//			ProductListFragment f = (ProductListFragment) fm
+//					.findFragmentByTag(mFragmentTag);
+//			if (f != null) {
+//				attachSearchResults(f, mFragmentTag);
+//			}
+//		}
+//		if (mFragmentTag.equals("favorites")) {
+//			FragmentManager fm = getSupportFragmentManager();
+//			ProductListFragment f = (ProductListFragment) fm
+//					.findFragmentByTag(mFragmentTag);
+//			fm.executePendingTransactions();
+//			if (f != null) {
+//				fm.beginTransaction().remove(f).commit();
+//
+//			}
+//		}
+	}
+
+	public void attachFragment(Fragment f) {
+
+	}
 }

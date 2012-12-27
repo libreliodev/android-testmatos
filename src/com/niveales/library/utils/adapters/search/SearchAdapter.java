@@ -20,18 +20,13 @@ public class SearchAdapter extends BoundAdapter implements Filterable {
 
 	protected CursorViewBinder binder;
 	private String whereClaus;
-	private static String[] searchColumns = new String[] {
-			// columns to display in search results list
-			DBHelper.MODELE_MARQUE_KEY, DBHelper.MODELE_MODELE_KEY, "Gamme",
-			"Prix_String", };
-	private static int[] searchLayoutIds = new int[] {
-			R.id.productListItemGenre, R.id.productListItemModele,
-			R.id.productListItemGamme, R.id.productListItemBudget };
+	private static String[] searchColumns = TestSnowboardsApplication.ProductSearchConstants.PRODUCT_SEARCH_BINDER_COLUMNS;
+	private static int[] searchLayoutIds = TestSnowboardsApplication.ProductSearchConstants.PRODUCT_SEARCH_BINDER_IDS;
 
 	public SearchAdapter(Context context) {
 		super(context, TestSnowboardsApplication.getDBHelper().getAllFromTableWithWhereAndOrder(
 				TestSnowboardsApplication.DETAIL_TABLE_NAME, null, null),
-				R.layout.product_search_item_layout, new CursorViewBinder(
+				TestSnowboardsApplication.ProductSearchConstants.PRODUCT_SEARCH_LISTVIEW_ITEM_LAYOUT, new CursorViewBinder(
 						context, searchColumns, searchLayoutIds));
 	}
 
