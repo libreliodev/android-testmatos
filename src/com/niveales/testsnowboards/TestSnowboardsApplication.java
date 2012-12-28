@@ -28,6 +28,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Environment;
+import android.view.View;
 import android.widget.EditText;
 
 import com.facebook.android.AsyncFacebookRunner;
@@ -37,7 +38,6 @@ import com.niveales.library.ui.criteraselectors.CriteriaSelectorFragment.OnCrite
 import com.niveales.library.ui.criteraselectors.RangeCriteriaSelectorFragment;
 import com.niveales.library.ui.criteraselectors.RangeCriteriaSelectorFragment.OnRangeCriteriaChangedListener;
 import com.niveales.library.ui.lexique.LexiqueFragment;
-import com.niveales.library.ui.popup.SearchPopup;
 import com.niveales.library.ui.productdetail.ProductDetailFragment;
 import com.niveales.library.ui.productdetail.ProductDetailFragment.ShareProductListener;
 import com.niveales.library.ui.productlist.FavoriteProductListFragment;
@@ -206,7 +206,7 @@ public class TestSnowboardsApplication extends Application {
 		/**
 		 * 
 		 */
-		public static final int PRODUCTDETAIL_PRODUCTIMAGE_VIEW_ID = R.id.ProductImage;
+		public static final int PRODUCTDETAIL_PRODUCTIMAGE_VIEW_ID = R.id.ProductImageAnchor;
 		// public static final String HTML_TITLE = "%TAITLE%";
 		// public static final String HTML_MODELE = "%Modele%";
 		// public static final String HTML_BUDGET = "%Budget%";
@@ -224,6 +224,8 @@ public class TestSnowboardsApplication extends Application {
 		// "%icone_testerchoice%";
 		// public static final String HTML_ICON_SEX = "%icone_genre%";
 		// public static final String HTML_PIC = "%img%";
+
+		public static final int PRODUCTDETAIL_PRODUCTIMAGE_POPUP_LAYOUT_ID = R.layout.product_image_popup;
 	}
 
 	/**
@@ -384,16 +386,6 @@ public class TestSnowboardsApplication extends Application {
 				ProductSearchConstants.PRODUCT_SEARCH_SEARCH_COLUMNS,
 				new CursorViewBinder(this, ProductSearchConstants.PRODUCT_SEARCH_BINDER_COLUMNS,
 						ProductSearchConstants.PRODUCT_SEARCH_BINDER_IDS));
-	}
-
-	public SearchPopup getProductSearchPopup(EditText anchor) {
-		return new SearchPopup(anchor, new SearchAdapter(anchor.getContext(),
-				getDBHelper().getAllFromTableWithWhereAndOrder(
-						DETAIL_TABLE_NAME, null, null),
-				ProductSearchConstants.PRODUCT_SEARCH_LISTVIEW_ITEM_LAYOUT,
-				new CursorViewBinder(this, ProductSearchConstants.PRODUCT_SEARCH_BINDER_COLUMNS,
-						ProductSearchConstants.PRODUCT_SEARCH_BINDER_IDS)));
-
 	}
 
 	public LexiqueFragment getLexiqueFragment(DBHelper helper) {

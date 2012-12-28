@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ProductDetailsRootView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,13 +13,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginTop="5dp"
-        android:gravity="center_horizontal" >
+        android:gravity="center_horizontal" android:baselineAligned="false">
 
         <LinearLayout
             android:id="@+id/dirButtonsHolder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="30dp"
             android:layout_weight="1"
@@ -29,13 +29,16 @@
                 android:id="@+id/PrevButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/left_round_button" />
+                android:background="@drawable/left_round_button"
+                tools:ignore="ContentDescription" />
 
             <ImageButton
                 android:id="@+id/NextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/right_round_button" />
+                android:background="@drawable/right_round_button"
+                tools:ignore="ContentDescription" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -61,14 +64,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:src="@drawable/share_button" />
+                android:src="@drawable/share_button"
+                tools:ignore="ContentDescription" />
+
         </LinearLayout>
     </LinearLayout>
 
     <FrameLayout
         android:id="@+id/ProductDetailWebviewHolder"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_marginTop="10dp"
         android:layout_weight="1"
         android:visibility="visible" >
@@ -79,14 +84,15 @@
             android:layout_height="match_parent" />
 
         <ImageView
-            android:id="@+id/ProductImage"
-            android:layout_width="match_parent"
+            android:id="@+id/ProductImageAnchor"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="bottom|center_horizontal"
             android:scaleType="center"
             android:scrollbars="horizontal"
-            android:src="@drawable/cambre_classique"
-            android:visibility="gone" />
+            android:src="@drawable/empty"
+            android:visibility="visible"
+            tools:ignore="ContentDescription" />
 
     </FrameLayout>
 

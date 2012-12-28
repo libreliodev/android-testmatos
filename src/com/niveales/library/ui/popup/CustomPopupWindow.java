@@ -88,7 +88,7 @@ public class CustomPopupWindow {
 		LayoutInflater inflator =
 				(LayoutInflater) anchor.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		
-		setContentView(inflator.inflate(layoutResID, null));
+		setContentView(root = inflator.inflate(layoutResID, null));
 	}
 
 
@@ -148,5 +148,11 @@ public class CustomPopupWindow {
 	
 	public void dismiss() {
 		window.dismiss();
+		this.onDismiss();
 	}
+
+	/**
+	 * Called when window has been dismissed
+	 */
+	public void onDismiss() {}
 }

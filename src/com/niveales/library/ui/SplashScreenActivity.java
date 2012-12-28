@@ -1,9 +1,13 @@
 /**
  * 
  */
-package com.niveales.testsnowboards;
+package com.niveales.library.ui;
 
 import com.niveales.library.utils.db.DBHelper;
+import com.niveales.testsnowboards.R;
+import com.niveales.testsnowboards.TestSnowboardsApplication;
+import com.niveales.testsnowboards.TestSnowboardsMainActivity;
+import com.niveales.testsnowboards.R.layout;
 
 import android.app.Activity;
 import android.content.Intent;

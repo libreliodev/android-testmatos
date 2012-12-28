@@ -228,6 +228,7 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 		}	
 	};
 	private CheckBox mFavoriteCkeckBox;
+	private QuickAction mProductImagePopup;
 	
 	
 	public void loadProduct(Cursor c) {
@@ -248,12 +249,9 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 				ProductDetailConstants.PRODUCT_DETAIL_FAVORITE_CKECKBOX_VIEW_ID,
 				ProductDetailConstants.PRODUCT_DETAIL_SHARE_BUTTON_VIEW_ID);
 		rootView = inflater.inflate(productDetailLayout, container, false);
-		mProductImage = (ImageView) rootView
-				.findViewById(TestSnowboardsApplication.ProductDetailConstants.PRODUCTDETAIL_PRODUCTIMAGE_VIEW_ID);
-		mProductImage.setHorizontalScrollBarEnabled(true);
-		mProductImage.setVerticalScrollBarEnabled(true);
-
-		mProductImage.setOnTouchListener(mProductImageTouchListener);
+//		mProductImage = (ImageView) rootView
+//				.findViewById(TestSnowboardsApplication.ProductDetailConstants.PRODUCTDETAIL_PRODUCTIMAGE_VIEW_ID);
+		
 		htmlBasePage = readHTML();
 		webView = (WebView) rootView.findViewById(webViewId);
 		
@@ -271,17 +269,17 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 			}
 		});
 
-		webView.setOnTouchListener(new View.OnTouchListener() {
-			
-			@Override
-			public boolean onTouch(View pV, MotionEvent pEvent) {
-				if(isZoomStarted) {
-					mProductImageTouchListener.onTouch(pV, pEvent);
-					return true;
-				}
-				return false;
-			}
-		});
+//		webView.setOnTouchListener(new View.OnTouchListener() {
+//			
+//			@Override
+//			public boolean onTouch(View pV, MotionEvent pEvent) {
+//				if(isZoomStarted) {
+//					mProductImageTouchListener.onTouch(pV, pEvent);
+//					return true;
+//				}
+//				return false;
+//			}
+//		});
 
 		ImageView shareButton = (ImageView) rootView.findViewById(shareId);
 		shareButton.setOnClickListener(new OnClickListener() {
@@ -382,14 +380,29 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 
 	protected void showLargeImage(String pUrl) {
 		if (pUrl.startsWith(ZOOM_TOUCHSTART)) {
-			mProductImage.setVisibility(View.VISIBLE);
-			Handler h = new Handler();
+//			mProductImage.setVisibility(View.VISIBLE);
+			mProductImage = new ImageView(getActivity());
+			mProductImage.setHorizontalScrollBarEnabled(true);
+			mProductImage.setVerticalScrollBarEnabled(true);
+			mProductImage.setOnTouchListener(mProductImageTouchListener);
+			mProductImagePopup = new QuickAction(rootView.findViewById(TestSnowboardsApplication.ProductDetailConstants.PRODUCTDETAIL_PRODUCTIMAGE_VIEW_ID)){
+				@Override
+				public void onDismiss() {
+					recycleImageViewBitmap(mProductImage);
+				}
+			};
+			mProductImagePopup.setContentView(mProductImage);
+//			mProductImagePopup.addActionItem(new ActionItem(mProductImage));
+			mProductImagePopup.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
+			loadImageBitmap();
+			mProductImagePopup.show();
 			isZoomStarted = true;			
 		}
 		
 		if(pUrl.startsWith(ZOOM_FINISH)) {
 			this.mProductImageGoneHandler.removeCallbacks(mProductImageGoneRunnable);
-			mProductImage.setVisibility(View.GONE);
+//			mProductImage.setVisibility(View.GONE);
+			mProductImagePopup.dismiss();
 			isZoomStarted = false;
 		}
 //		if(pUrl.startsWith(ZOOM_TOUCHEND)) {
@@ -405,7 +418,8 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 	 */
 	public void onResume() {
 		super.onResume();
-		loadImageBitmap();
+		if(mProductImage != null) 
+			loadImageBitmap();
 	}
 
 	public void loadImageBitmap() {

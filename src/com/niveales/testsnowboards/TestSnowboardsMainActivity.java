@@ -1177,7 +1177,10 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		Fragment f = fm.findFragmentByTag("productdetail");
 		SharedPreferences prefs = this.getPreferences(MODE_PRIVATE);
 		Boolean isProcessed = false;
-
+		if (f != null && f instanceof BaseNivealesFragment ) {
+			BaseNivealesFragment bf = (BaseNivealesFragment) f;
+			isProcessed |= bf.onBackPressed();
+		}
 		f = fm.findFragmentByTag("about");
 		if (f != null && f instanceof BaseNivealesFragment) {
 			BaseNivealesFragment bf = (BaseNivealesFragment) f;
