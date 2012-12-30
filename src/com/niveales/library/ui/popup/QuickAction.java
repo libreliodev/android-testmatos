@@ -240,5 +240,14 @@ public class QuickAction extends CustomPopupWindow {
 	public void setLayoutParams(LayoutParams params) {
 		mLayoutParams = params;
 	}
+
+	/**
+	 * @return
+	 */
+	public int getWidth() {
+		int w = root.getWidth();
+		int mw = root.getMeasuredWidth();
+		return mw;
+	}
 	
 }

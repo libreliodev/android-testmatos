@@ -34,6 +34,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 
 import com.niveales.library.ui.BaseNivealesFragment;
@@ -45,6 +46,10 @@ import com.niveales.testsnowboards.TestSnowboardsApplication.ProductDetailConsta
 
 public class ProductDetailFragment extends BaseNivealesFragment {
 
+	/**
+	 * 
+	 */
+	private static final String ZOOM_TOUCHMOVE = "zoom://touchmove/";
 	/**
 	 * 
 	 */
@@ -61,6 +66,7 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 	 * 
 	 */
 	private static final String ZOOM_TOUCHEND = "zoom://touchend";
+	
 	View rootView;
 	String htmlBasePage; // text from assets html page to customize
 	String customizedHTMLPage; // page after customization
@@ -156,17 +162,6 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 		return htmlString;
 	}
 
-	Runnable mProductImageGoneRunnable = new Runnable() {
-
-		@Override
-		public void run() {
-			mProductImage.setVisibility(View.GONE);
-			isZoomStarted = false;
-			
-		}
-	};
-	
-	Handler mProductImageGoneHandler = new Handler();
 	
 	private View.OnTouchListener mProductImageTouchListener = new View.OnTouchListener() {
 		private float mx;
@@ -182,7 +177,6 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 			switch (pEvent.getAction()) {
 
 			case MotionEvent.ACTION_DOWN:
-				mProductImageGoneHandler.postDelayed(mProductImageGoneRunnable, PRODUCT_IMAGE_TIMEOUT);
 				mx = pEvent.getX();
 				my = pEvent.getY();
 				deltaX = deltaY = 0;
@@ -190,8 +184,6 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 				maxY = Math.abs(bitmapHeight - mProductImage.getHeight()) / 2;
 				break;
 			case MotionEvent.ACTION_MOVE:
-				mProductImageGoneHandler.removeCallbacks(mProductImageGoneRunnable);
-				mProductImageGoneHandler.postDelayed(mProductImageGoneRunnable, PRODUCT_IMAGE_TIMEOUT);
 				curX = pEvent.getX();
 				curY = pEvent.getY();
 				deltaX = mx - curX;
@@ -241,16 +233,15 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		init(ProductDetailConstants.PRODUCT_DETAIL_LAYOUT,
+		init(	ProductDetailConstants.PRODUCT_DETAIL_LAYOUT,
 				ProductDetailConstants.PRODUCT_DETAIL_WEBVIEW_VIEW_ID,
 				ProductDetailConstants.PRODUCT_DETAIL_WEBPAGE_FILE_URI,
 				ProductDetailConstants.PRODUCT_DETAIL_COLUMN_KEYS,
 				ProductDetailConstants.PRODUCT_DETAIL_HTML_FILE_KEYS,
 				ProductDetailConstants.PRODUCT_DETAIL_FAVORITE_CKECKBOX_VIEW_ID,
-				ProductDetailConstants.PRODUCT_DETAIL_SHARE_BUTTON_VIEW_ID);
+				ProductDetailConstants.PRODUCT_DETAIL_SHARE_BUTTON_VIEW_ID
+			);
 		rootView = inflater.inflate(productDetailLayout, container, false);
-//		mProductImage = (ImageView) rootView
-//				.findViewById(TestSnowboardsApplication.ProductDetailConstants.PRODUCTDETAIL_PRODUCTIMAGE_VIEW_ID);
 		
 		htmlBasePage = readHTML();
 		webView = (WebView) rootView.findViewById(webViewId);
@@ -268,18 +259,6 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 				return false;
 			}
 		});
-
-//		webView.setOnTouchListener(new View.OnTouchListener() {
-//			
-//			@Override
-//			public boolean onTouch(View pV, MotionEvent pEvent) {
-//				if(isZoomStarted) {
-//					mProductImageTouchListener.onTouch(pV, pEvent);
-//					return true;
-//				}
-//				return false;
-//			}
-//		});
 
 		ImageView shareButton = (ImageView) rootView.findViewById(shareId);
 		shareButton.setOnClickListener(new OnClickListener() {
@@ -382,25 +361,27 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 		if (pUrl.startsWith(ZOOM_TOUCHSTART)) {
 //			mProductImage.setVisibility(View.VISIBLE);
 			mProductImage = new ImageView(getActivity());
+			mProductImage.setScaleType(ScaleType.CENTER_CROP);
 			mProductImage.setHorizontalScrollBarEnabled(true);
 			mProductImage.setVerticalScrollBarEnabled(true);
 			mProductImage.setOnTouchListener(mProductImageTouchListener);
 			mProductImagePopup = new QuickAction(rootView.findViewById(TestSnowboardsApplication.ProductDetailConstants.PRODUCTDETAIL_PRODUCTIMAGE_VIEW_ID)){
 				@Override
 				public void onDismiss() {
+					isZoomStarted = false;
 					recycleImageViewBitmap(mProductImage);
 				}
 			};
 			mProductImagePopup.setContentView(mProductImage);
 //			mProductImagePopup.addActionItem(new ActionItem(mProductImage));
-			mProductImagePopup.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
+			mProductImagePopup.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
 			loadImageBitmap();
 			mProductImagePopup.show();
 			isZoomStarted = true;			
 		}
 		
-		if(pUrl.startsWith(ZOOM_FINISH)) {
-			this.mProductImageGoneHandler.removeCallbacks(mProductImageGoneRunnable);
+		if(pUrl.startsWith(ZOOM_FINISH) || pUrl.startsWith(ZOOM_TOUCHEND)) {
+//			this.mProductImageGoneHandler.removeCallbacks(mProductImageGoneRunnable);
 //			mProductImage.setVisibility(View.GONE);
 			mProductImagePopup.dismiss();
 			isZoomStarted = false;
@@ -409,7 +390,16 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 //			mProductImage.setVisibility(View.GONE);
 //			isZoomStarted = false;
 //		}
-		
+		if(pUrl.startsWith(ZOOM_TOUCHMOVE)) {
+			if(isZoomStarted) {
+				String[] coordStr = pUrl.split("\\?")[1].split(",");
+				int [] coords = new int[coordStr.length];
+				for(int i = 0; i < coords.length; i++)
+					coords[i] = Integer.valueOf(coordStr[i]);
+				float xPos = bitmapWidth / coords[5] * (coords[0] - coords[4]) - (bitmapWidth - webView.getWidth())/ 2;
+				mProductImage.scrollTo((int) xPos, mProductImage.getScrollY());
+			}
+		}
 		Log.d("zoom", pUrl);
 	}
 
@@ -460,15 +450,6 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 
 	public interface ShareProductListener {
 		public void onShareProduct(Cursor productCursor, String site);
-	}
-
-	@Override
-	public boolean onBackPressed() {
-		if (mProductImage.getVisibility() == View.VISIBLE) {
-			showLargeImage(ZOOM_FINISH);
-			return true;
-		}
-		return false;
 	}
 
 	/**
