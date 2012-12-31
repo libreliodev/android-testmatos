@@ -12,12 +12,12 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:name=".TestSnowboardsApplication"
+        android:name="com.niveales.library.ui.NivealesApplication"
         android:icon="@drawable/tests_snowboards_ic_launcher"
         android:label="@string/tests_snowboards_app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".TestSnowboardsMainActivity"
+            android:name="com.niveales.library.ui.MainActivity"
             android:configChanges="keyboard|orientation|screenSize"
             android:icon="@drawable/tests_snowboards_ic_launcher"
             android:label="@string/title_activity_test_snowboards_main"

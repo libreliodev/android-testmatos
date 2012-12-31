@@ -1,10 +1,10 @@
 package com.niveales.library.utils.adapters.search;
 
+import com.niveales.library.ui.NivealesApplication;
 import com.niveales.library.utils.adapters.BoundAdapter;
 import com.niveales.library.utils.adapters.CursorViewBinder;
 import com.niveales.library.utils.db.DBHelper;
 import com.niveales.testsnowboards.R;
-import com.niveales.testsnowboards.TestSnowboardsApplication;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -20,13 +20,13 @@ public class SearchAdapter extends BoundAdapter implements Filterable {
 
 	protected CursorViewBinder binder;
 	private String whereClaus;
-	private static String[] searchColumns = TestSnowboardsApplication.ProductSearchConstants.PRODUCT_SEARCH_BINDER_COLUMNS;
-	private static int[] searchLayoutIds = TestSnowboardsApplication.ProductSearchConstants.PRODUCT_SEARCH_BINDER_IDS;
+	private static String[] searchColumns = NivealesApplication.ProductSearchConstants.PRODUCT_SEARCH_BINDER_COLUMNS;
+	private static int[] searchLayoutIds = NivealesApplication.ProductSearchConstants.PRODUCT_SEARCH_BINDER_IDS;
 
 	public SearchAdapter(Context context) {
-		super(context, TestSnowboardsApplication.getDBHelper().getAllFromTableWithWhereAndOrder(
-				TestSnowboardsApplication.DETAIL_TABLE_NAME, null, null),
-				TestSnowboardsApplication.ProductSearchConstants.PRODUCT_SEARCH_LISTVIEW_ITEM_LAYOUT, new CursorViewBinder(
+		super(context, NivealesApplication.getDBHelper().getAllFromTableWithWhereAndOrder(
+				NivealesApplication.DETAIL_TABLE_NAME, null, null),
+				NivealesApplication.ProductSearchConstants.PRODUCT_SEARCH_LISTVIEW_ITEM_LAYOUT, new CursorViewBinder(
 						context, searchColumns, searchLayoutIds));
 	}
 
@@ -68,12 +68,12 @@ public class SearchAdapter extends BoundAdapter implements Filterable {
 				whereClaus += " AND ( " + w + " )";
 			}
 		}
-		setCursor(getCursor(TestSnowboardsApplication.DETAIL_TABLE_NAME,
+		setCursor(getCursor(NivealesApplication.DETAIL_TABLE_NAME,
 				whereClaus));
 	}
 
 	public Cursor getCursor(String table, String where) {
-		return TestSnowboardsApplication.getDBHelper()
+		return NivealesApplication.getDBHelper()
 				.getAllFromTableWithWhereAndOrder(table, where, null);
 	}
 

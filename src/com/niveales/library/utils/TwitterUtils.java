@@ -3,7 +3,7 @@
  */
 package com.niveales.library.utils;
 
-import com.niveales.testsnowboards.TestSnowboardsApplication;
+import com.niveales.library.ui.NivealesApplication;
 
 import oauth.signpost.OAuth;
 import twitter4j.Twitter;
@@ -21,7 +21,7 @@ public class TwitterUtils {
 		
 		AccessToken a = new AccessToken(token,secret);
 		Twitter twitter = new TwitterFactory().getInstance();
-		twitter.setOAuthConsumer(TestSnowboardsApplication.TWITTER_CONSUMER_KEY, TestSnowboardsApplication.TWITTER_SECRET);
+		twitter.setOAuthConsumer(NivealesApplication.TWITTER_CONSUMER_KEY, NivealesApplication.TWITTER_SECRET);
 		twitter.setOAuthAccessToken(a);
 		
 //		try {
@@ -39,7 +39,7 @@ public class TwitterUtils {
 		
 		AccessToken a = new AccessToken(token,secret);
 		Twitter twitter = new TwitterFactory().getInstance();
-		twitter.setOAuthConsumer(TestSnowboardsApplication.TWITTER_CONSUMER_KEY, TestSnowboardsApplication.TWITTER_SECRET);
+		twitter.setOAuthConsumer(NivealesApplication.TWITTER_CONSUMER_KEY, NivealesApplication.TWITTER_SECRET);
 		twitter.setOAuthAccessToken(a);
         twitter.updateStatus(msg);
 	}	

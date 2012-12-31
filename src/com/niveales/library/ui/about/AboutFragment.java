@@ -12,8 +12,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.niveales.library.ui.BaseNivealesFragment;
+import com.niveales.library.ui.NivealesApplication;
 import com.niveales.testsnowboards.R;
-import com.niveales.testsnowboards.TestSnowboardsApplication;
 
 public class AboutFragment extends BaseNivealesFragment {
 
@@ -45,7 +45,7 @@ public class AboutFragment extends BaseNivealesFragment {
 	        }
 		});
 		webView.getSettings().setJavaScriptEnabled(true);
-		webView.loadUrl(TestSnowboardsApplication.INFO_TAB_PAGE_URL);
+		webView.loadUrl(NivealesApplication.INFO_TAB_PAGE_URL);
 		return rootView;
 	}
 	

@@ -38,11 +38,11 @@ import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 
 import com.niveales.library.ui.BaseNivealesFragment;
+import com.niveales.library.ui.NivealesApplication;
+import com.niveales.library.ui.NivealesApplication.ProductDetailConstants;
 import com.niveales.library.ui.popup.ActionItem;
 import com.niveales.library.ui.popup.QuickAction;
 import com.niveales.library.utils.db.DBHelper;
-import com.niveales.testsnowboards.TestSnowboardsApplication;
-import com.niveales.testsnowboards.TestSnowboardsApplication.ProductDetailConstants;
 
 public class ProductDetailFragment extends BaseNivealesFragment {
 
@@ -99,7 +99,7 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 	private void init(int productDetailLayout, int webViewId,
 			int webPageStringResourceId, String[] columnKeys,
 			String[] htmlKeys, int favoriteCheckboxId, int shareButtonId) {
-		this.helper = TestSnowboardsApplication.getDBHelper();
+		this.helper = NivealesApplication.getDBHelper();
 		this.productDetailLayout = productDetailLayout;
 		this.webViewId = webViewId;
 
@@ -148,12 +148,12 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 		for (int i = 0; i < columnKeys.length; i++) {
 			String value = c.getString(c.getColumnIndexOrThrow(columnKeys[i]));
 			if (htmlKeys[i].startsWith("%icone") && !value.equals("")) {
-				value = "<img src=\"" + TestSnowboardsApplication.ASSETS_URI
+				value = "<img src=\"" + NivealesApplication.ASSETS_URI
 						+ value + "\"/>";
 			} else {
 				if (value.endsWith("png") || value.endsWith("jpg")) {
 					// product image
-					value = TestSnowboardsApplication.ASSETS_URI + value;
+					value = NivealesApplication.ASSETS_URI + value;
 				}
 			}
 			htmlString = htmlString.replace(htmlKeys[i], value);
@@ -224,7 +224,7 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 	
 	
 	public void loadProduct(Cursor c) {
-		webView.loadDataWithBaseURL(TestSnowboardsApplication.ASSETS_URI,
+		webView.loadDataWithBaseURL(NivealesApplication.ASSETS_URI,
 				getHTMLPage(c), "text/html", "UTF-8", null);
 		mFavoriteCkeckBox.setChecked(helper.isFavorite(productId));
 	}
@@ -289,7 +289,7 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 				});
 
 		mPrevButton = (ImageButton) rootView
-				.findViewById(TestSnowboardsApplication.ProductDetailConstants.PRODUCT_DETAIL_PREVBUTTON_VIEW_ID);
+				.findViewById(NivealesApplication.ProductDetailConstants.PRODUCT_DETAIL_PREVBUTTON_VIEW_ID);
 		mPrevButton.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -303,7 +303,7 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 			}
 		});
 		mNextButton = (ImageButton) rootView
-				.findViewById(TestSnowboardsApplication.ProductDetailConstants.PRODUCTDETAIL_NEXTBUTTON_VIEW_ID);
+				.findViewById(NivealesApplication.ProductDetailConstants.PRODUCTDETAIL_NEXTBUTTON_VIEW_ID);
 		mNextButton.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -365,7 +365,7 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 			mProductImage.setHorizontalScrollBarEnabled(true);
 			mProductImage.setVerticalScrollBarEnabled(true);
 			mProductImage.setOnTouchListener(mProductImageTouchListener);
-			mProductImagePopup = new QuickAction(rootView.findViewById(TestSnowboardsApplication.ProductDetailConstants.PRODUCTDETAIL_PRODUCTIMAGE_VIEW_ID)){
+			mProductImagePopup = new QuickAction(rootView.findViewById(NivealesApplication.ProductDetailConstants.PRODUCTDETAIL_PRODUCTIMAGE_VIEW_ID)){
 				@Override
 				public void onDismiss() {
 					isZoomStarted = false;
@@ -436,12 +436,13 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 	}
 
 	public void recycleImageViewBitmap(ImageView i) {
-		Drawable d = i.getDrawable();
-		if (d instanceof BitmapDrawable) {
-			BitmapDrawable bd = (BitmapDrawable) d;
-			bd.getBitmap().recycle();
+		if(i != null) {
+			Drawable d = i.getDrawable();
+			if (d instanceof BitmapDrawable) {
+				BitmapDrawable bd = (BitmapDrawable) d;
+				bd.getBitmap().recycle();
+			}
 		}
-
 	}
 
 	public void onShareStarted() {

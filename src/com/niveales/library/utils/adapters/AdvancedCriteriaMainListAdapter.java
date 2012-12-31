@@ -1,9 +1,9 @@
 package com.niveales.library.utils.adapters;
 
+import com.niveales.library.ui.NivealesApplication;
+import com.niveales.library.ui.MainActivity.SearchButtonClickListener;
 import com.niveales.library.utils.db.DBHelper;
 import com.niveales.testsnowboards.R;
-import com.niveales.testsnowboards.TestSnowboardsApplication;
-import com.niveales.testsnowboards.TestSnowboardsMainActivity.SearchButtonClickListener;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -86,12 +86,12 @@ public class AdvancedCriteriaMainListAdapter extends BaseAdapter {
 	public String getPrevSearchText() {
 		String text="";
 		try {
-			Cursor crit = TestSnowboardsApplication.getDBHelper().getAllFromTable("AdvancedCriteria");
+			Cursor crit = NivealesApplication.getDBHelper().getAllFromTable("AdvancedCriteria");
 			while(!crit.isAfterLast()) {
 				String result = "";
 				String title = crit.getString(crit.getColumnIndexOrThrow("Title"));
 				String critColName = crit.getString(crit.getColumnIndexOrThrow("ColName"));
-				Cursor c = TestSnowboardsApplication.getDBHelper().getAllFromTableWithWhereAndOrder("UserSearchInputsOld", "ColName LIKE '%" + critColName + "%'", null);
+				Cursor c = NivealesApplication.getDBHelper().getAllFromTableWithWhereAndOrder("UserSearchInputsOld", "ColName LIKE '%" + critColName + "%'", null);
 				if(c!= null && c.getCount() > 0) {
 					while(!c.isAfterLast()) {
 						result += c.getString(c.getColumnIndexOrThrow("Title")) + ",";

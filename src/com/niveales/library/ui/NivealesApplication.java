@@ -1,19 +1,26 @@
 /**
  * 
  */
-package com.niveales.testsnowboards;
+package com.niveales.library.ui;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.Hashtable;
 
 import org.acra.ACRA;
 import org.acra.annotation.ReportsCrashes;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
@@ -47,6 +54,10 @@ import com.niveales.library.utils.TwitterSession;
 import com.niveales.library.utils.adapters.CursorViewBinder;
 import com.niveales.library.utils.adapters.search.SearchAdapter;
 import com.niveales.library.utils.db.DBHelper;
+import com.niveales.testsnowboards.R;
+import com.niveales.testsnowboards.R.id;
+import com.niveales.testsnowboards.R.layout;
+import com.niveales.testsnowboards.R.string;
 
 /**
  * @author Dmitry Valetin
@@ -54,7 +65,7 @@ import com.niveales.library.utils.db.DBHelper;
  */
 
 @ReportsCrashes(formKey = "dDVpd19Uc2E4WTBaWTJXNGJHNkZEMWc6MQ")
-public class TestSnowboardsApplication extends Application {
+public class NivealesApplication extends Application {
 
 	public static class ProductSearchConstants {
 
@@ -127,8 +138,8 @@ public class TestSnowboardsApplication extends Application {
 	
 
 	public static final String ACRA_FORM_ID = "dDVpd19Uc2E4WTBaWTJXNGJHNkZEMWc6MQ";
-	public static final String FACEBOOK_TAB_PAGE_URL = "http://www.facebook.com/Snowsurf.mag";
-	public static final String INFO_TAB_PAGE_URL = "http://www.snowsurf.com/app-teasing";
+	public static String FACEBOOK_TAB_PAGE_URL = "http://www.facebook.com/Snowsurf.mag";
+	public static String INFO_TAB_PAGE_URL = "http://www.snowsurf.com/app-teasing";
 
 	public static class ProductDetailConstants {
 		/**
@@ -144,7 +155,7 @@ public class TestSnowboardsApplication extends Application {
 		/**
 		 * 
 		 */
-		public static final String[] PRODUCT_DETAIL_HTML_FILE_KEYS = new String[] {
+		public static String[] PRODUCT_DETAIL_HTML_FILE_KEYS = new String[] {
 				"%TAITLE%",
 				"%Modele%",
 				"%Budget%",
@@ -161,7 +172,7 @@ public class TestSnowboardsApplication extends Application {
 		/**
 		 * 
 		 */
-		public static final String[] PRODUCT_DETAIL_COLUMN_KEYS = // List of
+		public static String[] PRODUCT_DETAIL_COLUMN_KEYS = // List of
 																	// fields in
 																	// product
 																	// html file
@@ -238,7 +249,7 @@ public class TestSnowboardsApplication extends Application {
 		/**
 		 * 
 		 */
-		private static final String[] PRODUCT_LIST_DISPLAY_COLUMNS = new String[] {
+		private static String[] PRODUCT_LIST_DISPLAY_COLUMNS = new String[] {
 				DBHelper.MODELE_MARQUE_KEY, DBHelper.MODELE_MODELE_KEY,
 				"icone_genre", "icone_cambres", "Gamme", "Prix_String",
 				"icone_wide", "icone_top", "imgLR"
@@ -249,7 +260,7 @@ public class TestSnowboardsApplication extends Application {
 		/**
 		 * 
 		 */
-		private static final int[] PRODUCT_LIST_DISPLAY_VIEW_IDS = new int[] {
+		private static int[] PRODUCT_LIST_DISPLAY_VIEW_IDS = new int[] {
 				R.id.productListItemGenre, R.id.productListItemModele,
 				R.id.productListItemFemale, R.id.productListItemChambre,
 				R.id.productListItemGamme, R.id.productListItemBudget,
@@ -297,9 +308,9 @@ public class TestSnowboardsApplication extends Application {
 	public static final String OAUTH_CALLBACK_URL = OAUTH_CALLBACK_SCHEME
 			+ "://" + OAUTH_CALLBACK_HOST;
 	public static final String AUTH_URL = "http://twitter.com/oauth/authorize";
-	public static final String TWITTER_CONSUMER_KEY = "Qgs7YXW6HCw8u0Mt1102Q";
-	public static final String TWITTER_SECRET = "CqOZllOATSal2bjyyBSY2hXZ1dtlwwTZBUYXeMvj0";
-	public static final String TWITTER_CALLBACK_URL = "twitter://callback";
+	public static String TWITTER_CONSUMER_KEY = "Qgs7YXW6HCw8u0Mt1102Q";
+	public static String TWITTER_SECRET = "CqOZllOATSal2bjyyBSY2hXZ1dtlwwTZBUYXeMvj0";
+	public static String TWITTER_CALLBACK_URL = "twitter://callback";
 	public static CommonsHttpOAuthConsumer consumer = new CommonsHttpOAuthConsumer(
 			TWITTER_CONSUMER_KEY, TWITTER_SECRET);
 	public static CommonsHttpOAuthProvider provider = new CommonsHttpOAuthProvider(
@@ -310,7 +321,7 @@ public class TestSnowboardsApplication extends Application {
 	public static final String BITLY_API_KEY = "R_d0e2739e13391fc7cc6a7c66966239b4";
 
 	// Facebook staff
-	public static final String FACEBOOK_APP_ID = "367597189994678";
+	public static String FACEBOOK_APP_ID = "367597189994678";
 	public static Facebook mFacebook;
 	public static AsyncFacebookRunner mAsyncRunner;
 	public static String[] facebookPermissions = { "offline_access",
@@ -595,6 +606,54 @@ public class TestSnowboardsApplication extends Application {
 		// The following line triggers the initialization of ACRA
 		ACRA.init(this);
 		super.onCreate();
+		InputStream is;
+		try {
+			is = getAssets().open("customization.json");
+			BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+			StringWriter writer = new StringWriter();
+			char[] buffer = new char[1024];
+			int count = 0;
+			while((count = reader.read(buffer)) > 0) {
+				writer.write(buffer, 0, count);
+			}
+			JSONObject json = new JSONObject(writer.toString());
+			FACEBOOK_TAB_PAGE_URL = json.getString("FACEBOOK_TAB_PAGE_URL");
+			INFO_TAB_PAGE_URL = json.getString("INFO_TAB_PAGE_URL");
+			FACEBOOK_APP_ID = json.getString("FACEBOOK_APP_ID");
+			TWITTER_CONSUMER_KEY = json.getString("TWITTER_CONSUMER_KEY");
+			TWITTER_SECRET = json.getString("TWITTER_SECRET");
+			TWITTER_CALLBACK_URL = json.getString("TWITTER_CALLBACK_URL");
+			JSONArray htmlKeys = json.getJSONArray("PRODUCT_DETAIL_HTML_FILE_KEYS");
+			ProductDetailConstants.PRODUCT_DETAIL_HTML_FILE_KEYS = new String[htmlKeys.length()];
+			for(int i = 0; i < htmlKeys.length(); i++) {
+				ProductDetailConstants.PRODUCT_DETAIL_HTML_FILE_KEYS[i] = htmlKeys.getString(i);
+			}
+			JSONArray columnKeys = json.getJSONArray("PRODUCT_DETAIL_COLUMN_KEYS");
+			ProductDetailConstants.PRODUCT_DETAIL_COLUMN_KEYS = new String[columnKeys.length()];
+			for(int i = 0; i < columnKeys.length(); i++) {
+				ProductDetailConstants.PRODUCT_DETAIL_COLUMN_KEYS[i] = columnKeys.getString(i);
+			}
+			
+			JSONArray displayColumns = json.getJSONArray("PRODUCT_LIST_DISPLAY_COLUMNS");
+			ProductListConstants.PRODUCT_LIST_DISPLAY_COLUMNS = new String[displayColumns.length()];
+			for(int i = 0; i < displayColumns.length(); i++) {
+				ProductListConstants.PRODUCT_LIST_DISPLAY_COLUMNS[i] = displayColumns.getString(i);
+			}
+			
+			JSONArray displayViewIds = json.getJSONArray("PRODUCT_LIST_DISPLAY_VIEW_IDS");
+			ProductListConstants.PRODUCT_LIST_DISPLAY_VIEW_IDS = new int[displayViewIds.length()];
+			for(int i = 0; i < displayViewIds.length(); i++) {
+				String resourceName = displayViewIds.getString(i);
+				ProductListConstants.PRODUCT_LIST_DISPLAY_VIEW_IDS[i] = getResources().getIdentifier(resourceName, "id", getPackageName());
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 }

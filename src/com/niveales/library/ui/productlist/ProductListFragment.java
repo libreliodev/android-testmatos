@@ -12,12 +12,12 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.niveales.library.ui.Button3State;
+import com.niveales.library.ui.NivealesApplication;
 import com.niveales.library.ui.Button3State.OnStateChanged;
 import com.niveales.library.utils.adapters.BoundAdapter;
 import com.niveales.library.utils.adapters.CursorViewBinder;
 import com.niveales.library.utils.db.DBHelper;
 import com.niveales.testsnowboards.R;
-import com.niveales.testsnowboards.TestSnowboardsApplication;
 
 public class ProductListFragment extends Fragment {
 	public static final String SORT_UP="%S ASC";
@@ -74,7 +74,7 @@ public class ProductListFragment extends Fragment {
 	 */
 	public ProductListFragment init(String table, int layoutId, int listViewId, int itemLayoutId, int [] sortButtonsIds, String [] sortColumns, 
 			CursorViewBinder binder){
-		helper = TestSnowboardsApplication.getDBHelper();
+		helper = NivealesApplication.getDBHelper();
 		this.table = table;
 		this.layoutId = layoutId;
 		this.listViewId = listViewId;

@@ -11,8 +11,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.niveales.library.ui.BaseNivealesFragment;
+import com.niveales.library.ui.NivealesApplication;
 import com.niveales.testsnowboards.R;
-import com.niveales.testsnowboards.TestSnowboardsApplication;
 
 public class FacebookFragment extends BaseNivealesFragment {
 
@@ -45,7 +45,7 @@ public class FacebookFragment extends BaseNivealesFragment {
 	        }
 		});
 		
-		webView.loadUrl(TestSnowboardsApplication.FACEBOOK_TAB_PAGE_URL);
+		webView.loadUrl(NivealesApplication.FACEBOOK_TAB_PAGE_URL);
 		webView.getSettings().setJavaScriptEnabled(true);
 		
 		return rootView;

@@ -25,7 +25,6 @@ import android.widget.Toast;
 import com.facebook.android.AsyncFacebookRunner.RequestListener;
 import com.facebook.android.FacebookError;
 import com.niveales.testsnowboards.R;
-import com.niveales.testsnowboards.TestSnowboardsApplication;
 
 
 
@@ -86,9 +85,9 @@ public class FacebookImagePostPreviewDialogFragment extends DialogFragment {
 				try{
 					mProgress.setVisibility(View.VISIBLE);
 				params.putString("caption", getEditableMessage());
-				params.putByteArray("photo", TestSnowboardsApplication
+				params.putByteArray("photo", NivealesApplication
 						.scaleImage(getActivity(), mPic));
-				TestSnowboardsApplication.mAsyncRunner.request("me/photos", params, "POST",
+				NivealesApplication.mAsyncRunner.request("me/photos", params, "POST",
                 new RequestListener() {
 
 					@Override
@@ -128,7 +127,7 @@ public class FacebookImagePostPreviewDialogFragment extends DialogFragment {
 	    mPostImage = (ImageView) rootView.findViewById(R.id.PostImage);
 	    byte[] data;
 		try {
-			data = TestSnowboardsApplication.scaleImage(getActivity(), mPic);
+			data = NivealesApplication.scaleImage(getActivity(), mPic);
 			Bitmap imagePreview = BitmapFactory.decodeByteArray(data, 0, data.length);
 			mPostImage.setImageBitmap(imagePreview);
 		} catch (IOException e) {

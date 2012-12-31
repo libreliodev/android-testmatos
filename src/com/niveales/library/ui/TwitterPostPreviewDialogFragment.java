@@ -30,7 +30,6 @@ import android.widget.Toast;
 import com.facebook.android.AsyncFacebookRunner.RequestListener;
 import com.facebook.android.FacebookError;
 import com.niveales.testsnowboards.R;
-import com.niveales.testsnowboards.TestSnowboardsApplication;
 
 
 
@@ -74,7 +73,7 @@ public class TwitterPostPreviewDialogFragment extends DialogFragment {
 	    // Get the layout inflater
 	    LayoutInflater inflater = getActivity().getLayoutInflater();
 	    View rootView = inflater.inflate(R.layout.twitter_post_preview_dialog_layout, null);
-	    mTwitter = ((TestSnowboardsApplication)getActivity().getApplication()).mTwitter;
+	    mTwitter = ((NivealesApplication)getActivity().getApplication()).mTwitter;
 	    mProgress = (ProgressBar) rootView.findViewById(R.id.Progress);
 	    mCancelButton = (Button) rootView.findViewById(R.id.CancelButton);
 	    mCancelButton.setOnClickListener(new OnClickListener() {
@@ -95,7 +94,7 @@ public class TwitterPostPreviewDialogFragment extends DialogFragment {
 	    mPostImage = (ImageView) rootView.findViewById(R.id.PostImage);
 	    byte[] data;
 		try {
-			data = TestSnowboardsApplication.scaleImage(getActivity(), mPic);
+			data = NivealesApplication.scaleImage(getActivity(), mPic);
 			Bitmap imagePreview = BitmapFactory.decodeByteArray(data, 0, data.length);
 			mPostImage.setImageBitmap(imagePreview);
 		} catch (IOException e) {

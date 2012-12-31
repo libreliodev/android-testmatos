@@ -3,7 +3,7 @@
  */
 package com.niveales.library.utils;
 
-import com.niveales.testsnowboards.TestSnowboardsApplication;
+import com.niveales.library.ui.NivealesApplication;
 
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.OAuthProvider;
@@ -57,7 +57,7 @@ public class OAuthRequestTokenTask extends AsyncTask<Void, Void, Void> {
 		
 		try {
 			Log.i(TAG, "Retrieving request token from Google servers");
-			final String url = provider.retrieveRequestToken(consumer, TestSnowboardsApplication.OAUTH_CALLBACK_URL);
+			final String url = provider.retrieveRequestToken(consumer, NivealesApplication.OAUTH_CALLBACK_URL);
 			Log.i(TAG, "Popping a browser with the authorize URL : " + url);
 			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url)).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_FROM_BACKGROUND);
 			context.startActivity(intent);

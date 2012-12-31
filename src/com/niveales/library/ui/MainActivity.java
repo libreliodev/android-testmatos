@@ -1,4 +1,4 @@
-package com.niveales.testsnowboards;
+package com.niveales.library.ui;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -57,9 +57,6 @@ import com.facebook.android.Facebook;
 import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
 import com.facebook.android.Util;
-import com.niveales.library.ui.BaseNivealesFragment;
-import com.niveales.library.ui.FacebookImagePostPreviewDialogFragment;
-import com.niveales.library.ui.TwitterPostPreviewDialogFragment;
 import com.niveales.library.ui.about.AboutFragment;
 import com.niveales.library.ui.about.FacebookFragment;
 import com.niveales.library.ui.activity.TwitterAuthActivity;
@@ -74,13 +71,20 @@ import com.niveales.library.utils.BitlyAndroid;
 import com.niveales.library.utils.adapters.AdvancedCriteriaMainListAdapter;
 import com.niveales.library.utils.adapters.search.SearchAdapter;
 import com.niveales.library.utils.db.DBHelper;
+import com.niveales.testsnowboards.R;
+import com.niveales.testsnowboards.R.array;
+import com.niveales.testsnowboards.R.drawable;
+import com.niveales.testsnowboards.R.id;
+import com.niveales.testsnowboards.R.layout;
+import com.niveales.testsnowboards.R.menu;
+import com.niveales.testsnowboards.R.string;
 
-public class TestSnowboardsMainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity {
 
 	private static final String DIALOG_TAG = null;
 	private static final int TWITTER_CALLBACK_ID = 9890;
 	@SuppressWarnings("unused")
-	private static final String TAG = TestSnowboardsMainActivity.class
+	private static final String TAG = MainActivity.class
 			.getSimpleName();
 	public static String mTwitterMessage;
 	private int mActiveTab;
@@ -103,16 +107,16 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		if (savedInstanceState != null) {
 			mActiveTab = savedInstanceState
-					.getInt(TestSnowboardsApplication.MAIN_TAB_ID);
+					.getInt(NivealesApplication.MAIN_TAB_ID);
 		}
 
 		// Set our layout
 		setContentView(R.layout.main_activity_layout);
 
 		// Init DB
-		TestSnowboardsApplication.setDBHelper(new DBHelper(this,
-				TestSnowboardsApplication.dbName));
-		TestSnowboardsApplication.getDBHelper().open();
+		NivealesApplication.setDBHelper(new DBHelper(this,
+				NivealesApplication.dbName));
+		NivealesApplication.getDBHelper().open();
 
 		initViews();
 		restoreAppState();
@@ -168,7 +172,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 				});
 
 		mainAdapter = new AdvancedCriteriaMainListAdapter(
-				TestSnowboardsApplication.getDBHelper(), this,
+				NivealesApplication.getDBHelper(), this,
 				R.layout.creteria_group_selector_item_layout,
 				R.id.CreteriaGroupTextView, R.id.CreteriaSelectedListTextView);
 		mMainActivityCreteriaSelectionListView.setAdapter(mainAdapter);
@@ -188,7 +192,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			@Override
 			public void onItemClick(AdapterView<?> pArg0, View pArg1,
 					int pArg2, long pArg3) {
-				InputMethodManager imm = (InputMethodManager) TestSnowboardsMainActivity.this
+				InputMethodManager imm = (InputMethodManager) MainActivity.this
 						.getSystemService(Activity.INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(mSearchEditText.getWindowToken(), 0);
 				showProductDetail((Cursor) pArg0.getAdapter().getItem(pArg2));
@@ -213,7 +217,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	 * 
 	 */
 	protected void onPrevSearchClick() {
-		DBHelper helper = TestSnowboardsApplication.getDBHelper();
+		DBHelper helper = NivealesApplication.getDBHelper();
 		try {
 			helper.rawQuery("delete from UserSearchInputs", null);
 			helper.rawQuery(
@@ -234,7 +238,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	public String getPrevSearchText() {
 		String text = "";
 		try {
-			Cursor crit = TestSnowboardsApplication.getDBHelper()
+			Cursor crit = NivealesApplication.getDBHelper()
 					.getAllFromTable("AdvancedCriteria");
 			while (!crit.isAfterLast()) {
 				String result = "";
@@ -242,7 +246,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 						.getColumnIndexOrThrow("Title"));
 				String critColName = crit.getString(crit
 						.getColumnIndexOrThrow("ColName"));
-				Cursor c = TestSnowboardsApplication.getDBHelper()
+				Cursor c = NivealesApplication.getDBHelper()
 						.getAllFromTableWithWhereAndOrder(
 								"UserSearchInputsOld",
 								"ColName LIKE '%" + critColName + "%'", null);
@@ -344,7 +348,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 				// Tablet
 				Fragment lexiqueFragment = getMyApplication()
 						.getLexiqueFragment(
-								TestSnowboardsApplication.getDBHelper());
+								NivealesApplication.getDBHelper());
 				this.getSupportFragmentManager().beginTransaction()
 						.replace(R.id.ContentHolder, lexiqueFragment)
 						.addToBackStack(null).commit();
@@ -352,7 +356,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 				// Phone
 				Fragment lexiqueFragment = getMyApplication()
 						.getLexiqueFragment(
-								TestSnowboardsApplication.getDBHelper());
+								NivealesApplication.getDBHelper());
 				this.getSupportFragmentManager().beginTransaction()
 						.replace(R.id.terms_tab, lexiqueFragment).commit();
 			}
@@ -377,7 +381,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 	protected void onSearchButtonClick() {
 		String whereClaus = null;
-		DBHelper helper = TestSnowboardsApplication.getDBHelper();
+		DBHelper helper = NivealesApplication.getDBHelper();
 		Cursor tempCursor = helper.getAllFromTableWithOrder("AdvancedCriteria",
 				"Title");
 		boolean isFirst = true;
@@ -408,7 +412,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		}
 
 		Cursor productCursor = helper.getAllFromTableWithWhereAndOrder(
-				TestSnowboardsApplication.DETAIL_TABLE_NAME, whereClaus, null);
+				NivealesApplication.DETAIL_TABLE_NAME, whereClaus, null);
 		if (productCursor.getCount() > 0) {
 			ProductListFragment f = getMyApplication().getProductListFragment();
 			f.setOnProductSelectedListener(new ProductSelectedListener() {
@@ -437,14 +441,14 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	}
 
 	public void onClearSearchClick() {
-		TestSnowboardsApplication.getDBHelper().rawQuery(
+		NivealesApplication.getDBHelper().rawQuery(
 				"delete from UserSearchInputsOld", null);
-		TestSnowboardsApplication
+		NivealesApplication
 				.getDBHelper()
 				.rawQuery(
 						"insert into UserSearchInputsOld select * from UserSearchInputs",
 						null);
-		TestSnowboardsApplication.getDBHelper().rawQuery(
+		NivealesApplication.getDBHelper().rawQuery(
 				"delete from UserSearchInputs", null);
 		// TestSnowboardsApplication.getDBHelper().rawQuery(
 		// "delete from UserSearchInputs", null);
@@ -552,15 +556,15 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	/**
 	 * @return Application instance
 	 */
-	private TestSnowboardsApplication getMyApplication() {
-		return (TestSnowboardsApplication) getApplication();
+	private NivealesApplication getMyApplication() {
+		return (NivealesApplication) getApplication();
 	}
 
 	protected void showSelectionCategory(int position) {
 
 		mLastSelectedMainItem = position;
 
-		Cursor cursor = TestSnowboardsApplication.getDBHelper()
+		Cursor cursor = NivealesApplication.getDBHelper()
 				.getAllAdvancedCriteria();
 
 		cursor.moveToPosition(position);
@@ -570,7 +574,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		Fragment f;
 		if (type.equals("Numeric")) {
 			f = getMyApplication().getRangeCriteriaSelectorFragment(
-					TestSnowboardsApplication.getDBHelper(), type, criteria,
+					NivealesApplication.getDBHelper(), type, criteria,
 					colName, new RangeCriteriaChangedListener());
 
 		} else {
@@ -734,15 +738,15 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 	protected void shareByFacebook(final Cursor productCursor) {
 
-		if (TestSnowboardsApplication.mFacebook == null) {
-			TestSnowboardsApplication.mFacebook = new Facebook(
-					TestSnowboardsApplication.FACEBOOK_APP_ID);
-			TestSnowboardsApplication.mAsyncRunner = new AsyncFacebookRunner(
-					TestSnowboardsApplication.mFacebook);
+		if (NivealesApplication.mFacebook == null) {
+			NivealesApplication.mFacebook = new Facebook(
+					NivealesApplication.FACEBOOK_APP_ID);
+			NivealesApplication.mAsyncRunner = new AsyncFacebookRunner(
+					NivealesApplication.mFacebook);
 		}
-		if (!TestSnowboardsApplication.mFacebook.isSessionValid()) {
-			TestSnowboardsApplication.mFacebook.authorize(this,
-					TestSnowboardsApplication.facebookPermissions,
+		if (!NivealesApplication.mFacebook.isSessionValid()) {
+			NivealesApplication.mFacebook.authorize(this,
+					NivealesApplication.facebookPermissions,
 					new DialogListener() {
 
 						@Override
@@ -755,7 +759,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 						@Override
 						public void onFacebookError(FacebookError pE) {
 							//
-							Util.showAlert(TestSnowboardsMainActivity.this,
+							Util.showAlert(MainActivity.this,
 									"Error:", pE.getMessage());
 
 						}
@@ -763,7 +767,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 						@Override
 						public void onError(DialogError pE) {
 							//
-							Util.showAlert(TestSnowboardsMainActivity.this,
+							Util.showAlert(MainActivity.this,
 									"Warning", pE.getMessage());
 
 						}
@@ -771,7 +775,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 						@Override
 						public void onCancel() {
 							//
-							Util.showAlert(TestSnowboardsMainActivity.this,
+							Util.showAlert(MainActivity.this,
 									"Warning", "Cancelled");
 
 						}
@@ -909,7 +913,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 			e1.printStackTrace();
 		}
 		String newURI = "file://"
-				+ TestSnowboardsApplication.copyFileToExternalDirectory(pic,
+				+ NivealesApplication.copyFileToExternalDirectory(pic,
 						getAssets());
 		Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("text/html");
@@ -927,18 +931,18 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	 */
 	@SuppressWarnings("unused")
 	protected String shareByTwitter(Cursor productCursor) throws Exception {
-		if (TestSnowboardsApplication.mTwitter == null) {
-			TestSnowboardsApplication.mTwitter = new TwitterFactory()
+		if (NivealesApplication.mTwitter == null) {
+			NivealesApplication.mTwitter = new TwitterFactory()
 					.getInstance();
-			TestSnowboardsApplication.mTwitter.setOAuthConsumer(
-					TestSnowboardsApplication.TWITTER_CONSUMER_KEY,
-					TestSnowboardsApplication.TWITTER_SECRET);
-			TestSnowboardsApplication.mTwitterSession = new com.niveales.library.utils.TwitterSession(
+			NivealesApplication.mTwitter.setOAuthConsumer(
+					NivealesApplication.TWITTER_CONSUMER_KEY,
+					NivealesApplication.TWITTER_SECRET);
+			NivealesApplication.mTwitterSession = new com.niveales.library.utils.TwitterSession(
 					this);
-			TestSnowboardsApplication.mTwitterAccessToken = TestSnowboardsApplication.mTwitterSession
+			NivealesApplication.mTwitterAccessToken = NivealesApplication.mTwitterSession
 					.getAccessToken();
 		}
-		if (TestSnowboardsApplication.mTwitterAccessToken == null) {
+		if (NivealesApplication.mTwitterAccessToken == null) {
 
 			Intent intent = new Intent(this, TwitterAuthActivity.class);
 			intent.putExtra("productid", productCursor.getInt(productCursor
@@ -948,11 +952,11 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		} else {
 
 			// we has been authenticated before
-			TestSnowboardsApplication.mTwitter = new TwitterFactory()
+			NivealesApplication.mTwitter = new TwitterFactory()
 					.getOAuthAuthorizedInstance(
-							TestSnowboardsApplication.TWITTER_CONSUMER_KEY,
-							TestSnowboardsApplication.TWITTER_SECRET,
-							TestSnowboardsApplication.mTwitterAccessToken);
+							NivealesApplication.TWITTER_CONSUMER_KEY,
+							NivealesApplication.TWITTER_SECRET,
+							NivealesApplication.mTwitterAccessToken);
 			Cursor cursor = productCursor;
 			String pic = cursor
 					.getString(cursor.getColumnIndexOrThrow("imgLR"));
@@ -971,8 +975,8 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 				url = URLDecoder.decode(uri.getQueryParameter("walink"),
 						"utf-8").trim();
 				BitlyAndroid bitly = new BitlyAndroid(
-						TestSnowboardsApplication.BITLY_USER,
-						TestSnowboardsApplication.BITLY_API_KEY);
+						NivealesApplication.BITLY_USER,
+						NivealesApplication.BITLY_API_KEY);
 				url = bitly.getShortUrl(url);
 				return new String(title + "\n" + url);
 			} catch (Exception e) {
@@ -1006,7 +1010,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 
 				@Override
 				public void run() {
-					TestSnowboardsApplication.mFacebook.authorizeCallback(mReq,
+					NivealesApplication.mFacebook.authorizeCallback(mReq,
 							mRes, i);
 				}
 			}, 100);
@@ -1042,25 +1046,25 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 				return;
 			}
 			int productId = data.getIntExtra("productid", 0);
-			Log.d("OAuthTwitter KEY", TestSnowboardsApplication.ACCESS_KEY);
+			Log.d("OAuthTwitter KEY", NivealesApplication.ACCESS_KEY);
 			Log.d("OAuthTwitter SECRET",
-					TestSnowboardsApplication.ACCESS_SECRET);
+					NivealesApplication.ACCESS_SECRET);
 			try {
 
-				TestSnowboardsApplication.mTwitterAccessToken = new AccessToken(
-						TestSnowboardsApplication.ACCESS_KEY,
-						TestSnowboardsApplication.ACCESS_SECRET);
+				NivealesApplication.mTwitterAccessToken = new AccessToken(
+						NivealesApplication.ACCESS_KEY,
+						NivealesApplication.ACCESS_SECRET);
 				Twitter t = new TwitterFactory().getOAuthAuthorizedInstance(
-						TestSnowboardsApplication.TWITTER_CONSUMER_KEY,
-						TestSnowboardsApplication.TWITTER_SECRET,
-						TestSnowboardsApplication.mTwitterAccessToken);
-				TestSnowboardsApplication.mTwitter = t;
-				TestSnowboardsApplication.mTwitterSession = new com.niveales.library.utils.TwitterSession(
+						NivealesApplication.TWITTER_CONSUMER_KEY,
+						NivealesApplication.TWITTER_SECRET,
+						NivealesApplication.mTwitterAccessToken);
+				NivealesApplication.mTwitter = t;
+				NivealesApplication.mTwitterSession = new com.niveales.library.utils.TwitterSession(
 						this);
-				TestSnowboardsApplication.mTwitterSession
-						.storeAccessToken(TestSnowboardsApplication.mTwitterAccessToken);
+				NivealesApplication.mTwitterSession
+						.storeAccessToken(NivealesApplication.mTwitterAccessToken);
 				// Avoid Android HONEYCOMB+ NetworkOnUIThreadException
-				new TwitterSharingTask().execute(TestSnowboardsApplication
+				new TwitterSharingTask().execute(NivealesApplication
 						.getDBHelper()
 						.getAllFromTableWithWhereAndOrder("Detail",
 								"id_modele='" + productId + "'", null));
@@ -1090,7 +1094,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 	}
 
 	public void initSearchButton() {
-		Cursor c = TestSnowboardsApplication.getDBHelper().getAllFromTable(
+		Cursor c = NivealesApplication.getDBHelper().getAllFromTable(
 				"UserSearchInputs");
 		if (c.getCount() > 0) {
 			mMainLayoutSearchButton
@@ -1148,7 +1152,7 @@ public class TestSnowboardsMainActivity extends FragmentActivity {
 		protected void onPostExecute(String result) {
 			if (result == null && error != null) {
 				AlertDialog.Builder b = new AlertDialog.Builder(
-						TestSnowboardsMainActivity.this);
+						MainActivity.this);
 				b.setTitle("Twitter error:");
 				b.setMessage(error)
 						.setPositiveButton("OK",

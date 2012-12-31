@@ -10,11 +10,11 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.niveales.library.ui.NivealesApplication;
 import com.niveales.library.utils.adapters.CheckedCriteriaViewBinder;
 import com.niveales.library.utils.adapters.checked.CheckedCriteriaAdapter;
 import com.niveales.library.utils.adapters.checked.CheckedCriteriaAdapter.CriteriaChangeListener;
 import com.niveales.library.utils.db.DBHelper;
-import com.niveales.testsnowboards.TestSnowboardsApplication;
 
 
 public class CriteriaSelectorFragment extends Fragment {
@@ -53,7 +53,7 @@ public class CriteriaSelectorFragment extends Fragment {
 
 	private void init(int pPosition,  OnCriteriaChangedListener l) {
 
-		Cursor cursor = TestSnowboardsApplication.getDBHelper()
+		Cursor cursor = NivealesApplication.getDBHelper()
 				.getAllAdvancedCriteria();
 
 		cursor.moveToPosition(pPosition);
@@ -65,12 +65,12 @@ public class CriteriaSelectorFragment extends Fragment {
 
 		this.listener = l;
 		
-		titleResourceId = TestSnowboardsApplication.CriteriaSelectorConstants.CRITERIA_SELECTOR_RIGHTPANE_TITLE_TEXTVIEW;
-		layoutId = TestSnowboardsApplication.CriteriaSelectorConstants.CRETERIA_SELECTOR_FRAGMENT_LAYOUT_ID;
-		itemLayoutId = TestSnowboardsApplication.CriteriaSelectorConstants.CHECKED_CRITERIA_SELECTOR_ITEM_LAYOUT_ID;
-		listViewId = TestSnowboardsApplication.CriteriaSelectorConstants.CRETERIA_SELECTOR_LISTVIEW_VIEW_ID;
-		itemTextViewId = TestSnowboardsApplication.CriteriaSelectorConstants.CRITERIA_SELECTOR_CRITERIA_TEXTVIEW_VIEW_ID; 
-		itemCheckBoxId = TestSnowboardsApplication.CriteriaSelectorConstants.CRITERIA_SELECTOR_CRITERIA_CHECKBOX_VIEW_ID;
+		titleResourceId = NivealesApplication.CriteriaSelectorConstants.CRITERIA_SELECTOR_RIGHTPANE_TITLE_TEXTVIEW;
+		layoutId = NivealesApplication.CriteriaSelectorConstants.CRETERIA_SELECTOR_FRAGMENT_LAYOUT_ID;
+		itemLayoutId = NivealesApplication.CriteriaSelectorConstants.CHECKED_CRITERIA_SELECTOR_ITEM_LAYOUT_ID;
+		listViewId = NivealesApplication.CriteriaSelectorConstants.CRETERIA_SELECTOR_LISTVIEW_VIEW_ID;
+		itemTextViewId = NivealesApplication.CriteriaSelectorConstants.CRITERIA_SELECTOR_CRITERIA_TEXTVIEW_VIEW_ID; 
+		itemCheckBoxId = NivealesApplication.CriteriaSelectorConstants.CRITERIA_SELECTOR_CRITERIA_CHECKBOX_VIEW_ID;
 		
 	}
 	
@@ -79,15 +79,15 @@ public class CriteriaSelectorFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		rootView = inflater.inflate(layoutId, container, false);
-		this.helper = TestSnowboardsApplication.getDBHelper();
+		this.helper = NivealesApplication.getDBHelper();
 		this.context = getActivity();
 		TextView topTitle = (TextView) rootView.findViewById(titleResourceId);
 		topTitle.setText(criteria);
-		TextView criteriaTitle = (TextView) rootView.findViewById(TestSnowboardsApplication.CriteriaSelectorConstants.CRETERIA_SELECTOR_TITLE_VIEW_ID);
+		TextView criteriaTitle = (TextView) rootView.findViewById(NivealesApplication.CriteriaSelectorConstants.CRETERIA_SELECTOR_TITLE_VIEW_ID);
 		criteriaTitle.setText(title);
 		ListView mCreteriaSelectorListView = (ListView) rootView
 				.findViewById(listViewId);
-		if (!type.equals(TestSnowboardsApplication.NUMERIC)) {
+		if (!type.equals(NivealesApplication.NUMERIC)) {
 			mAdapter = new CheckedCriteriaAdapter(context, helper.getColumn(colName), itemLayoutId, 
 					new CheckedCriteriaViewBinder(context, new String [] {
 							colName,

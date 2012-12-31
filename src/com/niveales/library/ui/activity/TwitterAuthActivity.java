@@ -18,7 +18,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
 
-import com.niveales.testsnowboards.TestSnowboardsApplication;
+import com.niveales.library.ui.NivealesApplication;
 
 /**
  * @author Dmitry Valetin
@@ -38,7 +38,7 @@ public class TwitterAuthActivity extends Activity {
 		webView = new WebView(this);
 		webView.setWebViewClient(new WebViewClient(){
 			public boolean shouldOverrideUrlLoading(WebView view, String url){
-				if(url.startsWith(TestSnowboardsApplication.TWITTER_CALLBACK_URL)) {
+				if(url.startsWith(NivealesApplication.TWITTER_CALLBACK_URL)) {
 					new TwitterAuthCallbackAsyncTask().execute(url);
 					return true;
 				}
@@ -63,8 +63,8 @@ public class TwitterAuthActivity extends Activity {
 		protected Void doInBackground(WebView... pParams) {
 			String authURL;
 			try {
-				authURL = TestSnowboardsApplication.provider.retrieveRequestToken(
-						TestSnowboardsApplication.consumer, TestSnowboardsApplication.TWITTER_CALLBACK_URL);
+				authURL = NivealesApplication.provider.retrieveRequestToken(
+						NivealesApplication.consumer, NivealesApplication.TWITTER_CALLBACK_URL);
 
 				webView.loadUrl(authURL);
 			} catch (OAuthMessageSignerException e) {
@@ -112,7 +112,7 @@ public class TwitterAuthActivity extends Activity {
 	public void onTwitterCallback(String url) {
 		Uri uri = Uri.parse(url);
 
-		if (uri != null && uri.toString().startsWith(TestSnowboardsApplication.TWITTER_CALLBACK_URL)) {
+		if (uri != null && uri.toString().startsWith(NivealesApplication.TWITTER_CALLBACK_URL)) {
 			//We get here after successful twitter login
 			Log.d("OAuthTwitter", uri.toString());
 			String verifier = uri.getQueryParameter(OAuth.OAUTH_VERIFIER);
@@ -125,9 +125,9 @@ public class TwitterAuthActivity extends Activity {
 			Log.d("OAuthTwitter", verifier);
 			try {
 
-				TestSnowboardsApplication.provider.retrieveAccessToken(TestSnowboardsApplication.consumer, verifier);
-				TestSnowboardsApplication.ACCESS_KEY = TestSnowboardsApplication.consumer.getToken();
-				TestSnowboardsApplication.ACCESS_SECRET = TestSnowboardsApplication.consumer.getTokenSecret();
+				NivealesApplication.provider.retrieveAccessToken(NivealesApplication.consumer, verifier);
+				NivealesApplication.ACCESS_KEY = NivealesApplication.consumer.getToken();
+				NivealesApplication.ACCESS_SECRET = NivealesApplication.consumer.getTokenSecret();
 
 
 				setResult(Activity.RESULT_OK, data);	

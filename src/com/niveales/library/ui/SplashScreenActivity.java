@@ -5,8 +5,6 @@ package com.niveales.library.ui;
 
 import com.niveales.library.utils.db.DBHelper;
 import com.niveales.testsnowboards.R;
-import com.niveales.testsnowboards.TestSnowboardsApplication;
-import com.niveales.testsnowboards.TestSnowboardsMainActivity;
 import com.niveales.testsnowboards.R.layout;
 
 import android.app.Activity;
@@ -33,10 +31,10 @@ public class SplashScreenActivity extends Activity {
 
 			@Override
 			public void run() {
-				startActivity(new Intent(SplashScreenActivity.this, TestSnowboardsMainActivity.class));
+				startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
 				finish();
 			}}, 3000);
-		DBHelper helper = new DBHelper(this, TestSnowboardsApplication.dbName);
+		DBHelper helper = new DBHelper(this, NivealesApplication.dbName);
 		helper.open();
 		helper.close();
 		
