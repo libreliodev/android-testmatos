@@ -34,7 +34,7 @@ public class SplashScreenActivity extends Activity {
 				startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
 				finish();
 			}}, 3000);
-		DBHelper helper = new DBHelper(this, NivealesApplication.dbName);
+		DBHelper helper = new DBHelper(this, NivealesApplication.DB_FILE_NAME);
 		helper.open();
 		helper.close();
 		

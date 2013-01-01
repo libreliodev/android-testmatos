@@ -293,7 +293,7 @@ public class NivealesApplication extends Application {
 	}
 
 	// Global staff for TestsSnowboards
-	public static String dbName = "snowsurf_tests2013_.sqlite";
+	public static String DB_FILE_NAME;// = "snowsurf_tests2013_.sqlite";
 
 	// Twitter staff
 	public static TwitterSession mTwitterSession;
@@ -617,6 +617,7 @@ public class NivealesApplication extends Application {
 				writer.write(buffer, 0, count);
 			}
 			JSONObject json = new JSONObject(writer.toString());
+			DB_FILE_NAME = json.getString("DB_FILE_NAME");
 			FACEBOOK_TAB_PAGE_URL = json.getString("FACEBOOK_TAB_PAGE_URL");
 			INFO_TAB_PAGE_URL = json.getString("INFO_TAB_PAGE_URL");
 			FACEBOOK_APP_ID = json.getString("FACEBOOK_APP_ID");

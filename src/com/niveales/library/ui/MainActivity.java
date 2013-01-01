@@ -18,6 +18,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -115,7 +116,7 @@ public class MainActivity extends FragmentActivity {
 
 		// Init DB
 		NivealesApplication.setDBHelper(new DBHelper(this,
-				NivealesApplication.dbName));
+				NivealesApplication.DB_FILE_NAME));
 		NivealesApplication.getDBHelper().open();
 
 		initViews();
@@ -286,7 +287,7 @@ public class MainActivity extends FragmentActivity {
 		TabHost.TabSpec spec = pTabHost.newTabSpec(tabNames[0]);
 		Button b = new Button(this);
 		b.setBackgroundResource(R.drawable.tab_button);
-		b.setTextColor(Color.WHITE);
+		b.setTextColor(getResources().getColorStateList(R.drawable.tab_button_textcolor));
 		b.setText(tabNames[0]);
 
 		spec.setIndicator(b);
@@ -298,7 +299,7 @@ public class MainActivity extends FragmentActivity {
 		spec.setContent(R.id.favorites_tab);
 		b = new Button(this);
 		b.setBackgroundResource(R.drawable.tab_button);
-		b.setTextColor(Color.WHITE);
+		b.setTextColor(getResources().getColorStateList(R.drawable.tab_button_textcolor));
 		b.setText(tabNames[1]);
 		spec.setIndicator(b);
 		pTabHost.addTab(spec);
@@ -307,7 +308,7 @@ public class MainActivity extends FragmentActivity {
 		spec.setContent(R.id.terms_tab);
 		b = new Button(this);
 		b.setBackgroundResource(R.drawable.tab_button);
-		b.setTextColor(Color.WHITE);
+		b.setTextColor(getResources().getColorStateList(R.drawable.tab_button_textcolor));
 		b.setText(tabNames[2]);
 		spec.setIndicator(b);
 		pTabHost.addTab(spec);

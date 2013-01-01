@@ -1,4 +1,5 @@
 {
+	"DB_FILE_NAME" : "snowsurf_tests2013_.sqlite",
 	"FACEBOOK_TAB_PAGE_URL" : "http://www.facebook.com/Snowsurf.mag",
 	"INFO_TAB_PAGE_URL" : "http://www.snowsurf.com/app-teasing",
 	"FACEBOOK_APP_ID" : "367597189994678",
