@@ -171,7 +171,8 @@ public class MainActivity extends FragmentActivity {
 						showSelectionCategory(position);
 					}
 				});
-
+		mMainActivityCreteriaSelectionListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+		
 		mainAdapter = new AdvancedCriteriaMainListAdapter(
 				NivealesApplication.getDBHelper(), this,
 				R.layout.creteria_group_selector_item_layout,
@@ -1256,6 +1257,7 @@ public class MainActivity extends FragmentActivity {
 				mLastSelectedMainItem);
 		String mFragmentTag = prefs.getString("FRAGMENT_TAG", "");
 		if (this.mRightFrameFragmentHolder != null) {
+			this.mMainActivityCreteriaSelectionListView.setItemChecked(mLastSelectedMainItem, true);
 			showSelectionCategory(mLastSelectedMainItem);
 		}
 		// I give up restoring correct app state with all fragments, thus all state restore has been commented out

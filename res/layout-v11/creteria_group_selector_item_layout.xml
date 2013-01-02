@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?android:attr/activatedBackgroundIndicator"
     android:orientation="vertical" >
 
     <TextView
@@ -13,7 +14,7 @@
         android:duplicateParentState="true"
         android:text="@string/spaceholder"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@drawable/main_selector_text_color"
+        android:textColor="@drawable/main_selector_text_color"        
         android:textStyle="bold" />
 
     <TextView

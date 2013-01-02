@@ -74,11 +74,6 @@ public class AdvancedCriteriaMainListAdapter extends BaseAdapter {
 		mTitle.setText(getItem(position).toString());
 		TextView mDescription = (TextView) v.findViewById(criteriaTextView);
 		mDescription.setText(helper.getUserSearchINputStringByColumn(getColumnName(position)));
-		if(mDescription.getText().length() > 0) {
-			mTitle.setTextColor(context.getResources().getColor(R.color.SelectedColor));
-		} else {
-			mTitle.setTextColor(context.getResources().getColor(R.color.black));
-		}
 		
 		return v;
 	}
