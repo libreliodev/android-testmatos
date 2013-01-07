@@ -1,14 +1,21 @@
 package com.niveales.library.ui.productdetail;
 
 import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
-import android.R;
 import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -18,14 +25,16 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -36,11 +45,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.niveales.library.ui.BaseNivealesFragment;
 import com.niveales.library.ui.NivealesApplication;
 import com.niveales.library.ui.NivealesApplication.ProductDetailConstants;
 import com.niveales.library.ui.popup.ActionItem;
+import com.niveales.library.ui.popup.ImageZoomPopup;
 import com.niveales.library.ui.popup.QuickAction;
 import com.niveales.library.utils.db.DBHelper;
 
@@ -50,10 +61,7 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 	 * 
 	 */
 	private static final String ZOOM_TOUCHMOVE = "zoom://touchmove/";
-	/**
-	 * 
-	 */
-	private static final int PRODUCT_IMAGE_TIMEOUT = 5000;
+
 	/**
 	 * 
 	 */
@@ -66,7 +74,7 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 	 * 
 	 */
 	private static final String ZOOM_TOUCHEND = "zoom://touchend";
-	
+
 	View rootView;
 	String htmlBasePage; // text from assets html page to customize
 	String customizedHTMLPage; // page after customization
@@ -84,9 +92,11 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 	private ImageButton mPrevButton;
 	private WebView webView;
 	private ImageButton mNextButton;
-	private ImageView mProductImage;
+	// private ImageView mProductImage;
+	private ImageZoomPopup mProductImagePopup;
 	private int bitmapWidth;
 	private int bitmapHeight;
+	private Bitmap mHiResBitmap;
 	private int webPageStringResourceId;
 	private QuickAction mShareHolder;
 	private LinearLayout mShareButtonsHolder;
@@ -94,7 +104,9 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 	protected float downY;
 	protected boolean isZoomStarted = false;
 	private ArrayList<ActionItem> mActionItems = new ArrayList<ActionItem>();
+	private CheckBox mFavoriteCkeckBox;
 
+	private int[] mZoomCoords;
 
 	private void init(int productDetailLayout, int webViewId,
 			int webPageStringResourceId, String[] columnKeys,
@@ -148,8 +160,8 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 		for (int i = 0; i < columnKeys.length; i++) {
 			String value = c.getString(c.getColumnIndexOrThrow(columnKeys[i]));
 			if (htmlKeys[i].startsWith("%icone") && !value.equals("")) {
-				value = "<img src=\"" + NivealesApplication.ASSETS_URI
-						+ value + "\"/>";
+				value = "<img src=\"" + NivealesApplication.ASSETS_URI + value
+						+ "\"/>";
 			} else {
 				if (value.endsWith("png") || value.endsWith("jpg")) {
 					// product image
@@ -162,90 +174,59 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 		return htmlString;
 	}
 
-	
-	private View.OnTouchListener mProductImageTouchListener = new View.OnTouchListener() {
-		private float mx;
-		private float my;
-		private float deltaX, deltaY;
-		int maxX = 0, maxY = 0;
+	/*
+	 * private View.OnTouchListener mProductImageTouchListener = new
+	 * View.OnTouchListener() { private float mx; private float my; private
+	 * float deltaX, deltaY; int maxX = 0, maxY = 0;
+	 * 
+	 * @Override public boolean onTouch(View pV, MotionEvent pEvent) {
+	 * 
+	 * float curX, curY;
+	 * 
+	 * switch (pEvent.getAction()) {
+	 * 
+	 * case MotionEvent.ACTION_DOWN: mx = pEvent.getX(); my = pEvent.getY();
+	 * deltaX = deltaY = 0; maxX = Math.abs(bitmapWidth -
+	 * mProductImage.getWidth()) / 2; maxY = Math.abs(bitmapHeight -
+	 * mProductImage.getHeight()) / 2; break; case MotionEvent.ACTION_MOVE: curX
+	 * = pEvent.getX(); curY = pEvent.getY(); deltaX = mx - curX; deltaY = my -
+	 * curY; mx = curX; my = curY; float scrollX = mProductImage.getScrollX();
+	 * float scrollY = mProductImage.getScrollY(); if (scrollX + deltaX < -maxX)
+	 * scrollX = -maxX; else if (scrollX + deltaX > maxX) scrollX = maxX; else
+	 * scrollX += deltaX;
+	 * 
+	 * if (scrollY + deltaY < -maxY) scrollY = -maxY; else if (scrollY + deltaY
+	 * > maxY) scrollY = maxY; else scrollY += deltaY;
+	 * 
+	 * mProductImage.scrollTo((int) scrollX, (int) scrollY); break; case
+	 * MotionEvent.ACTION_UP: curX = pEvent.getX(); curY = pEvent.getY(); deltaX
+	 * = mx - curX; deltaY = my - curY; break; }
+	 * 
+	 * return true; } };
+	 */
 
-		@Override
-		public boolean onTouch(View pV, MotionEvent pEvent) {
-
-			float curX, curY;
-
-			switch (pEvent.getAction()) {
-
-			case MotionEvent.ACTION_DOWN:
-				mx = pEvent.getX();
-				my = pEvent.getY();
-				deltaX = deltaY = 0;
-				maxX = Math.abs(bitmapWidth - mProductImage.getWidth()) / 2;
-				maxY = Math.abs(bitmapHeight - mProductImage.getHeight()) / 2;
-				break;
-			case MotionEvent.ACTION_MOVE:
-				curX = pEvent.getX();
-				curY = pEvent.getY();
-				deltaX = mx - curX;
-				deltaY = my - curY;
-				mx = curX;
-				my = curY;
-				float scrollX = mProductImage.getScrollX();
-				float scrollY = mProductImage.getScrollY();
-				if (scrollX + deltaX < -maxX)
-					scrollX = -maxX;
-				else if (scrollX + deltaX > maxX)
-					scrollX = maxX;
-				else
-					scrollX += deltaX;
-
-				if (scrollY + deltaY < -maxY)
-					scrollY = -maxY;
-				else if (scrollY + deltaY > maxY)
-					scrollY = maxY;
-				else
-					scrollY += deltaY;
-
-				mProductImage.scrollTo((int) scrollX, (int) scrollY);
-				break;
-			case MotionEvent.ACTION_UP:
-				curX = pEvent.getX();
-				curY = pEvent.getY();
-				deltaX = mx - curX;
-				deltaY = my - curY;
-				break;
-			}
-
-			return true;
-		}	
-	};
-	private CheckBox mFavoriteCkeckBox;
-	private QuickAction mProductImagePopup;
-	
-	
 	public void loadProduct(Cursor c) {
 		webView.loadDataWithBaseURL(NivealesApplication.ASSETS_URI,
 				getHTMLPage(c), "text/html", "UTF-8", null);
 		mFavoriteCkeckBox.setChecked(helper.isFavorite(productId));
 	}
-	
+
 	@SuppressLint("SetJavaScriptEnabled")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		init(	ProductDetailConstants.PRODUCT_DETAIL_LAYOUT,
+		init(ProductDetailConstants.PRODUCT_DETAIL_LAYOUT,
 				ProductDetailConstants.PRODUCT_DETAIL_WEBVIEW_VIEW_ID,
 				ProductDetailConstants.PRODUCT_DETAIL_WEBPAGE_FILE_URI,
 				ProductDetailConstants.PRODUCT_DETAIL_COLUMN_KEYS,
 				ProductDetailConstants.PRODUCT_DETAIL_HTML_FILE_KEYS,
 				ProductDetailConstants.PRODUCT_DETAIL_FAVORITE_CKECKBOX_VIEW_ID,
-				ProductDetailConstants.PRODUCT_DETAIL_SHARE_BUTTON_VIEW_ID
-			);
+				ProductDetailConstants.PRODUCT_DETAIL_SHARE_BUTTON_VIEW_ID);
 		rootView = inflater.inflate(productDetailLayout, container, false);
-		
+
 		htmlBasePage = readHTML();
 		webView = (WebView) rootView.findViewById(webViewId);
-		
+
 		webView.getSettings().setJavaScriptEnabled(true);
 		webView.setWebViewClient(new WebViewClient() {
 			@Override
@@ -254,6 +235,32 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 					// view.loadDataWithBaseURL(Consts.ASSETS_URI, text,
 					// "text/html", "UTF-8", null);
 					showLargeImage(url);
+					return true;
+				}
+				return false;
+			}
+		});
+
+		webView.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View pV, MotionEvent pEvent) {
+				if (isZoomStarted) {
+					if(pEvent.getAction() == MotionEvent.ACTION_MOVE){
+						float density = getActivity().getResources()
+								.getDisplayMetrics().density;
+						float touchX = Math.round(pEvent.getX())/density;
+						float touchY = Math.round(pEvent.getY())/density;
+						
+						if(touchX >= mZoomCoords[4] && touchY >= mZoomCoords[2] &&
+								touchX <= mZoomCoords[5] + mZoomCoords[4] && touchY <= mZoomCoords[3] + mZoomCoords[2]) {
+							String zoomString = ZOOM_TOUCHMOVE+"?"+Math.round(touchX)+","+Math.round(touchY)+","+mZoomCoords[2]+","+mZoomCoords[3]+","+mZoomCoords[4]+","+mZoomCoords[5];
+							showLargeImage(zoomString);
+						}
+					}
+					if(pEvent.getAction() == MotionEvent.ACTION_UP) {
+						showLargeImage(ZOOM_FINISH);
+					}
 					return true;
 				}
 				return false;
@@ -269,9 +276,8 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 				mShareHolder.show();
 			}
 		});
-		mFavoriteCkeckBox = (CheckBox) rootView
-				.findViewById(favoriteId);
-		
+		mFavoriteCkeckBox = (CheckBox) rootView.findViewById(favoriteId);
+
 		mFavoriteCkeckBox
 				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
@@ -296,8 +302,9 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 			public void onClick(View pV) {
 				if (!productCursor.isFirst()) {
 					productCursor.move(-1);
-					recycleImageViewBitmap(mProductImage);
-					loadImageBitmap();
+					// recycleImageViewBitmap(mProductImage);
+					mProductImagePopup.dismiss();
+					// loadImageBitmap();
 					loadProduct(productCursor);
 				}
 			}
@@ -310,8 +317,9 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 			public void onClick(View pV) {
 				if (!productCursor.isLast()) {
 					productCursor.move(1);
-					recycleImageViewBitmap(mProductImage);
-					loadImageBitmap();
+					// recycleImageViewBitmap(mProductImage);
+					mProductImagePopup.dismiss();
+					// loadImageBitmap();
 					loadProduct(productCursor);
 				}
 			}
@@ -326,7 +334,7 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 					uri.getQueryParameter("wasites"), "utf-8").split(",");
 			for (int i = 0; i < sites.length; i++) {
 				ActionItem item = new ActionItem();
-				item.setTitle("Share by "+sites[i]);
+				item.setTitle("Share by " + sites[i]);
 				item.setTag(sites[i]);
 				Button b = new Button(getActivity());
 				b.setText("Share on " + sites[i]);
@@ -346,7 +354,7 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 						ViewGroup.LayoutParams.WRAP_CONTENT);
 				p.setMargins(1, 1, 1, 1);
 				b.setLayoutParams(p);
-//				mShareButtonsHolder.addView(b);
+				// mShareButtonsHolder.addView(b);
 				item.setActionItemView(b);
 				mShareHolder.addActionItem(item);
 			}
@@ -359,60 +367,53 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 
 	protected void showLargeImage(String pUrl) {
 		if (pUrl.startsWith(ZOOM_TOUCHSTART)) {
-//			mProductImage.setVisibility(View.VISIBLE);
-			mProductImage = new ImageView(getActivity());
-			mProductImage.setScaleType(ScaleType.CENTER_CROP);
-			mProductImage.setHorizontalScrollBarEnabled(true);
-			mProductImage.setVerticalScrollBarEnabled(true);
-			mProductImage.setOnTouchListener(mProductImageTouchListener);
-			mProductImagePopup = new QuickAction(rootView.findViewById(NivealesApplication.ProductDetailConstants.PRODUCTDETAIL_PRODUCTIMAGE_VIEW_ID)){
+			String[] coordStr = pUrl.split("\\?")[1].split(",");
+			int[] coords = new int[coordStr.length];
+			for (int i = 0; i < coords.length; i++)
+				coords[i] = Integer.valueOf(coordStr[i]);
+			this.mZoomCoords = coords;
+			mProductImagePopup = new ImageZoomPopup(webView, coords) {
 				@Override
 				public void onDismiss() {
+					super.onDismiss();
 					isZoomStarted = false;
-					recycleImageViewBitmap(mProductImage);
 				}
 			};
-			mProductImagePopup.setContentView(mProductImage);
-//			mProductImagePopup.addActionItem(new ActionItem(mProductImage));
-			mProductImagePopup.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
-			loadImageBitmap();
+			mProductImagePopup.setBackgroundDrawable(new ColorDrawable(
+					Color.WHITE));
+			mProductImagePopup.setImageBitmap(getProductBitmap());
 			mProductImagePopup.show();
-			isZoomStarted = true;			
+			isZoomStarted = true;
+			DownloadHiResTask task = new DownloadHiResTask();
+			task.execute(productCursor.getString(productCursor
+					.getColumnIndexOrThrow("imgHR")));
 		}
-		
-		if(pUrl.startsWith(ZOOM_FINISH) || pUrl.startsWith(ZOOM_TOUCHEND)) {
-//			this.mProductImageGoneHandler.removeCallbacks(mProductImageGoneRunnable);
-//			mProductImage.setVisibility(View.GONE);
+
+		if (pUrl.startsWith(ZOOM_FINISH) || pUrl.startsWith(ZOOM_TOUCHEND)) {
+			// this.mProductImageGoneHandler.removeCallbacks(mProductImageGoneRunnable);
+			// mProductImage.setVisibility(View.GONE);
 			mProductImagePopup.dismiss();
 			isZoomStarted = false;
 		}
-//		if(pUrl.startsWith(ZOOM_TOUCHEND)) {
-//			mProductImage.setVisibility(View.GONE);
-//			isZoomStarted = false;
-//		}
-		if(pUrl.startsWith(ZOOM_TOUCHMOVE)) {
-			if(isZoomStarted) {
+		// if(pUrl.startsWith(ZOOM_TOUCHEND)) {
+		// mProductImage.setVisibility(View.GONE);
+		// isZoomStarted = false;
+		// }
+		if (pUrl.startsWith(ZOOM_TOUCHMOVE)) {
+			if (isZoomStarted) {
 				String[] coordStr = pUrl.split("\\?")[1].split(",");
-				int [] coords = new int[coordStr.length];
-				for(int i = 0; i < coords.length; i++)
+				int[] coords = new int[coordStr.length];
+				for (int i = 0; i < coords.length; i++)
 					coords[i] = Integer.valueOf(coordStr[i]);
-				float xPos = bitmapWidth / coords[5] * (coords[0] - coords[4]) - (bitmapWidth - webView.getWidth())/ 2;
-				mProductImage.scrollTo((int) xPos, mProductImage.getScrollY());
+				mProductImagePopup.scroll(coords);
 			}
 		}
 		Log.d("zoom", pUrl);
+		Log.d("DPI", String.valueOf(getActivity().getResources()
+				.getDisplayMetrics().density));
 	}
 
-	/**
-	 * populate mProductImage with product image
-	 */
-	public void onResume() {
-		super.onResume();
-		if(mProductImage != null) 
-			loadImageBitmap();
-	}
-
-	public void loadImageBitmap() {
+	public Bitmap getProductBitmap() {
 		try {
 			pic = productCursor.getString(productCursor
 					.getColumnIndexOrThrow("imgLR"));
@@ -420,29 +421,22 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 					.open(pic));
 			this.bitmapWidth = b.getWidth();
 			this.bitmapHeight = b.getHeight();
-			mProductImage.setImageBitmap(b);
-			mProductImage.invalidate();
+			return b;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	/**
-	 * for memory management purpose dispose bitmap from mProductImage
-	 */
-	public void onPause() {
-		super.onPause();
-		recycleImageViewBitmap(mProductImage);
+		return null;
 	}
 
 	public void recycleImageViewBitmap(ImageView i) {
-		if(i != null) {
+		if (i != null) {
 			Drawable d = i.getDrawable();
 			if (d instanceof BitmapDrawable) {
 				BitmapDrawable bd = (BitmapDrawable) d;
 				bd.getBitmap().recycle();
 			}
 		}
+		mHiResBitmap = null;
 	}
 
 	public void onShareStarted() {
@@ -460,4 +454,93 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 		// TODO Auto-generated method stub
 		return productCursor;
 	}
+
+	public class DownloadHiResTask extends AsyncTask<String, Void, Bitmap> {
+
+		String lastError = "Unknown Error";
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#doInBackground(Params[])
+		 */
+		@Override
+		protected Bitmap doInBackground(String... pParams) {
+			try {
+				Uri uri = Uri.parse(pParams[0]);
+				String fileName = uri.getLastPathSegment();
+				URL url = new URL(pParams[0]);
+				HttpURLConnection urlConnection = (HttpURLConnection) url
+						.openConnection();
+				urlConnection.setRequestMethod("GET");
+				urlConnection.setDoOutput(true);
+				urlConnection.connect();
+				File tempFile = new File(getActivity().getCacheDir()
+						.getAbsolutePath() + "/" + fileName);
+
+				int totalSize = urlConnection.getContentLength();
+				int downloaded = 0;
+				if (tempFile.exists()) {
+					// check the existing file size
+					if (tempFile.length() == totalSize) {
+						Bitmap b = BitmapFactory
+								.decodeStream(new FileInputStream(tempFile));
+						return b;
+					} else {
+						tempFile.delete();
+					}
+				}
+				tempFile.createNewFile();
+				FileOutputStream fos = new FileOutputStream(tempFile);
+				InputStream is = urlConnection.getInputStream();
+				byte[] buf = new byte[1024];
+				int count = 0;
+
+				while ((count = is.read(buf)) > 0) {
+					fos.write(buf, 0, count);
+					downloaded += count;
+				}
+
+				fos.close();
+				is.close();
+
+				Bitmap b = BitmapFactory.decodeStream(new FileInputStream(
+						tempFile));
+				return b;
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+				lastError = e.getMessage();
+			} catch (IOException e) {
+				e.printStackTrace();
+				lastError = "Network error";
+			}
+
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Bitmap result) {
+			if (result != null) {
+				if (result.getWidth() > 2048) {
+					float scale = 2048f / (float) result.getWidth();
+					float height = (float) result.getHeight();
+					height = height * scale;
+					Bitmap scaledBitmap = Bitmap.createScaledBitmap(result,
+							2048, Math.round(height), true);
+					result.recycle();
+					result = scaledBitmap;
+				}
+				bitmapWidth = result.getWidth();
+				bitmapHeight = result.getHeight();
+				mHiResBitmap = result;
+				if (mProductImagePopup != null) {
+					// mProductImage.setScaleType(ScaleType.CENTER);
+					mProductImagePopup.setImageBitmap(mHiResBitmap);
+				}
+			} else {
+				Toast.makeText(getActivity(), lastError, Toast.LENGTH_SHORT)
+						.show();
+			}
+		}
+	};
 }

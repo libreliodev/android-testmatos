@@ -21,7 +21,7 @@ import android.widget.PopupWindow;
 public class CustomPopupWindow {
 	protected final View anchor;
 	protected final PopupWindow window;
-	private View root;
+	protected View root;
 	private Drawable background = null;
 	protected final WindowManager windowManager;
 	

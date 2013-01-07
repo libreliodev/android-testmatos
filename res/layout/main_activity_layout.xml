@@ -80,7 +80,7 @@
                                 android:layout_weight="1"
                                 android:text="@string/spaceholder"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:textColor="@color/purple"
+                                android:textColor="@color/SelectedColor"
                                 android:visibility="gone" />
 
                             <ImageButton

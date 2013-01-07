@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import com.niveales.testsnowboards.R;
 
 public class QuickAction extends CustomPopupWindow {
-	private final View root;
+//	private final View root;
 	private final ImageView mArrowUp;
 	private final ImageView mArrowDown;
 	private final LayoutInflater inflater;
@@ -86,7 +86,7 @@ public class QuickAction extends CustomPopupWindow {
 			mLayoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		getRootView().setLayoutParams(mLayoutParams);
 		getRootView().measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
-		getRootView().measure(MeasureSpec.EXACTLY | getRootView().getMeasuredWidth(), MeasureSpec.AT_MOST | getRootView().getMeasuredHeight());
+		getRootView().measure(MeasureSpec.AT_MOST | getRootView().getMeasuredWidth(), MeasureSpec.AT_MOST | getRootView().getMeasuredHeight());
 	
 		int rootHeight 		= getRootView().getMeasuredHeight();
 		int rootWidth		= getRootView().getMeasuredWidth();
