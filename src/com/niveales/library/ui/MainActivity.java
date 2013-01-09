@@ -287,6 +287,7 @@ public class MainActivity extends FragmentActivity {
 		pTabHost.setup();
 		TabHost.TabSpec spec = pTabHost.newTabSpec(tabNames[0]);
 		Button b = new Button(this);
+		b.setPadding(0, b.getPaddingTop(), 0, b.getPaddingBottom());
 		b.setBackgroundResource(R.drawable.tab_button);
 		b.setTextColor(getResources().getColorStateList(R.drawable.tab_button_textcolor));
 		b.setText(tabNames[0]);
