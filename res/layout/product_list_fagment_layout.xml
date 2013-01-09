@@ -45,7 +45,10 @@
             android:text="Marque"
             custom:state1drawable="@drawable/empty"
             custom:state2drawable="@drawable/mark_up"
-            custom:state3drawable="@drawable/mark_down" />
+            custom:state3drawable="@drawable/mark_down" 
+            custom:state1background="@drawable/iphone_marque_unselected"
+            custom:state2background="@drawable/iphone_marque_selected"
+            custom:state3background="@drawable/iphone_marque_selected"/>
 
         <com.niveales.library.ui.Button3State
             android:id="@+id/ProductListGammeSortButton"
@@ -57,7 +60,10 @@
             android:text="Gamme"
             custom:state1drawable="@drawable/empty"
             custom:state2drawable="@drawable/mark_up"
-            custom:state3drawable="@drawable/mark_down" />
+            custom:state3drawable="@drawable/mark_down" 
+            custom:state1background="@drawable/iphone_gamme_unselected"
+            custom:state2background="@drawable/iphone_gamme_selected"
+            custom:state3background="@drawable/iphone_gamme_selected"/>
 
         <com.niveales.library.ui.Button3State
             android:id="@+id/ProductListPrixSortButton"
@@ -69,7 +75,10 @@
             android:text="Prix"
             custom:state1drawable="@drawable/empty"
             custom:state2drawable="@drawable/mark_up"
-            custom:state3drawable="@drawable/mark_down" />
+            custom:state3drawable="@drawable/mark_down" 
+            custom:state1background="@drawable/iphone_prix_unselected"
+            custom:state2background="@drawable/iphone_prix_selected"
+            custom:state3background="@drawable/iphone_prix_selected"/>
 
     </LinearLayout>
 

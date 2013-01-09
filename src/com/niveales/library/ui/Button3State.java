@@ -23,6 +23,10 @@ public class Button3State extends Button implements OnClickListener {
 	public Drawable state1drawable;
 	public Drawable state2drawable;
 	public Drawable state3drawable;
+	public Drawable state1background;
+	public Drawable state2background;
+	public Drawable state3background;
+	
 	private OnStateChanged listener;
 
 	/**
@@ -51,6 +55,16 @@ public class Button3State extends Button implements OnClickListener {
 		this.state2drawable = context.getResources().getDrawable(id);
 		id = a.getResourceId(R.styleable.Button3State_state3drawable, R.drawable.mark_down);
 		this.state3drawable = context.getResources().getDrawable(id);
+		
+		id = a.getResourceId(R.styleable.Button3State_state1background, R.drawable.iphone_gamme_unselected);
+		this.state1background = context.getResources().getDrawable(id);
+		id = a.getResourceId(R.styleable.Button3State_state2background, R.drawable.iphone_gamme_unselected);
+		this.state2background = context.getResources().getDrawable(id);
+		id = a.getResourceId(R.styleable.Button3State_state3background, R.drawable.iphone_gamme_unselected);
+		this.state3background = context.getResources().getDrawable(id);
+		
+		
+		
 		a.recycle();
 		super.setOnClickListener(this);
 	}
@@ -91,14 +105,17 @@ public class Button3State extends Button implements OnClickListener {
 		switch (state) {
 		case 0: {
 			this.setCompoundDrawablesWithIntrinsicBounds(null, null, state1drawable, null);
+			this.setBackgroundDrawable(state1background);
 			break;
 		}
 		case 1: {
 			this.setCompoundDrawablesWithIntrinsicBounds(null, null, state2drawable, null);
+			this.setBackgroundDrawable(state2background);
 			break;
 		}
 		case 2: {
 			this.setCompoundDrawablesWithIntrinsicBounds(null, null, state3drawable, null);
+			this.setBackgroundDrawable(state3background);
 			break;
 		}
 		}
