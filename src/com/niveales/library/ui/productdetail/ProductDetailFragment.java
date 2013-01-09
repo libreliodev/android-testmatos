@@ -303,7 +303,8 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 				if (!productCursor.isFirst()) {
 					productCursor.move(-1);
 					// recycleImageViewBitmap(mProductImage);
-					mProductImagePopup.dismiss();
+					if(mProductImagePopup != null)
+						mProductImagePopup.dismiss();
 					// loadImageBitmap();
 					loadProduct(productCursor);
 				}
@@ -318,7 +319,8 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 				if (!productCursor.isLast()) {
 					productCursor.move(1);
 					// recycleImageViewBitmap(mProductImage);
-					mProductImagePopup.dismiss();
+					if(mProductImagePopup != null)
+						mProductImagePopup.dismiss();
 					// loadImageBitmap();
 					loadProduct(productCursor);
 				}
