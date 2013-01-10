@@ -385,7 +385,7 @@ public class DBHelper{
 		return res;
 	}
 	
-	public Cursor getColumn(String columnRow) {
+	public Cursor getColumnFromDetails(String columnRow) {
 		
 		// Here we do some SQL magic to translate genreIDs with actual strings
 		
@@ -400,7 +400,7 @@ public class DBHelper{
 	
 	public ArrayList<String> getColumnAsStringArray(String columnRow) {
 		ArrayList<String> possibleValues = new ArrayList<String>();
-		Cursor cursor = getColumn(columnRow);
+		Cursor cursor = getColumnFromDetails(columnRow);
 		// read all possible values from cursor
 		while(!cursor.isAfterLast()) {
 			possibleValues.add(cursor.getString(0));

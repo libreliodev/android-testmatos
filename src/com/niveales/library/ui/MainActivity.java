@@ -61,7 +61,7 @@ import com.facebook.android.Util;
 import com.niveales.library.ui.about.AboutFragment;
 import com.niveales.library.ui.about.FacebookFragment;
 import com.niveales.library.ui.activity.TwitterAuthActivity;
-import com.niveales.library.ui.criteraselectors.CriteriaSelectorFragment.OnCriteriaChangedListener;
+import com.niveales.library.ui.criteraselectors.CheckedCriteriaSelectorFragment.OnCriteriaChangedListener;
 import com.niveales.library.ui.criteraselectors.RangeCriteriaSelectorFragment.OnRangeCriteriaChangedListener;
 import com.niveales.library.ui.productdetail.ProductDetailFragment;
 import com.niveales.library.ui.productdetail.ProductDetailFragment.ShareProductListener;
@@ -581,7 +581,7 @@ public class MainActivity extends FragmentActivity {
 					colName, new RangeCriteriaChangedListener());
 
 		} else {
-			f = getMyApplication().getCriteriaSelectorFragment(position,
+			f = getMyApplication().getCheckedCriteriaSelectorFragment(position,
 					new CriteriaChangeListener());
 
 		}
