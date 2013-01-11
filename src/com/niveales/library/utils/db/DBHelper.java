@@ -464,6 +464,7 @@ public class DBHelper{
 				createDataBase();
 			} catch (IOException e) {
 				e.printStackTrace();
+				throw new IllegalStateException("Cannot init database, please free some space on the device");
 			}
 		}
 
@@ -491,7 +492,7 @@ public class DBHelper{
 
 				} catch (IOException e) {
 
-					throw new Error("Error copying database");
+					throw new IOException("Error copying database");
 
 				}
 			}

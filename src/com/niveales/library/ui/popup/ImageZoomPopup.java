@@ -7,15 +7,12 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
-
-import com.niveales.testsnowboards.R;
 
 public class ImageZoomPopup extends CustomPopupWindow {
 
@@ -27,6 +24,7 @@ public class ImageZoomPopup extends CustomPopupWindow {
 	protected static final int ANIM_REFLECT = 4;
 	protected static final int ANIM_AUTO = 5;
 
+	protected static final int MAX_IMAGE_ZOOM = 3;
 
 	private ArrayList<ActionItem> actionList;
 	private LayoutParams mLayoutParams;
@@ -39,25 +37,27 @@ public class ImageZoomPopup extends CustomPopupWindow {
 
 	private int mHeight;
 
+	private float mImageScale = 1;
+
 	public ImageZoomPopup(View anchor, int[] pCoords) {
 		super(anchor);
 		
 		myCoords = pCoords;
 		context = anchor.getContext();
 
-		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		root = inflater.inflate(R.layout.product_detail_popup, null);
+//		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//		root = inflater.inflate(R.layout.product_detail_popup, null);
 
 
-//		mImageView = new ImageView(context);
-		mImageView = (ImageView) root.findViewById(R.id.ZoomedProductImage);
+		mImageView = new ImageView(context);
+//		mImageView = (ImageView) root.findViewById(R.id.ZoomedProductImage);
 		
 		mImageView.setScaleType(ScaleType.CENTER);
 		mImageView.setAdjustViewBounds(false);
 		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
 		mImageView.setLayoutParams(lp);
 
-//		root = mImageView;
+		root = mImageView;
 		setContentView(getRootView());
 	}
 
@@ -65,7 +65,7 @@ public class ImageZoomPopup extends CustomPopupWindow {
 	public void setImageBitmap(Bitmap b) {
 		if( mWidth > 0 && mHeight > 0)
 		{
-			mImageViewBitmap = Bitmap.createScaledBitmap(b, mWidth * 2, mHeight * 2, true);
+			mImageViewBitmap = Bitmap.createScaledBitmap(b, Math.round(mImageScale * mWidth), Math.round(mImageScale * mHeight), true);
 			b.recycle();
 
 		} else {
@@ -82,13 +82,12 @@ public class ImageZoomPopup extends CustomPopupWindow {
 	public void show() {
 		onShow();
 		float density = context.getResources().getDisplayMetrics().density;
-		mWidth = Math.round(density*myCoords[5]);
+		mWidth = (anchor.getWidth() == 0 ) ? Math.round(density*myCoords[5]) : anchor.getWidth();
 		mHeight = Math.round(density*myCoords[3]);
-		int xPos = Math.round(density*myCoords[4]);
-		int yPos = Math.round(density*myCoords[2]+mHeight);
+		int xPos = (anchor.getWidth() == 0 ) ? Math.round(density*myCoords[4]) : 0;
+		int yPos = Math.round(density*myCoords[2]);
 		
 		window.setWidth(mWidth);
-		window.setHeight(mHeight);
 		window.setTouchable(true);
 		window.setFocusable(true);
 		window.setOutsideTouchable(true);
@@ -104,6 +103,11 @@ public class ImageZoomPopup extends CustomPopupWindow {
 
 		xPos += location[0];
 		yPos += location[1];
+		mHeight = yPos; 
+		window.setHeight(mHeight);
+
+//		yPos = windowYPos;
+		
 		if (mLayoutParams == null)
 			mLayoutParams = new LayoutParams(mWidth,
 					mHeight);
@@ -113,13 +117,15 @@ public class ImageZoomPopup extends CustomPopupWindow {
 				MeasureSpec.EXACTLY | mWidth,
 				MeasureSpec.EXACTLY | mHeight);
 
+		mImageScale  = (mWidth * MAX_IMAGE_ZOOM > 2048) ? 2048 / mWidth : (float) MAX_IMAGE_ZOOM;
 		if(mImageViewBitmap != null) {
-			Bitmap resizedBitmap = Bitmap.createScaledBitmap(mImageViewBitmap, mWidth * 2, mHeight * 2, true);
+			Bitmap resizedBitmap = Bitmap.createScaledBitmap(mImageViewBitmap, Math.round(mImageScale * mWidth), Math.round(mImageScale * mHeight), true);
 			recycleImageViewBitmap(mImageView);
 			mImageView.setImageBitmap(resizedBitmap);
 			mImageViewBitmap = resizedBitmap;
 		}
-		window.showAtLocation(anchor, Gravity.NO_GRAVITY, xPos, yPos);
+		
+		window.showAtLocation(anchor, Gravity.NO_GRAVITY, xPos, 0);
 		scroll(myCoords);
 	}
 
@@ -142,14 +148,7 @@ public class ImageZoomPopup extends CustomPopupWindow {
 		mLayoutParams = params;
 	}
 
-	/**
-	 * @return
-	 */
-	public int getWidth() {
-		int w = root.getWidth();
-		int mw = root.getMeasuredWidth();
-		return mw;
-	}
+
 	
 	public void recycleImageViewBitmap(ImageView i) {
 		if(i != null) {
