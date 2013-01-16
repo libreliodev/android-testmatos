@@ -134,7 +134,7 @@ public class DBHelper{
     	return res;
     }
     
-    public String getUserSearchINputStringByColumn (String column) {
+    public String getUserSearchInputStringByColumn (String column) {
     	Cursor cursor = getUserSearchInputTitleByColumn(column);
     	String res = "";
     	boolean isFirst = true;

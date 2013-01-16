@@ -73,7 +73,7 @@ public class AdvancedCriteriaMainListAdapter extends BaseAdapter {
 		TextView mTitle = (TextView) v.findViewById(textViewId);
 		mTitle.setText(getItem(position).toString());
 		TextView mDescription = (TextView) v.findViewById(criteriaTextView);
-		mDescription.setText(helper.getUserSearchINputStringByColumn(getColumnName(position)));
+		mDescription.setText(helper.getUserSearchInputStringByColumn(getColumnName(position)));
 		
 		return v;
 	}
