@@ -65,7 +65,8 @@ public class ImageZoomPopup extends CustomPopupWindow {
 	public void setImageBitmap(Bitmap b) {
 		if( mWidth > 0 && mHeight > 0)
 		{
-			mImageViewBitmap = Bitmap.createScaledBitmap(b, Math.round(mImageScale * mWidth), Math.round(mImageScale * mHeight), true);
+
+			mImageViewBitmap = Bitmap.createScaledBitmap(b, mImageViewBitmap.getWidth(), mImageViewBitmap.getHeight(), true);
 			b.recycle();
 
 		} else {
@@ -103,8 +104,7 @@ public class ImageZoomPopup extends CustomPopupWindow {
 
 		xPos += location[0];
 		yPos += location[1];
-		mHeight = yPos; 
-		window.setHeight(mHeight);
+		mHeight = (int) Math.round(yPos*0.75); 
 
 //		yPos = windowYPos;
 		
@@ -119,13 +119,19 @@ public class ImageZoomPopup extends CustomPopupWindow {
 
 		mImageScale  = (mWidth * MAX_IMAGE_ZOOM > 2048) ? 2048 / mWidth : (float) MAX_IMAGE_ZOOM;
 		if(mImageViewBitmap != null) {
-			Bitmap resizedBitmap = Bitmap.createScaledBitmap(mImageViewBitmap, Math.round(mImageScale * mWidth), Math.round(mImageScale * mHeight), true);
+			Bitmap resizedBitmap = Bitmap.createScaledBitmap(mImageViewBitmap, Math.round(mImageScale * mImageViewBitmap.getWidth()), Math.round(mImageScale * mImageViewBitmap.getHeight()), true);
 			recycleImageViewBitmap(mImageView);
 			mImageView.setImageBitmap(resizedBitmap);
 			mImageViewBitmap = resizedBitmap;
+			int bitmapHeight = mImageViewBitmap.getHeight();
+			if(bitmapHeight < mHeight) {
+				mHeight = bitmapHeight;
+			}
 		}
+		window.setHeight(mHeight);
+
 		
-		window.showAtLocation(anchor, Gravity.NO_GRAVITY, xPos, 0);
+		window.showAtLocation(anchor, Gravity.NO_GRAVITY, xPos, yPos - mHeight);
 		scroll(myCoords);
 	}
 
