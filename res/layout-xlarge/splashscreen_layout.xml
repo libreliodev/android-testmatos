@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:scaleType="centerInside"
-        android:src="@drawable/default_landscape" />
+        android:scaleType="fitCenter"
+        android:src="@drawable/startup_background_1280x732" />
 
 </FrameLayout>
