@@ -1,0 +1,42 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.niveales.testskis"
+    android:installLocation="preferExternal"
+    android:versionCode="1"
+    android:versionName="beta 12" >
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="15" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:name="com.niveales.library.ui.NivealesApplication"
+        android:icon="@drawable/tests_skis_ic_launcher"
+        android:label="@string/tests_skis_app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.niveales.library.ui.MainActivity"
+            android:configChanges="keyboard|orientation|screenSize"
+            android:icon="@drawable/tests_skis_ic_launcher"
+            android:label="@string/tests_skis_app_name"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateAlwaysHidden" >
+        </activity>
+        <activity
+            android:name="com.niveales.library.ui.activity.TwitterAuthActivity"
+            android:theme="@style/Theme.Transparent" >
+        </activity>
+        <activity
+            android:name="com.niveales.library.ui.SplashScreenActivity"
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

@@ -1,0 +1,59 @@
+{
+	"DB_FILE_NAME" : "skieur_tests2013_.sqlite",
+	"FACEBOOK_TAB_PAGE_URL" : "http://www.facebook.com/skieurmagazine",
+	"INFO_TAB_PAGE_URL" : "file:///android_asset/Privacy.html",
+	"FACEBOOK_APP_ID" : "367597189994678",
+	"TWITTER_CONSUMER_KEY" : "Qgs7YXW6HCw8u0Mt1102Q",
+	"TWITTER_SECRET" : "CqOZllOATSal2bjyyBSY2hXZ1dtlwwTZBUYXeMvj0",
+	"TWITTER_CALLBACK_URL" : "twitter://callback",
+	"PRODUCT_DETAIL_HTML_FILE_KEYS" : [
+				"%TAITLE%",
+				"%Modele%",
+				"%Budget%",
+				"%img%",
+				"%GAMME%",
+				"%NIVEAU REQUIS%",
+				"%TAILLE TESTEE%", 
+				"%icone_testerchoice%",
+				"%icone_genre%",
+				"%Test_baseline%",
+				"%Description_Test%", 
+				"%Test_avantages%",
+				"%test_inconvenients%",  
+				"%Caractéristiques%"
+	],
+	"PRODUCT_DETAIL_COLUMN_KEYS" : [
+				"Marque", 
+				"Modele", 
+				"Prix_String", 
+				"imgLR", 
+				"Gamme",
+				"niveau",
+				"test_Taille_testee", 
+				"icone_testerchoice",
+				"icone_genre", 
+				"Test_baseline", 
+				"Description_Test", 
+				"Test_avantages",
+				"test_inconvenients", 
+				"Caractéristiques"
+	],
+	"PRODUCT_LIST_DISPLAY_COLUMNS" : [
+				"Marque", 
+				"Modele",
+				"icone_genre", 
+				"Gamme", 
+				"Prix_String",
+				"icone_testerchoice", 
+				"imgLR"
+	],
+	"PRODUCT_LIST_DISPLAY_VIEW_IDS" : [
+				"productListItemGenre", 
+				"productListItemModele",
+				"productListItemFemale", 
+				"productListItemGamme", 
+				"productListItemBudget",
+				"productListItemPop",
+				"productListItemPicture"
+	]
+}
