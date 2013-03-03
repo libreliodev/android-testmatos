@@ -1,0 +1,148 @@
+src/com/facebook/android/AsyncFacebookRunner.java
+src/com/facebook/android/DialogError.java
+src/com/facebook/android/Facebook.java
+src/com/facebook/android/FacebookError.java
+src/com/facebook/android/FbDialog.java
+42c42
+< import com.niveales.testskis.R;
+---
+> import com.niveales.testsnowboards.R;
+src/com/facebook/android/Util.java
+src/com/niveales/library/ui/about/AboutFragment.java
+16c16
+< import com.niveales.testskis.R;
+---
+> import com.niveales.testsnowboards.R;
+src/com/niveales/library/ui/about/FacebookFragment.java
+15c15
+< import com.niveales.testskis.R;
+---
+> import com.niveales.testsnowboards.R;
+src/com/niveales/library/ui/activity/BaseNivealesActivity.java
+src/com/niveales/library/ui/activity/TwitterAuthActivity.java
+src/com/niveales/library/ui/BaseNivealesActivity.java
+src/com/niveales/library/ui/BaseNivealesFragment.java
+src/com/niveales/library/ui/Button3State.java
+4c4
+< import com.niveales.testskis.R;
+---
+> import com.niveales.testsnowboards.R;
+src/com/niveales/library/ui/criteraselectors/CheckedCriteriaSelectorFragment.java
+src/com/niveales/library/ui/criteraselectors/RangeCriteriaSelectorFragment.java
+11a12,13
+> import android.view.View.OnFocusChangeListener;
+> import android.view.View.OnKeyListener;
+12a15
+> import android.view.inputmethod.EditorInfo;
+19c22
+< import com.niveales.testskis.R;
+---
+> import com.niveales.testsnowboards.R;
+src/com/niveales/library/ui/FacebookImagePostPreviewDialogFragment.java
+27c27
+< import com.niveales.testskis.R;
+---
+> import com.niveales.testsnowboards.R;
+src/com/niveales/library/ui/lexique/LexiqueFragment.java
+src/com/niveales/library/ui/MainActivity.java
+75,81c75,81
+< import com.niveales.testskis.R;
+< import com.niveales.testskis.R.array;
+< import com.niveales.testskis.R.drawable;
+< import com.niveales.testskis.R.id;
+< import com.niveales.testskis.R.layout;
+< import com.niveales.testskis.R.menu;
+< import com.niveales.testskis.R.string;
+---
+> import com.niveales.testsnowboards.R;
+> import com.niveales.testsnowboards.R.array;
+> import com.niveales.testsnowboards.R.drawable;
+> import com.niveales.testsnowboards.R.id;
+> import com.niveales.testsnowboards.R.layout;
+> import com.niveales.testsnowboards.R.menu;
+> import com.niveales.testsnowboards.R.string;
+src/com/niveales/library/ui/NivealesApplication.java
+57,60c57,60
+< import com.niveales.testskis.R;
+< import com.niveales.testskis.R.id;
+< import com.niveales.testskis.R.layout;
+< import com.niveales.testskis.R.string;
+---
+> import com.niveales.testsnowboards.R;
+> import com.niveales.testsnowboards.R.id;
+> import com.niveales.testsnowboards.R.layout;
+> import com.niveales.testsnowboards.R.string;
+src/com/niveales/library/ui/popup/ActionItem.java
+src/com/niveales/library/ui/popup/CustomPopupWindow.java
+3c3
+< import com.niveales.testskis.R;
+---
+> import com.niveales.testsnowboards.R;
+src/com/niveales/library/ui/popup/ImageZoomPopup.java
+src/com/niveales/library/ui/popup/QuickAction.java
+23c23
+< import com.niveales.testskis.R;
+---
+> import com.niveales.testsnowboards.R;
+src/com/niveales/library/ui/productdetail/ProductDetailFragment.java
+src/com/niveales/library/ui/productdetail/ShareDialogFragment.java
+src/com/niveales/library/ui/productlist/FavoriteProductListFragment.java
+src/com/niveales/library/ui/productlist/ProductListFragment.java
+20c20
+< import com.niveales.testskis.R;
+---
+> import com.niveales.testsnowboards.R;
+src/com/niveales/library/ui/productsearch/ProductSearchFragment.java
+src/com/niveales/library/ui/SplashScreenActivity.java
+16c16
+< import com.niveales.testskis.R;
+---
+> import com.niveales.testsnowboards.R;
+src/com/niveales/library/ui/TwitterPostPreviewDialogFragment.java
+32c32
+< import com.niveales.testskis.R;
+---
+> import com.niveales.testsnowboards.R;
+src/com/niveales/library/utils/adapters/AdvancedCriteriaMainListAdapter.java
+6c6
+< import com.niveales.testskis.R;
+---
+> import com.niveales.testsnowboards.R;
+76c76
+< 		mDescription.setText(helper.getUserSearchINputStringByColumn(getColumnName(position)));
+---
+> 		mDescription.setText(helper.getUserSearchInputStringByColumn(getColumnName(position)));
+src/com/niveales/library/utils/adapters/BoundAdapter.java
+src/com/niveales/library/utils/adapters/checked/CheckedCriteriaAdapter.java
+src/com/niveales/library/utils/adapters/CheckedCriteriaViewBinder.java
+src/com/niveales/library/utils/adapters/CursorViewBinder.java
+src/com/niveales/library/utils/adapters/lexique/LexiqueAdapter.java
+src/com/niveales/library/utils/adapters/MyBaseCriteriaAdapter.java
+src/com/niveales/library/utils/adapters/NumericCriteriaAdapter.java
+src/com/niveales/library/utils/adapters/search/SearchAdapter.java
+7c7
+< import com.niveales.testskis.R;
+---
+> import com.niveales.testsnowboards.R;
+src/com/niveales/library/utils/adapters/search/SearchCursorViewBinder.java
+src/com/niveales/library/utils/BitlyAndroid.java
+src/com/niveales/library/utils/db/DBHelper.java
+137c137
+<     public String getUserSearchINputStringByColumn (String column) {
+---
+>     public String getUserSearchInputStringByColumn (String column) {
+src/com/niveales/library/utils/MyCursorAdapter.java
+src/com/niveales/library/utils/MyCursorFilter.java
+src/com/niveales/library/utils/MyResourceCursorAdapter.java
+src/com/niveales/library/utils/MySimpleCursorAdapter.java
+src/com/niveales/library/utils/OAuthRequestTokenTask.java
+src/com/niveales/library/utils/Selection.java
+src/com/niveales/library/utils/TwitterSession.java
+src/com/niveales/library/utils/TwitterUtils.java
+src/com/twitter/android/TwitterApp.java
+src/com/twitter/android/TwitterDialog.java
+3c3
+< import com.niveales.testskis.R;
+---
+> import com.niveales.testsnowboards.R;
+src/com/twitter/android/TwitterSession.java
