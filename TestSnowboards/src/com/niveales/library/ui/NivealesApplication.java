@@ -418,8 +418,8 @@ public class NivealesApplication extends Application {
 						R.id.MinPriceInputField, R.id.MaxPriceInputField, l);
 	}
 
-	public CheckedCriteriaSelectorFragment getCheckedCriteriaSelectorFragment(int pPosition,
-			OnCriteriaChangedListener l) {
+	public CheckedCriteriaSelectorFragment getCheckedCriteriaSelectorFragment(
+			int pPosition, OnCriteriaChangedListener l) {
 		return CheckedCriteriaSelectorFragment.getInstance(pPosition, l);
 	}
 
