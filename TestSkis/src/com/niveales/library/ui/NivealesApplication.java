@@ -135,8 +135,6 @@ public class NivealesApplication extends Application {
 		public static final int CRETERIA_SELECTOR_TITLE_VIEW_ID = R.id.CriteriaTitle;
 	}
 
-	
-
 	public static final String ACRA_FORM_ID = "dDVpd19Uc2E4WTBaWTJXNGJHNkZEMWc6MQ";
 	public static String FACEBOOK_TAB_PAGE_URL = "http://www.facebook.com/Snowsurf.mag";
 	public static String INFO_TAB_PAGE_URL = "http://www.snowsurf.com/app-teasing";
@@ -173,9 +171,9 @@ public class NivealesApplication extends Application {
 		 * 
 		 */
 		public static String[] PRODUCT_DETAIL_COLUMN_KEYS = // List of
-																	// fields in
-																	// product
-																	// html file
+															// fields in
+															// product
+															// html file
 		new String[] { "Marque", "Modele", "Prix_String", "imgLR", "Gamme",
 				"test_Taille_testee", "Tailles", "type_de_cambre_text",
 				"Test_baseline", "Description_Test", "Test_avantages",
@@ -395,7 +393,8 @@ public class NivealesApplication extends Application {
 				ProductSearchConstants.PRODUCT_SEARCH_LISTVIEW_ITEM_LAYOUT,
 				searchEditTextId,
 				ProductSearchConstants.PRODUCT_SEARCH_SEARCH_COLUMNS,
-				new CursorViewBinder(this, ProductSearchConstants.PRODUCT_SEARCH_BINDER_COLUMNS,
+				new CursorViewBinder(this,
+						ProductSearchConstants.PRODUCT_SEARCH_BINDER_COLUMNS,
 						ProductSearchConstants.PRODUCT_SEARCH_BINDER_IDS));
 	}
 
@@ -419,8 +418,8 @@ public class NivealesApplication extends Application {
 						R.id.MinPriceInputField, R.id.MaxPriceInputField, l);
 	}
 
-	public CheckedCriteriaSelectorFragment getCriteriaSelectorFragment(int pPosition,
-			OnCriteriaChangedListener l) {
+	public CheckedCriteriaSelectorFragment getCheckedCriteriaSelectorFragment(
+			int pPosition, OnCriteriaChangedListener l) {
 		return CheckedCriteriaSelectorFragment.getInstance(pPosition, l);
 	}
 
@@ -433,15 +432,9 @@ public class NivealesApplication extends Application {
 		is.close();
 
 		int rotatedWidth, rotatedHeight;
-		int orientation = getOrientation(context, photoUri);
 
-		if (orientation == 90 || orientation == 270) {
-			rotatedWidth = dbo.outHeight;
-			rotatedHeight = dbo.outWidth;
-		} else {
-			rotatedWidth = dbo.outWidth;
-			rotatedHeight = dbo.outHeight;
-		}
+		rotatedWidth = dbo.outWidth;
+		rotatedHeight = dbo.outHeight;
 
 		Bitmap srcBitmap;
 		is = context.getContentResolver().openInputStream(photoUri);
@@ -461,18 +454,6 @@ public class NivealesApplication extends Application {
 			srcBitmap = BitmapFactory.decodeStream(is);
 		}
 		is.close();
-
-		/*
-		 * if the orientation is not 0 (or -1, which means we don't know), we
-		 * have to do a rotation.
-		 */
-		if (orientation > 0) {
-			Matrix matrix = new Matrix();
-			matrix.postRotate(orientation);
-
-			srcBitmap = Bitmap.createBitmap(srcBitmap, 0, 0,
-					srcBitmap.getWidth(), srcBitmap.getHeight(), matrix, true);
-		}
 
 		String type = context.getContentResolver().getType(photoUri);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -542,16 +523,6 @@ public class NivealesApplication extends Application {
 		return bMapArray;
 	}
 
-	/**
-	 * @param pContext
-	 * @param pPhotoUri
-	 * @return
-	 */
-	private static int getOrientation(Context pContext, Uri pPhotoUri) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 	public static String copyFileToExternalDirectory(String pic,
 			AssetManager assets) {
 		String state = Environment.getExternalStorageState();
@@ -609,11 +580,12 @@ public class NivealesApplication extends Application {
 		InputStream is;
 		try {
 			is = getAssets().open("customization.json");
-			BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+			BufferedReader reader = new BufferedReader(
+					new InputStreamReader(is));
 			StringWriter writer = new StringWriter();
 			char[] buffer = new char[1024];
 			int count = 0;
-			while((count = reader.read(buffer)) > 0) {
+			while ((count = reader.read(buffer)) > 0) {
 				writer.write(buffer, 0, count);
 			}
 			JSONObject json = new JSONObject(writer.toString());
@@ -624,28 +596,40 @@ public class NivealesApplication extends Application {
 			TWITTER_CONSUMER_KEY = json.getString("TWITTER_CONSUMER_KEY");
 			TWITTER_SECRET = json.getString("TWITTER_SECRET");
 			TWITTER_CALLBACK_URL = json.getString("TWITTER_CALLBACK_URL");
-			JSONArray htmlKeys = json.getJSONArray("PRODUCT_DETAIL_HTML_FILE_KEYS");
-			ProductDetailConstants.PRODUCT_DETAIL_HTML_FILE_KEYS = new String[htmlKeys.length()];
-			for(int i = 0; i < htmlKeys.length(); i++) {
-				ProductDetailConstants.PRODUCT_DETAIL_HTML_FILE_KEYS[i] = htmlKeys.getString(i);
+			JSONArray htmlKeys = json
+					.getJSONArray("PRODUCT_DETAIL_HTML_FILE_KEYS");
+			ProductDetailConstants.PRODUCT_DETAIL_HTML_FILE_KEYS = new String[htmlKeys
+					.length()];
+			for (int i = 0; i < htmlKeys.length(); i++) {
+				ProductDetailConstants.PRODUCT_DETAIL_HTML_FILE_KEYS[i] = htmlKeys
+						.getString(i);
 			}
-			JSONArray columnKeys = json.getJSONArray("PRODUCT_DETAIL_COLUMN_KEYS");
-			ProductDetailConstants.PRODUCT_DETAIL_COLUMN_KEYS = new String[columnKeys.length()];
-			for(int i = 0; i < columnKeys.length(); i++) {
-				ProductDetailConstants.PRODUCT_DETAIL_COLUMN_KEYS[i] = columnKeys.getString(i);
+			JSONArray columnKeys = json
+					.getJSONArray("PRODUCT_DETAIL_COLUMN_KEYS");
+			ProductDetailConstants.PRODUCT_DETAIL_COLUMN_KEYS = new String[columnKeys
+					.length()];
+			for (int i = 0; i < columnKeys.length(); i++) {
+				ProductDetailConstants.PRODUCT_DETAIL_COLUMN_KEYS[i] = columnKeys
+						.getString(i);
 			}
-			
-			JSONArray displayColumns = json.getJSONArray("PRODUCT_LIST_DISPLAY_COLUMNS");
-			ProductListConstants.PRODUCT_LIST_DISPLAY_COLUMNS = new String[displayColumns.length()];
-			for(int i = 0; i < displayColumns.length(); i++) {
-				ProductListConstants.PRODUCT_LIST_DISPLAY_COLUMNS[i] = displayColumns.getString(i);
+
+			JSONArray displayColumns = json
+					.getJSONArray("PRODUCT_LIST_DISPLAY_COLUMNS");
+			ProductListConstants.PRODUCT_LIST_DISPLAY_COLUMNS = new String[displayColumns
+					.length()];
+			for (int i = 0; i < displayColumns.length(); i++) {
+				ProductListConstants.PRODUCT_LIST_DISPLAY_COLUMNS[i] = displayColumns
+						.getString(i);
 			}
-			
-			JSONArray displayViewIds = json.getJSONArray("PRODUCT_LIST_DISPLAY_VIEW_IDS");
-			ProductListConstants.PRODUCT_LIST_DISPLAY_VIEW_IDS = new int[displayViewIds.length()];
-			for(int i = 0; i < displayViewIds.length(); i++) {
+
+			JSONArray displayViewIds = json
+					.getJSONArray("PRODUCT_LIST_DISPLAY_VIEW_IDS");
+			ProductListConstants.PRODUCT_LIST_DISPLAY_VIEW_IDS = new int[displayViewIds
+					.length()];
+			for (int i = 0; i < displayViewIds.length(); i++) {
 				String resourceName = displayViewIds.getString(i);
-				ProductListConstants.PRODUCT_LIST_DISPLAY_VIEW_IDS[i] = getResources().getIdentifier(resourceName, "id", getPackageName());
+				ProductListConstants.PRODUCT_LIST_DISPLAY_VIEW_IDS[i] = getResources()
+						.getIdentifier(resourceName, "id", getPackageName());
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -654,7 +638,7 @@ public class NivealesApplication extends Application {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 }
