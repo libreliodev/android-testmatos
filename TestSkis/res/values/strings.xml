@@ -39,11 +39,11 @@
         <item>Twitter</item>
         <item>Mail</item>
     </string-array>
-    <string name="share_dialog_title">Share by:</string>
+    <string name="share_dialog_title">Partager via:</string>
     <string name="facebook">Facebook</string>
     <string name="FacebookPageUrl">http&#58;&#47;&#47;www.facebook.com</string>
-    <string name="previouse_search_title">Ma deterniére recherche:</string>
-    <string name="NewSearchText">Pour rechercher un ski, selectionner vos critères de recherche</string>
+    <string name="previouse_search_title">Ma dernière recherche:</string>
+    <string name="NewSearchText">Pour rechercher un ski, sélectionner vos critères de recherche</string>
     <string name="right_pane_search_message">Recherche par marque</string>
     <string name="nothing_found_message">Désolé aucun produit ne correspond à votre demande</string>
 
