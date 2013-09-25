@@ -12,9 +12,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Hashtable;
+
+import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
+import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
 
 import org.acra.ACRA;
 import org.acra.annotation.ReportsCrashes;
@@ -22,8 +24,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
-import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
 import twitter4j.Twitter;
 import twitter4j.http.AccessToken;
 import android.app.Application;
@@ -35,11 +35,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Environment;
-import android.view.View;
-import android.widget.EditText;
 
-import com.facebook.android.AsyncFacebookRunner;
-import com.facebook.android.Facebook;
 import com.niveales.library.ui.criteraselectors.CheckedCriteriaSelectorFragment;
 import com.niveales.library.ui.criteraselectors.CheckedCriteriaSelectorFragment.OnCriteriaChangedListener;
 import com.niveales.library.ui.criteraselectors.RangeCriteriaSelectorFragment;
@@ -52,12 +48,8 @@ import com.niveales.library.ui.productlist.ProductListFragment;
 import com.niveales.library.ui.productsearch.ProductSearchFragment;
 import com.niveales.library.utils.TwitterSession;
 import com.niveales.library.utils.adapters.CursorViewBinder;
-import com.niveales.library.utils.adapters.search.SearchAdapter;
 import com.niveales.library.utils.db.DBHelper;
 import com.niveales.testskis.R;
-import com.niveales.testskis.R.id;
-import com.niveales.testskis.R.layout;
-import com.niveales.testskis.R.string;
 
 /**
  * @author Dmitry Valetin
@@ -319,11 +311,6 @@ public class NivealesApplication extends Application {
 	public static final String BITLY_API_KEY = "R_d0e2739e13391fc7cc6a7c66966239b4";
 
 	// Facebook staff
-	public static String FACEBOOK_APP_ID = "367597189994678";
-	public static Facebook mFacebook;
-	public static AsyncFacebookRunner mAsyncRunner;
-	public static String[] facebookPermissions = { "offline_access",
-			"publish_stream", "user_photos", "publish_checkins", "photo_upload" };
 
 	public static Hashtable<String, String> currentPermissions = new Hashtable<String, String>();
 
@@ -523,16 +510,16 @@ public class NivealesApplication extends Application {
 		return bMapArray;
 	}
 
-	public static String copyFileToExternalDirectory(String pic,
+	public static String copyFileToExternalDirectory(Context context, String pic,
 			AssetManager assets) {
 		String state = Environment.getExternalStorageState();
 		if (Environment.MEDIA_MOUNTED.equals(state)) {
-			File externalDir = Environment
-					.getExternalStoragePublicDirectory("Download");
+			File externalDir = context.getExternalCacheDir();
 			if (externalDir.canWrite()) {
 				try {
 					String fileName = pic.split("/")[pic.split("/").length - 1];
-					File newPic = File.createTempFile("pic", fileName);
+//					File newPic = File.createTempFile("pic", fileName);
+					File newPic = new File(externalDir.getAbsolutePath() + "/" + fileName);
 					byte[] buffer = new byte[1024];
 					BufferedOutputStream bos = new BufferedOutputStream(
 							new FileOutputStream(newPic));
@@ -592,7 +579,6 @@ public class NivealesApplication extends Application {
 			DB_FILE_NAME = json.getString("DB_FILE_NAME");
 			FACEBOOK_TAB_PAGE_URL = json.getString("FACEBOOK_TAB_PAGE_URL");
 			INFO_TAB_PAGE_URL = json.getString("INFO_TAB_PAGE_URL");
-			FACEBOOK_APP_ID = json.getString("FACEBOOK_APP_ID");
 			TWITTER_CONSUMER_KEY = json.getString("TWITTER_CONSUMER_KEY");
 			TWITTER_SECRET = json.getString("TWITTER_SECRET");
 			TWITTER_CALLBACK_URL = json.getString("TWITTER_CALLBACK_URL");

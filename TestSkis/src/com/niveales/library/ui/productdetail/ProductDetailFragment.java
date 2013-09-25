@@ -98,7 +98,6 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 	private int bitmapHeight;
 	private Bitmap mHiResBitmap;
 	private int webPageStringResourceId;
-	private QuickAction mShareHolder;
 	private LinearLayout mShareButtonsHolder;
 	protected float downX;
 	protected float downY;
@@ -272,8 +271,7 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 
 			@Override
 			public void onClick(View arg0) {
-				mShareHolder.dismiss();
-				mShareHolder.show();
+				listener.onShareProduct(productCursor);
 			}
 		});
 		mFavoriteCkeckBox = (CheckBox) rootView.findViewById(favoriteId);
@@ -327,42 +325,6 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 			}
 		});
 
-		mShareHolder = new QuickAction(shareButton);
-		String shareString = productCursor.getString(productCursor
-				.getColumnIndexOrThrow("Lien_Partage"));
-		Uri uri = Uri.parse(shareString);
-		try {
-			String[] sites = URLDecoder.decode(
-					uri.getQueryParameter("wasites"), "utf-8").split(",");
-			for (int i = 0; i < sites.length; i++) {
-				ActionItem item = new ActionItem();
-				item.setTitle("Share by " + sites[i]);
-				item.setTag(sites[i]);
-				Button b = new Button(getActivity());
-				b.setText("Share on " + sites[i]);
-				b.setTag(sites[i]);
-				b.setBackgroundColor(Color.WHITE);
-				b.setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View pV) {
-						mShareHolder.dismiss();
-						listener.onShareProduct(productCursor,
-								(String) pV.getTag());
-					}
-				});
-				LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(
-						ViewGroup.LayoutParams.MATCH_PARENT,
-						ViewGroup.LayoutParams.WRAP_CONTENT);
-				p.setMargins(1, 1, 1, 1);
-				b.setLayoutParams(p);
-				// mShareButtonsHolder.addView(b);
-				item.setActionItemView(b);
-				mShareHolder.addActionItem(item);
-			}
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
 		loadProduct(productCursor);
 		return rootView;
 	}
@@ -446,7 +408,7 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 	}
 
 	public interface ShareProductListener {
-		public void onShareProduct(Cursor productCursor, String site);
+		public void onShareProduct(Cursor productCursor);
 	}
 
 	/**
