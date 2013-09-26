@@ -440,7 +440,7 @@ public class DBHelper{
 		// The Android's default system path of your application database.
 		private static String DB_PATH;
 
-		private static final String ASSETS_DB_NAME = "skieur_tests2012_.sqlite";
+//		private static final String ASSETS_DB_NAME = "skieur_tests2012_.sqlite";
 
 		private SQLiteDatabase myDataBase;
 
