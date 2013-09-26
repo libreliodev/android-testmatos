@@ -410,21 +410,21 @@ public class DBHelper{
 	}
 
 	
-	public long addFavorite(long id) {
+	public long addFavorite(String id) {
 
 			ContentValues contentValues = new ContentValues();
 			contentValues.put(FAVORITES_MODEL_ID_KEY, String.valueOf(id));
 			return mDb.insert(FAVORITES_TABLE, null, contentValues);
 	}
 	
-	public long deleteFavorite(long id) {
+	public long deleteFavorite(String id) {
 		ContentValues contentValues = new ContentValues();
 		contentValues.put(FAVORITES_MODEL_ID_KEY, id);
 
 		return mDb.delete(FAVORITES_TABLE, "id = '"+id+"'", null);
 	}
 	
-	public boolean isFavorite(long id) {
+	public boolean isFavorite(String id) {
 		Cursor cursor = mDb.query(FAVORITES_TABLE, new String [] {
 				FAVORITES_MODEL_ID_KEY
 		}, FAVORITES_MODEL_ID_KEY + " = '"+id+"'", null, null, null, null);

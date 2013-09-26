@@ -8,12 +8,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLDecoder;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
@@ -34,17 +31,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.librelio.library.ui.BaseNivealesFragment;
@@ -52,7 +45,6 @@ import com.librelio.library.ui.NivealesApplication;
 import com.librelio.library.ui.NivealesApplication.ProductDetailConstants;
 import com.librelio.library.ui.popup.ActionItem;
 import com.librelio.library.ui.popup.ImageZoomPopup;
-import com.librelio.library.ui.popup.QuickAction;
 import com.librelio.library.utils.db.DBHelper;
 
 public class ProductDetailFragment extends BaseNivealesFragment {
@@ -79,7 +71,7 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 	String htmlBasePage; // text from assets html page to customize
 	String customizedHTMLPage; // page after customization
 	DBHelper helper;
-	private int productId;
+	private String productId;
 	Cursor productCursor;
 	String pic;
 	private int productDetailLayout;
@@ -153,7 +145,7 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 	}
 
 	String getHTMLPage(Cursor c) {
-		productId = c.getInt(c.getColumnIndexOrThrow("id_modele"));
+		productId = c.getString(c.getColumnIndexOrThrow("id_modele"));
 		String htmlString = new String(htmlBasePage);
 		for (int i = 0; i < columnKeys.length; i++) {
 			String value = c.getString(c.getColumnIndexOrThrow(columnKeys[i]));
