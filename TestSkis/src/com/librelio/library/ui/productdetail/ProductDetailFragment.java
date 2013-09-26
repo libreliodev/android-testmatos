@@ -148,17 +148,20 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 		productId = c.getString(c.getColumnIndexOrThrow("id_modele"));
 		String htmlString = new String(htmlBasePage);
 		for (int i = 0; i < columnKeys.length; i++) {
-			String value = c.getString(c.getColumnIndexOrThrow(columnKeys[i]));
-			if (htmlKeys[i].startsWith("%icone") && !value.equals("")) {
-				value = "<img src=\"" + NivealesApplication.ASSETS_URI + value
-						+ "\"/>";
-			} else {
-				if (value.endsWith("png") || value.endsWith("jpg")) {
-					// product image
-					value = NivealesApplication.ASSETS_URI + value;
+			int columnIndex = c.getColumnIndex(columnKeys[i]);
+			if (columnIndex != -1) {
+				String value = c.getString(columnIndex);
+				if (htmlKeys[i].startsWith("%icone") && !value.equals("")) {
+					value = "<img src=\"" + NivealesApplication.ASSETS_URI
+							+ value + "\"/>";
+				} else {
+					if (value.endsWith("png") || value.endsWith("jpg")) {
+						// product image
+						value = NivealesApplication.ASSETS_URI + value;
+					}
 				}
+				htmlString = htmlString.replace(htmlKeys[i], value);
 			}
-			htmlString = htmlString.replace(htmlKeys[i], value);
 		}
 		Log.d("HTML", htmlString);
 		return htmlString;

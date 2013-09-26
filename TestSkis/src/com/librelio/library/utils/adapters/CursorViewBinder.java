@@ -55,7 +55,14 @@ public class CursorViewBinder {
 		String columnName = map.get(id);
 		if(columnName == null)
 			return false;
-		String value = c.getString(c.getColumnIndexOrThrow(columnName));
+		int columnIndex = c.getColumnIndex(columnName);
+		if (columnIndex == -1) {
+			return false;
+		}
+		String value = c.getString(columnIndex);
+		if (value == null) {
+			return false;
+		}
 		if(v instanceof TextView) {
 			TextView tv = (TextView) v;
 			tv.setText((value==null) ? "" : Html.fromHtml(value));
