@@ -70,9 +70,6 @@ PRODUCT_LIST_DISPLAY_VIEW_IDS
 
 You need to add your specific column names from the DB and corresponding views in the product_list_item_layout.xml
 
-7) Adjust Facebook and Twitter API keys in the "Application.java" file
-
-
 
 ALL DONE, YOU MAY RUN THE APP
 
