@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:custom="http://schema.android.com/apk/res/com.niveales.library"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
@@ -34,7 +34,7 @@
             android:text="@string/tri_par"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <com.niveales.library.ui.Button3State
+        <com.librelio.library.ui.Button3State
             android:id="@+id/ProductListMarqueSortButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
             custom:state2drawable="@drawable/mark_up"
             custom:state3drawable="@drawable/mark_down" />
 
-        <com.niveales.library.ui.Button3State
+        <com.librelio.library.ui.Button3State
             android:id="@+id/ProductListGammeSortButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
             custom:state2drawable="@drawable/mark_up"
             custom:state3drawable="@drawable/mark_down" />
 
-        <com.niveales.library.ui.Button3State
+        <com.librelio.library.ui.Button3State
             android:id="@+id/ProductListPrixSortButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
