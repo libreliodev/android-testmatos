@@ -17,4 +17,5 @@
     <color name="facebook_bg">#41569a</color>
     <color name="twitter_bg">#8ec1da</color>
     <color name="transparent">#00000000</color>
+    <color name="holo_blue">#aa33b5e5</color>
 </resources>

@@ -98,7 +98,6 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 	private int bitmapHeight;
 	private Bitmap mHiResBitmap;
 	private int webPageStringResourceId;
-	private LinearLayout mShareButtonsHolder;
 	protected float downX;
 	protected float downY;
 	protected boolean isZoomStarted = false;

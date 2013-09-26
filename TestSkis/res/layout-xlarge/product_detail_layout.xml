@@ -62,15 +62,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
-            android:button="@drawable/favorite_checkbox_button" />
+            android:button="@drawable/favorite_checkbox_button"
+            android:background="@drawable/selectable_background"  />
 
         <ImageView
             android:id="@+id/ShareButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:src="@drawable/share_button"
-            tools:ignore="ContentDescription" />
+            android:src="@drawable/ic_action_share"
+            tools:ignore="ContentDescription"
+            android:background="@null"  />
 
     </LinearLayout>
 
