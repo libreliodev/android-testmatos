@@ -42,7 +42,7 @@ public class FavoriteProductListFragment extends ProductListFragment {
 	
 	@Override
 	public Cursor getCursor(String table, String where, String order) {
-		return helper.getAllFromTableWithWhereAndOrder(table+" , UserFavorites", "Detail.id_modele = UserFavorites.id", null);
+		return helper.getAllFromTableWithWhereAndOrder(table+" , UserFavorites", "Detail.id_modele = UserFavorites.id", order);
 	}
 	
 }
