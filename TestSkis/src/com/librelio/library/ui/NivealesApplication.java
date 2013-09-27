@@ -156,6 +156,7 @@ public class NivealesApplication extends Application {
 				"%test_inconvenients%", "%icone_genre%", "%icone_cambres%",
 				"%icone_wide%", "%icone_top%", "%img_niveau%",
 				"%img_polyvalence%", "%Caractéristiques%",
+				"%NIVEAU REQUIS%", "%icone_testerchoice%"
 
 		};
 
@@ -171,7 +172,7 @@ public class NivealesApplication extends Application {
 				"Test_baseline", "Description_Test", "Test_avantages",
 				"test_inconvenients", "icone_genre", "icone_cambres",
 				"icone_wide", "icone_top", "img_niveau", "img_polyvalence",
-				"Caractéristiques",
+				"Caractéristiques", "niveau", "icone_testerchoice"
 		// List of Details table columns to get data from, used to fill HTML
 		// fields above
 		};
