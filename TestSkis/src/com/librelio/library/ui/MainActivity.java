@@ -732,13 +732,11 @@ public class MainActivity extends FragmentActivity {
 				+ NivealesApplication.copyFileToExternalDirectory(this, pic,
 						getAssets());
 		Intent intent = new Intent(Intent.ACTION_SEND);
-//		intent.setType("text/html");
-		intent.setType(HTTP.PLAIN_TEXT_TYPE);
+		intent.setType("text/plain");
 		intent.putExtra(Intent.EXTRA_SUBJECT, title);
-		intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(message));
+		intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(message) + " " + url.toString());
 		intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(newURI));
 		startActivity(intent);
-		Log.d("Html.fromHtml(body)", Html.fromHtml(message).toString());
 	}
 
 	@Override
