@@ -1,11 +1,15 @@
 package com.librelio.library.utils.db;
 
-import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -14,6 +18,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 
 public class DBHelper{
@@ -536,29 +541,53 @@ public class DBHelper{
 		 * */
 		private void copyDataBase() throws IOException {
 
-			// Open your local db as the input stream
-			InputStream myInput = myContext.getAssets().open(dbName+".jpg");
+			InputStream mArchivePath = myContext.getAssets().open(dbName+".zip");
 
-			// Path to the just created empty db
-			String outFileName = DB_PATH + dbName;
+			try {
+				InputStream zipFileStream = mArchivePath;
+				File f = new File(DB_PATH + "/");
+				if (!f.exists()) { f.mkdir(); }
 
-			// Open the empty db as the output stream
-			OutputStream myOutput = new FileOutputStream(outFileName);
+				ZipInputStream zis = getFileFromZip(zipFileStream);
+				if (zis == null) {
+					throw new SQLiteAssetException("Archive is missing a SQLite database file"); 
+				}
+				writeExtractedFileToDisk(zis, new FileOutputStream(DB_PATH + "/" + dbName));
 
-			// transfer bytes from the inputfile to the outputfile
+				Log.w(TAG, "database copy complete");
+
+			} catch (FileNotFoundException fe) {
+				SQLiteAssetException se = new SQLiteAssetException("Missing " + mArchivePath + " file in assets or target folder not writable");
+				se.setStackTrace(fe.getStackTrace());
+				throw se;
+			} catch (IOException e) {
+				SQLiteAssetException se = new SQLiteAssetException("Unable to extract " + mArchivePath + " to data directory");
+				se.setStackTrace(e.getStackTrace());
+				throw se;
+			}
+			
+		}
+		
+		private void writeExtractedFileToDisk(ZipInputStream zin, OutputStream outs) throws IOException {
 			byte[] buffer = new byte[1024];
 			int length;
-			while ((length = myInput.read(buffer)) > 0) {
-				myOutput.write(buffer, 0, length);
+			while ((length = zin.read(buffer))>0){
+				outs.write(buffer, 0, length);
 			}
-
-			// Close the streams
-			myOutput.flush();
-			myOutput.close();
-			myInput.close();
-
+			outs.flush();
+			outs.close();
+			zin.close();
 		}
 
+		private ZipInputStream getFileFromZip(InputStream zipFileStream) throws FileNotFoundException, IOException {
+			ZipInputStream zis = new ZipInputStream(zipFileStream);
+			ZipEntry ze = null;
+			while ((ze = zis.getNextEntry()) != null) {
+				Log.w(TAG, "extracting file: '" + ze.getName() + "'...");
+				return zis;
+			}
+			return null;
+		}
 
 		@Override
 		public synchronized void close() {

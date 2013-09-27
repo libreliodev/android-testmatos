@@ -44,12 +44,11 @@ This should be the only place for imports customization after the project packag
     
 4) prepare assets
 Put all product photos in the assets/Photo folder
-Put DB file to assets/ folder
+
+Put DB in a zip compressed file placed in your project's assets/ directory. This zip file must contain a single SQLite database file.
 rename DB file, add ".jpg" extension
 
-NOTE: ".jpg" extension forces android development environment to put DB file in to the APK "as is", without ZIP compression.
-
-This is required for correct app functioning.
+The SQLite database file must be the only file within the zip archive. The databse file itself can be named anything you like. ZIP compression is used to minimize APK file size while ensuring that aapt (part of the Android build process) does not corrupt large database files during its own compression process.
 
 If you have some image references in the database (except the product photos) or in the HTML files (f.e. for product detail view) - put those images in the assets/ folder.
 
