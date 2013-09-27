@@ -119,6 +119,6 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/productListItemFemale"
         android:layout_toLeftOf="@+id/productListItemFemale"
-        android:src="@drawable/topofthepop" />
+        android:src="@drawable/testerchoice" />
 
 </RelativeLayout>
