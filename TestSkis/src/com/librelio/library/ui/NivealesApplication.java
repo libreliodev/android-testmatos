@@ -243,7 +243,7 @@ public class NivealesApplication extends Application {
 		private static String[] PRODUCT_LIST_DISPLAY_COLUMNS = new String[] {
 				DBHelper.MODELE_MARQUE_KEY, DBHelper.MODELE_MODELE_KEY,
 				"icone_genre", "icone_cambres", "Gamme", "Prix_String",
-				"icone_wide", "icone_top", "imgLR"
+				"icone_wide", "icone_testerchoice", "imgLR"
 		// DBHelper.MODELE_PRIX_DE_REFERENCE_KEY,
 		// DBHelper.MODELE_GENRE_KEY,
 		// DBHelper.MODELE_IMG_KEY
@@ -255,7 +255,7 @@ public class NivealesApplication extends Application {
 				R.id.productListItemGenre, R.id.productListItemModele,
 				R.id.productListItemFemale, R.id.productListItemChambre,
 				R.id.productListItemGamme, R.id.productListItemBudget,
-				R.id.productListItemWide, R.id.productListItemPop,
+				R.id.productListItemWide, R.id.productListItemTesterChoice,
 				R.id.productListItemPicture };
 		/**
 		 * 

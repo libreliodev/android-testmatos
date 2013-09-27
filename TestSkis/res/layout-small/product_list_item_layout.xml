@@ -109,7 +109,7 @@
                     android:src="@drawable/empty" />
 
                 <ImageView
-                    android:id="@+id/productListItemPop"
+                    android:id="@+id/productListItemTesterChoice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/empty" />
