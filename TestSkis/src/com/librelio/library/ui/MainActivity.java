@@ -711,7 +711,7 @@ public class MainActivity extends FragmentActivity {
 		String shareString = "";
 		String title = "";
 		String message = "";
-		String url;
+		String url = "";
 		try {
 			shareString = cursor.getString(cursor
 					.getColumnIndexOrThrow("Lien_Partage"));
