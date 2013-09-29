@@ -3,8 +3,6 @@ package com.librelio.library.ui;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
-import org.apache.http.protocol.HTTP;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -26,7 +24,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Html;
 import android.text.InputType;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
@@ -61,11 +58,9 @@ import com.niveales.testskis.R;
 public class LibraryActivity extends FragmentActivity {
 
 	private static final String DIALOG_TAG = null;
-	private static final int TWITTER_CALLBACK_ID = 9890;
 	@SuppressWarnings("unused")
 	private static final String TAG = LibraryActivity.class
 			.getSimpleName();
-	public static String mTwitterMessage;
 	private int mActiveTab;
 	private TabHost mMainActivityTabHost;
 	private View mRightFrameFragmentHolder;
@@ -89,7 +84,6 @@ public class LibraryActivity extends FragmentActivity {
 					.getInt(NivealesApplication.MAIN_TAB_ID);
 		}
 
-		// Set our layout
 		setContentView(R.layout.main_activity_layout);
 
 		// Init DB
@@ -166,7 +160,6 @@ public class LibraryActivity extends FragmentActivity {
 		mSearchEditText.setAdapter(new SearchAdapter(this));
 		mSearchEditText.setThreshold(1);
 		mSearchEditText.setOnItemClickListener(new OnItemClickListener() {
-
 			@Override
 			public void onItemClick(AdapterView<?> pArg0, View pArg1,
 					int pArg2, long pArg3) {
@@ -174,26 +167,20 @@ public class LibraryActivity extends FragmentActivity {
 						.getSystemService(Activity.INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(mSearchEditText.getWindowToken(), 0);
 				showProductDetail((Cursor) pArg0.getAdapter().getItem(pArg2));
-
 			}
 		});
 		mSearchEditText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+		
 		mPrevSearchTextView = (TextView) findViewById(R.id.PrevSearchTextView);
 		mPrevSearchTextView.setText(getPrevSearchText());
 		mPrevSearchTextView.setOnClickListener(new OnClickListener() {
-
 			@Override
 			public void onClick(View pArg0) {
 				onPrevSearchClick();
-
 			}
 		});
-
 	}
 
-	/**
-	 * 
-	 */
 	protected void onPrevSearchClick() {
 		DBHelper helper = NivealesApplication.getDBHelper();
 		try {
@@ -205,12 +192,10 @@ public class LibraryActivity extends FragmentActivity {
 			this.mMainLayoutSearchButton.setVisibility(View.VISIBLE);
 			this.mNewSearchTextView.setVisibility(View.INVISIBLE);
 			onSearchButtonClick();
-
 		} catch (Exception e) {
 			// table does not exists, do nothing
 			e.printStackTrace();
 		}
-
 	}
 
 	public String getPrevSearchText() {
@@ -237,10 +222,8 @@ public class LibraryActivity extends FragmentActivity {
 				}
 				if (!result.equals("")) {
 					text += title + ":" + result;
-
 				}
 				crit.moveToNext();
-
 			}
 
 			if (!text.equals("")) {
@@ -290,7 +273,6 @@ public class LibraryActivity extends FragmentActivity {
 		b.setText(tabNames[2]);
 		spec.setIndicator(b);
 		pTabHost.addTab(spec);
-
 	}
 
 	private void changeTab(String tabId) {
@@ -307,7 +289,6 @@ public class LibraryActivity extends FragmentActivity {
 			/**
 			 * Favorites
 			 */
-
 			FavoriteProductListFragment f = getMyApplication()
 					.getFavoriteProductListFragment();
 			f.setOnProductSelectedListener(new ProductSelectedListener() {
@@ -342,10 +323,6 @@ public class LibraryActivity extends FragmentActivity {
 		}
 	}
 
-	/**
-	 * @param f
-	 * @param fragmentTag
-	 */
 	private void attachFavorites(FavoriteProductListFragment f,
 			String fragmentTag) {
 		if (this.mRightFrameFragmentHolder != null) {
@@ -517,9 +494,6 @@ public class LibraryActivity extends FragmentActivity {
 		}
 	}
 
-	/**
-	 * @param pFragment
-	 */
 	private void attachSearchResults(Fragment pFragment, String fragmentTag) {
 		if (this.mRightFrameFragmentHolder != null) {
 			this.getSupportFragmentManager().beginTransaction()
@@ -532,9 +506,6 @@ public class LibraryActivity extends FragmentActivity {
 		}
 	}
 
-	/**
-	 * @return Application instance
-	 */
 	private NivealesApplication getMyApplication() {
 		return (NivealesApplication) getApplication();
 	}
@@ -565,10 +536,6 @@ public class LibraryActivity extends FragmentActivity {
 
 	}
 
-	/**
-	 * @param f
-	 *            - Fragment
-	 */
 	private void attachCriteriaFragment(Fragment f, String fragmentTag) {
 		if (this.mRightFrameFragmentHolder != null) {
 			// Tablet
@@ -595,7 +562,6 @@ public class LibraryActivity extends FragmentActivity {
 	}
 
 	public class CriteriaChangeListener implements OnCriteriaChangedListener {
-
 		@Override
 		public void onCriteriaChanged(String colName) {
 			initSearchButton();
@@ -620,7 +586,6 @@ public class LibraryActivity extends FragmentActivity {
 		MenuItem aboutMenuItem = menu.findItem(R.id.MenuItemAbout);
 		// aboutMenuItem.setIcon(android.R.drawable.ic_menu_info_details);
 		aboutMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-
 			@Override
 			public boolean onMenuItemClick(MenuItem arg0) {
 				showAboutPage();
@@ -631,14 +596,12 @@ public class LibraryActivity extends FragmentActivity {
 		MenuItem facebookMenuItem = menu.findItem(R.id.MenuItemFacebook);
 		facebookMenuItem
 				.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-
 					@Override
 					public boolean onMenuItemClick(MenuItem pArg0) {
 						showFacebookPage();
 						return true;
 					}
 				});
-
 		return true;
 	}
 
@@ -833,7 +796,6 @@ public class LibraryActivity extends FragmentActivity {
 
 	@Override
 	public void onAttachFragment(Fragment fragment) {
-		// TODO Auto-generated method stub
 		super.onAttachFragment(fragment);
 		SharedPreferences prefs = this.getPreferences(MODE_PRIVATE);
 		// prefs.edit().putString("FRAGMENT", fragment.getTag()).commit();
@@ -842,9 +804,6 @@ public class LibraryActivity extends FragmentActivity {
 		// () - 1);
 		prefs.edit().putInt("FRAGEMENT_ID", fragment.getId())
 				.putString("FRAGMENT_TAG", fragment.getTag()).commit();
-		// Toast.makeText(getApplicationContext(), fragment.getId(),
-		// Toast.LENGTH_SHORT).show();
-
 	}
 
 	public void saveFragments() {
