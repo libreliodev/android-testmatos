@@ -15,17 +15,12 @@ import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.Hashtable;
 
-import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
-import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
-
 import org.acra.ACRA;
 import org.acra.annotation.ReportsCrashes;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import twitter4j.Twitter;
-import twitter4j.http.AccessToken;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -37,8 +32,8 @@ import android.net.Uri;
 import android.os.Environment;
 
 import com.librelio.library.ui.criteraselectors.CheckedCriteriaSelectorFragment;
-import com.librelio.library.ui.criteraselectors.RangeCriteriaSelectorFragment;
 import com.librelio.library.ui.criteraselectors.CheckedCriteriaSelectorFragment.OnCriteriaChangedListener;
+import com.librelio.library.ui.criteraselectors.RangeCriteriaSelectorFragment;
 import com.librelio.library.ui.criteraselectors.RangeCriteriaSelectorFragment.OnRangeCriteriaChangedListener;
 import com.librelio.library.ui.lexique.LexiqueFragment;
 import com.librelio.library.ui.productdetail.ProductDetailFragment;
@@ -46,7 +41,6 @@ import com.librelio.library.ui.productdetail.ProductDetailFragment.ShareProductL
 import com.librelio.library.ui.productlist.FavoriteProductListFragment;
 import com.librelio.library.ui.productlist.ProductListFragment;
 import com.librelio.library.ui.productsearch.ProductSearchFragment;
-import com.librelio.library.utils.TwitterSession;
 import com.librelio.library.utils.adapters.CursorViewBinder;
 import com.librelio.library.utils.db.DBHelper;
 import com.niveales.testskis.R;
@@ -128,8 +122,6 @@ public class NivealesApplication extends Application {
 	}
 
 	public static final String ACRA_FORM_ID = "dDVpd19Uc2E4WTBaWTJXNGJHNkZEMWc6MQ";
-	public static String FACEBOOK_TAB_PAGE_URL = "http://www.facebook.com/Snowsurf.mag";
-	public static String INFO_TAB_PAGE_URL = "http://www.snowsurf.com/app-teasing";
 
 	public static class ProductDetailConstants {
 		/**
@@ -285,27 +277,6 @@ public class NivealesApplication extends Application {
 
 	// Global staff for TestsSnowboards
 	public static String DB_FILE_NAME;// = "snowsurf_tests2013_.sqlite";
-
-	// Twitter staff
-	public static TwitterSession mTwitterSession;
-	public static Twitter mTwitter;
-	public static AccessToken mTwitterAccessToken;
-	public static String ACCESS_KEY = null;
-	public static String ACCESS_SECRET = null;
-	public static final String REQUEST_URL = "http://twitter.com/oauth/request_token";
-	public static final String ACCESS_TOKEN_URL = "http://twitter.com/oauth/access_token";
-	public static final String OAUTH_CALLBACK_SCHEME = "x-oauthflow-twitter";
-	public static final String OAUTH_CALLBACK_HOST = "callback";
-	public static final String OAUTH_CALLBACK_URL = OAUTH_CALLBACK_SCHEME
-			+ "://" + OAUTH_CALLBACK_HOST;
-	public static final String AUTH_URL = "http://twitter.com/oauth/authorize";
-	public static String TWITTER_CONSUMER_KEY = "Qgs7YXW6HCw8u0Mt1102Q";
-	public static String TWITTER_SECRET = "CqOZllOATSal2bjyyBSY2hXZ1dtlwwTZBUYXeMvj0";
-	public static String TWITTER_CALLBACK_URL = "twitter://callback";
-	public static CommonsHttpOAuthConsumer consumer = new CommonsHttpOAuthConsumer(
-			TWITTER_CONSUMER_KEY, TWITTER_SECRET);
-	public static CommonsHttpOAuthProvider provider = new CommonsHttpOAuthProvider(
-			REQUEST_URL, ACCESS_TOKEN_URL, AUTH_URL);
 
 	// Bitly staff
 	public static final String BITLY_USER = "tedted1";
@@ -578,11 +549,6 @@ public class NivealesApplication extends Application {
 			}
 			JSONObject json = new JSONObject(writer.toString());
 			DB_FILE_NAME = json.getString("DB_FILE_NAME");
-			FACEBOOK_TAB_PAGE_URL = json.getString("FACEBOOK_TAB_PAGE_URL");
-			INFO_TAB_PAGE_URL = json.getString("INFO_TAB_PAGE_URL");
-			TWITTER_CONSUMER_KEY = json.getString("TWITTER_CONSUMER_KEY");
-			TWITTER_SECRET = json.getString("TWITTER_SECRET");
-			TWITTER_CALLBACK_URL = json.getString("TWITTER_CALLBACK_URL");
 			JSONArray htmlKeys = json
 					.getJSONArray("PRODUCT_DETAIL_HTML_FILE_KEYS");
 			ProductDetailConstants.PRODUCT_DETAIL_HTML_FILE_KEYS = new String[htmlKeys

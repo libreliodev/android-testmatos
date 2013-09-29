@@ -45,7 +45,7 @@ public class AboutFragment extends BaseNivealesFragment {
 	        }
 		});
 		webView.getSettings().setJavaScriptEnabled(true);
-		webView.loadUrl(NivealesApplication.INFO_TAB_PAGE_URL);
+		webView.loadUrl(getString(R.string.info_tab_url));
 		return rootView;
 	}
 	

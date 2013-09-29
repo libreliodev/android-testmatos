@@ -45,7 +45,7 @@ public class FacebookFragment extends BaseNivealesFragment {
 	        }
 		});
 		
-		webView.loadUrl(NivealesApplication.FACEBOOK_TAB_PAGE_URL);
+		webView.loadUrl(getString(R.string.facebook_tab_url));
 		webView.getSettings().setJavaScriptEnabled(true);
 		
 		return rootView;
