@@ -1,22 +1,15 @@
-/**
- * 
- */
 package com.librelio.library.ui;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
-import java.util.Hashtable;
 
-import org.acra.ACRA;
-import org.acra.annotation.ReportsCrashes;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,10 +18,6 @@ import android.app.Application;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.net.Uri;
 import android.os.Environment;
 
 import com.librelio.library.ui.criteraselectors.CheckedCriteriaSelectorFragment;
@@ -50,93 +39,37 @@ import com.niveales.testskis.R;
  * 
  */
 
-@ReportsCrashes(formKey = "dDVpd19Uc2E4WTBaWTJXNGJHNkZEMWc6MQ")
 public class NivealesApplication extends Application {
 
 	public static class ProductSearchConstants {
 
-		/**
-		 * 
-		 */
 		public static final int[] PRODUCT_SEARCH_BINDER_IDS = new int[] {
 				R.id.productListItemGenre, R.id.productListItemModele,
 				R.id.productListItemGamme, R.id.productListItemBudget };
-		/**
-		 * 
-		 */
 		public static final String[] PRODUCT_SEARCH_BINDER_COLUMNS = new String[] {
 				// columns to display in search results list
 				DBHelper.MODELE_MARQUE_KEY, DBHelper.MODELE_MODELE_KEY,
 				"Gamme", "Prix_String", };
-
-		/**
-	 * 
-	 */
 		public static final String[] PRODUCT_SEARCH_SEARCH_COLUMNS = new String[] {
-				// Search columns
 				DBHelper.MODELE_MARQUE_KEY, DBHelper.MODELE_MODELE_KEY, "Gamme" };
-		/**
-	 * 
-	 */
 		public static final int PRODUCT_SEARCH_LISTVIEW_ITEM_LAYOUT = R.layout.product_search_item_layout;
-		/**
-	 * 
-	 */
 		public static final int PRODUCT_SEARCH_FAGMENT_LAYOUT = R.layout.product_search_fagment_layout;
 
 	}
 
-	/**
-	 * 
-	 */
 	public static class CriteriaSelectorConstants {
-		/**
-		 * 
-		 */
 		public static final int CRITERIA_SELECTOR_RIGHTPANE_TITLE_TEXTVIEW = R.id.RightPaneTitleTextView;
-		/**
-		 * 
-		 */
 		public static final int CRITERIA_SELECTOR_CRITERIA_CHECKBOX_VIEW_ID = R.id.CriteriaCheckBox;
-		/**
-		 * 
-		 */
 		public static final int CRITERIA_SELECTOR_CRITERIA_TEXTVIEW_VIEW_ID = R.id.CriteriaTextView;
-		/**
-		 * 
-		 */
 		public static final int CRETERIA_SELECTOR_LISTVIEW_VIEW_ID = R.id.CreteriaSelectorListView;
-		/**
-		 * 
-		 */
 		public static final int CHECKED_CRITERIA_SELECTOR_ITEM_LAYOUT_ID = R.layout.checked_criteria_selector_item_layout;
-		/**
-		 * 
-		 */
 		public static final int CRETERIA_SELECTOR_FRAGMENT_LAYOUT_ID = R.layout.creteria_selector_fragment_layout;
-
-		/**
-		 * 
-		 */
 		public static final int CRETERIA_SELECTOR_TITLE_VIEW_ID = R.id.CriteriaTitle;
 	}
 
-	public static final String ACRA_FORM_ID = "dDVpd19Uc2E4WTBaWTJXNGJHNkZEMWc6MQ";
-
 	public static class ProductDetailConstants {
-		/**
-		 * 
-		 */
 		public static final int PRODUCT_DETAIL_SHARE_BUTTON_VIEW_ID = R.id.ShareButton;
-
-		/**
-		 * 
-		 */
 		public static final int PRODUCT_DETAIL_FAVORITE_CKECKBOX_VIEW_ID = R.id.FavoriteCkeckBox;
-
-		/**
-		 * 
-		 */
 		public static String[] PRODUCT_DETAIL_HTML_FILE_KEYS = new String[] {
 				"%TAITLE%",
 				"%Modele%",
@@ -149,12 +82,8 @@ public class NivealesApplication extends Application {
 				"%icone_wide%", "%icone_top%", "%img_niveau%",
 				"%img_polyvalence%", "%Caractéristiques%",
 				"%NIVEAU REQUIS%", "%icone_testerchoice%"
-
 		};
 
-		/**
-		 * 
-		 */
 		public static String[] PRODUCT_DETAIL_COLUMN_KEYS = // List of
 															// fields in
 															// product
@@ -169,37 +98,13 @@ public class NivealesApplication extends Application {
 		// fields above
 		};
 
-		/**
-		 * 
-		 */
 		public static final int PRODUCT_DETAIL_WEBPAGE_FILE_URI = R.string.ProductDetailWebPage;
-
-		/**
-		 * 
-		 */
 		public static final int PRODUCT_DETAIL_WEBVIEW_VIEW_ID = R.id.ProductDetailsWebView;
-
-		/**
-		 * 
-		 */
 		public static final int PRODUCT_DETAIL_LAYOUT = R.layout.product_detail_layout;
-
-		/**
-		 * 
-		 */
 		// public static final int PRODUCT_DETAIL_SHAREHOLDER_VIEW_ID =
 		// R.id.ShareHolder;
-		/**
-		 * 
-		 */
 		public static final int PRODUCTDETAIL_NEXTBUTTON_VIEW_ID = R.id.NextButton;
-		/**
-		 * 
-		 */
 		public static final int PRODUCT_DETAIL_PREVBUTTON_VIEW_ID = R.id.PrevButton;
-		/**
-		 * 
-		 */
 		public static final int PRODUCTDETAIL_PRODUCTIMAGE_VIEW_ID = R.id.ProductImageAnchor;
 		// public static final String HTML_TITLE = "%TAITLE%";
 		// public static final String HTML_MODELE = "%Modele%";
@@ -218,20 +123,12 @@ public class NivealesApplication extends Application {
 		// "%icone_testerchoice%";
 		// public static final String HTML_ICON_SEX = "%icone_genre%";
 		// public static final String HTML_PIC = "%img%";
-
 		public static final int PRODUCTDETAIL_PRODUCTIMAGE_POPUP_LAYOUT_ID = R.layout.product_image_popup;
 	}
 
-	/**
-	 * 
-	 */
 	public static final String DETAIL_TABLE_NAME = "Detail";
 
 	private static class ProductListConstants {
-
-		/**
-		 * 
-		 */
 		private static String[] PRODUCT_LIST_DISPLAY_COLUMNS = new String[] {
 				DBHelper.MODELE_MARQUE_KEY, DBHelper.MODELE_MODELE_KEY,
 				"icone_genre", "icone_cambres", "Gamme", "Prix_String",
@@ -240,26 +137,14 @@ public class NivealesApplication extends Application {
 		// DBHelper.MODELE_GENRE_KEY,
 		// DBHelper.MODELE_IMG_KEY
 		};
-		/**
-		 * 
-		 */
 		private static int[] PRODUCT_LIST_DISPLAY_VIEW_IDS = new int[] {
 				R.id.productListItemGenre, R.id.productListItemModele,
 				R.id.productListItemFemale, R.id.productListItemChambre,
 				R.id.productListItemGamme, R.id.productListItemBudget,
 				R.id.productListItemWide, R.id.productListItemTesterChoice,
 				R.id.productListItemPicture };
-		/**
-		 * 
-		 */
 		private static final int PRODUCT_LIST_FAGMENT_LAYOUT = R.layout.product_list_fagment_layout;
-		/**
-		 * 
-		 */
 		private static final int PRODUCT_LIST_LISTVIEW_ITEM_LAYOUT = R.layout.product_list_item_layout;
-		/**
-		 * 
-		 */
 		private static final int PRODUCT_LIST_LISTVIEW_VIEW_ID = R.id.ProductListView;
 		/**
 		 * list of button ids in product list layout
@@ -267,31 +152,18 @@ public class NivealesApplication extends Application {
 		private static final int[] PRODUCT_LIST_SORT_BUTTON_IDS = new int[] {
 				R.id.ProductListMarqueSortButton,
 				R.id.ProductListGammeSortButton, R.id.ProductListPrixSortButton };
-		/**
-		 * 
-		 */
 		private static final String[] PRODUCT_LIST_SORT_COLUMNS = new String[] {
 				"Marque", "Gamme", "Prix_de_reference" };
-
 	}
 
-	// Global staff for TestsSnowboards
+	// Global constants
 	public static String DB_FILE_NAME;// = "snowsurf_tests2013_.sqlite";
 
-	// Bitly staff
+	// Bitly constants
 	public static final String BITLY_USER = "tedted1";
 	public static final String BITLY_API_KEY = "R_d0e2739e13391fc7cc6a7c66966239b4";
 
-	// Facebook staff
-
-	public static Hashtable<String, String> currentPermissions = new Hashtable<String, String>();
-
-	// Used to downscale pictures while posting to facebook
-	private static int MAX_IMAGE_DIMENSION = 720;
-	public static String oauthVerifier;
-
-	// App staff
-
+	// App constants
 	public static final String MAIN_TAB_ID = "tab_id";
 	public static final String ASSETS_URI = "file:///android_asset/";
 	public static final String ASSETS_PHOTOS_URI = ASSETS_URI + "Photos/";
@@ -303,8 +175,6 @@ public class NivealesApplication extends Application {
 	public static final String NUMERIC = "Numeric";
 
 	private static DBHelper mDBHelper;
-
-	//
 
 	// UI function helpers to help customize future apps
 	public ProductDetailFragment getProductDetailFragment(Cursor pCursor,
@@ -327,11 +197,7 @@ public class NivealesApplication extends Application {
 						ProductListConstants.PRODUCT_LIST_DISPLAY_VIEW_IDS));
 	}
 
-	/**
-	 * @return
-	 */
 	public FavoriteProductListFragment getFavoriteProductListFragment() {
-		// TODO Auto-generated method stub
 		return FavoriteProductListFragment.getInstance(getDBHelper(),
 				DETAIL_TABLE_NAME,
 				ProductListConstants.PRODUCT_LIST_FAGMENT_LAYOUT,
@@ -382,106 +248,6 @@ public class NivealesApplication extends Application {
 		return CheckedCriteriaSelectorFragment.getInstance(pPosition, l);
 	}
 
-	public static byte[] scaleImage(Context context, Uri photoUri)
-			throws IOException {
-		InputStream is = context.getContentResolver().openInputStream(photoUri);
-		BitmapFactory.Options dbo = new BitmapFactory.Options();
-		dbo.inJustDecodeBounds = true;
-		BitmapFactory.decodeStream(is, null, dbo);
-		is.close();
-
-		int rotatedWidth, rotatedHeight;
-
-		rotatedWidth = dbo.outWidth;
-		rotatedHeight = dbo.outHeight;
-
-		Bitmap srcBitmap;
-		is = context.getContentResolver().openInputStream(photoUri);
-		if (rotatedWidth > MAX_IMAGE_DIMENSION
-				|| rotatedHeight > MAX_IMAGE_DIMENSION) {
-			float widthRatio = ((float) rotatedWidth)
-					/ ((float) MAX_IMAGE_DIMENSION);
-			float heightRatio = ((float) rotatedHeight)
-					/ ((float) MAX_IMAGE_DIMENSION);
-			float maxRatio = Math.max(widthRatio, heightRatio);
-
-			// Create the bitmap from file
-			BitmapFactory.Options options = new BitmapFactory.Options();
-			options.inSampleSize = (int) maxRatio;
-			srcBitmap = BitmapFactory.decodeStream(is, null, options);
-		} else {
-			srcBitmap = BitmapFactory.decodeStream(is);
-		}
-		is.close();
-
-		String type = context.getContentResolver().getType(photoUri);
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		if (type.equals("image/png")) {
-			srcBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-		} else if (type.equals("image/jpg") || type.equals("image/jpeg")) {
-			srcBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-		}
-		byte[] bMapArray = baos.toByteArray();
-		baos.close();
-		return bMapArray;
-	}
-
-	public static byte[] scaleImage(Context context, String assetUri)
-			throws IOException {
-		InputStream is = context.getAssets().open(assetUri);
-		BitmapFactory.Options dbo = new BitmapFactory.Options();
-		dbo.inJustDecodeBounds = true;
-		BitmapFactory.decodeStream(is, null, dbo);
-		is.close();
-
-		int rotatedWidth, rotatedHeight;
-		int orientation = 0;
-		if (orientation == 90 || orientation == 270) {
-			rotatedWidth = dbo.outHeight;
-			rotatedHeight = dbo.outWidth;
-		} else {
-			rotatedWidth = dbo.outWidth;
-			rotatedHeight = dbo.outHeight;
-		}
-
-		Bitmap srcBitmap;
-		is = context.getAssets().open(assetUri);
-		if (rotatedWidth > MAX_IMAGE_DIMENSION
-				|| rotatedHeight > MAX_IMAGE_DIMENSION) {
-			float widthRatio = ((float) rotatedWidth)
-					/ ((float) MAX_IMAGE_DIMENSION);
-			float heightRatio = ((float) rotatedHeight)
-					/ ((float) MAX_IMAGE_DIMENSION);
-			float maxRatio = Math.max(widthRatio, heightRatio);
-
-			// Create the bitmap from file
-			BitmapFactory.Options options = new BitmapFactory.Options();
-			options.inSampleSize = (int) maxRatio;
-			srcBitmap = BitmapFactory.decodeStream(is, null, options);
-		} else {
-			srcBitmap = BitmapFactory.decodeStream(is);
-		}
-		is.close();
-
-		/*
-		 * if the orientation is not 0 (or -1, which means we don't know), we
-		 * have to do a rotation.
-		 */
-		if (orientation > 0) {
-			Matrix matrix = new Matrix();
-			matrix.postRotate(orientation);
-
-			srcBitmap = Bitmap.createBitmap(srcBitmap, 0, 0,
-					srcBitmap.getWidth(), srcBitmap.getHeight(), matrix, true);
-		}
-
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		srcBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-		byte[] bMapArray = baos.toByteArray();
-		baos.close();
-		return bMapArray;
-	}
-
 	public static String copyFileToExternalDirectory(Context context, String pic,
 			AssetManager assets) {
 		String state = Environment.getExternalStorageState();
@@ -490,7 +256,6 @@ public class NivealesApplication extends Application {
 			if (externalDir.canWrite()) {
 				try {
 					String fileName = pic.split("/")[pic.split("/").length - 1];
-//					File newPic = File.createTempFile("pic", fileName);
 					File newPic = new File(externalDir.getAbsolutePath() + "/" + fileName);
 					byte[] buffer = new byte[1024];
 					BufferedOutputStream bos = new BufferedOutputStream(
@@ -515,26 +280,16 @@ public class NivealesApplication extends Application {
 		return null;
 	}
 
-	/**
-	 * @return
-	 */
 	public static DBHelper getDBHelper() {
-		// TODO Auto-generated method stub
 		return mDBHelper;
 	}
 
-	/**
-	 * @param pDbHelper
-	 */
 	public static void setDBHelper(DBHelper pDbHelper) {
 		mDBHelper = pDbHelper;
-
 	}
 
 	@Override
 	public void onCreate() {
-		// The following line triggers the initialization of ACRA
-		ACRA.init(this);
 		super.onCreate();
 		InputStream is;
 		try {
@@ -585,13 +340,9 @@ public class NivealesApplication extends Application {
 						.getIdentifier(resourceName, "id", getPackageName());
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
-
 }
