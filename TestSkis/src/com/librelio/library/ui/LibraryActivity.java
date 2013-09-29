@@ -157,9 +157,7 @@ public class LibraryActivity extends FragmentActivity {
 				R.id.CreteriaGroupTextView, R.id.CreteriaSelectedListTextView);
 		mMainActivityCreteriaSelectionListView.setAdapter(mainAdapter);
 
-		if (android.os.Build.VERSION.SDK_INT >= 11) {
-			getActionBar().setDisplayHomeAsUpEnabled(true);
-		}
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		// mSearchResultHolder = (FrameLayout)
 		// findViewById(R.id.SearchResultHolder);
@@ -786,6 +784,16 @@ public class LibraryActivity extends FragmentActivity {
 		public void onClick(View pView) {
 			onClearSearchClick();
 		}
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case android.R.id.home:
+				onBackPressed();
+			break;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
