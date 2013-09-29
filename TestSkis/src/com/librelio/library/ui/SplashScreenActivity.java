@@ -21,8 +21,6 @@ import com.niveales.testskis.R;
  */
 public class SplashScreenActivity extends Activity {
 	private Runnable delayRunnable = new Runnable() {
-		
-		
 		@Override
 		public void run() {
 			startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
@@ -47,14 +45,11 @@ public class SplashScreenActivity extends Activity {
 			h.removeCallbacks(delayRunnable);
 			AlertDialog.Builder b = new AlertDialog.Builder(this);
 			b.setMessage(e.getMessage()).setPositiveButton("Quit", new DialogInterface.OnClickListener() {
-				
 				@Override
 				public void onClick(DialogInterface pDialog, int pWhich) {
 					finish();
-					
 				}
 			});
 		}
 	}
-
 }

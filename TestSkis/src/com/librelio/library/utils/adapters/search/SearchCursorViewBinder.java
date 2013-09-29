@@ -17,7 +17,6 @@ public class SearchCursorViewBinder {
 	Context context;
 	protected SparseArrayCompat <String> map;
 	
-	
 	public SearchCursorViewBinder(Context context, String fieldArrayResourceName, String viewIdArrayResourceName) {
 		this.context = context;
 		initWithResources(fieldArrayResourceName, viewIdArrayResourceName);
@@ -97,5 +96,4 @@ public class SearchCursorViewBinder {
 		}
 		return false;
 	}
-	
 }

@@ -1,19 +1,15 @@
 package com.librelio.library.utils.adapters;
 
-import com.librelio.library.ui.NivealesApplication;
-import com.librelio.library.ui.MainActivity.SearchButtonClickListener;
-import com.librelio.library.utils.db.DBHelper;
-import com.niveales.testskis.R;
-
 import android.content.Context;
 import android.database.Cursor;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageButton;
 import android.widget.TextView;
+
+import com.librelio.library.ui.NivealesApplication;
+import com.librelio.library.utils.db.DBHelper;
 
 public class AdvancedCriteriaMainListAdapter extends BaseAdapter {
 

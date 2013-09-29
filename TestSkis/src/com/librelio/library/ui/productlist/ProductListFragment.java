@@ -133,7 +133,6 @@ public class ProductListFragment extends Fragment {
 		mAdapter = new BoundAdapter(getActivity(), cursor, itemLayoutId, binder);
 		mProductListView.setAdapter(mAdapter);
 		mProductListView.setOnItemClickListener(new OnItemClickListener() {
-
 			@Override
 			public void onItemClick(AdapterView<?> listView, View parent, int item,
 					long id) {
@@ -148,7 +147,6 @@ public class ProductListFragment extends Fragment {
 		
 		mMarqueSortButton = (Button3State) rootView.findViewById(sortButtonsIds[0]);
 		this.mMarqueSortButton.setOnStateChangeListener(new OnStateChanged() {
-
 			@Override
 			public void onStateChanged(Button3State pView, int state) {
 				switch (state) {
@@ -176,7 +174,6 @@ public class ProductListFragment extends Fragment {
 			}});
 		mGammeSortButton = (Button3State) rootView.findViewById(sortButtonsIds[1]);
 		mGammeSortButton.setOnStateChangeListener(new OnStateChanged() {
-
 			@Override
 			public void onStateChanged(Button3State pView, int state) {
 				switch (state) {
@@ -206,7 +203,6 @@ public class ProductListFragment extends Fragment {
 		
 		mPrixSortButton = (Button3State) rootView.findViewById(sortButtonsIds[2]);
 		mPrixSortButton.setOnStateChangeListener(new OnStateChanged() {
-
 			@Override
 			public void onStateChanged(Button3State pView, int state) {
 				switch (state) {

@@ -28,7 +28,6 @@ import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.FilterQueryProvider;
 import android.widget.Filterable;
-//import android.support.v4.widget.
 
 /**
  * Static library support version of the framework's {@link android.widget.CursorAdapter}.

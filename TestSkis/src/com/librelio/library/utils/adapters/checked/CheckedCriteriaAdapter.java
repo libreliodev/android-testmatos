@@ -12,11 +12,7 @@ import com.librelio.library.utils.adapters.BoundAdapter;
 import com.librelio.library.utils.adapters.CursorViewBinder;
 import com.librelio.library.utils.db.DBHelper;
 
-
-
 public class CheckedCriteriaAdapter extends BoundAdapter {
-
-	
 
 	private CriteriaChangeListener listener;
 	private DBHelper helper;
@@ -70,5 +66,4 @@ public class CheckedCriteriaAdapter extends BoundAdapter {
 	public interface CriteriaChangeListener {
 		public void onCriteriaChanged(String value, boolean checked);
 	}
-
 }

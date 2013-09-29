@@ -130,15 +130,11 @@ public class ProductSearchFragment extends Fragment {
 
 			@Override
 			public void afterTextChanged(Editable pArg0) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
 			public void beforeTextChanged(CharSequence pArg0, int pArg1,
 					int pArg2, int pArg3) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			@Override

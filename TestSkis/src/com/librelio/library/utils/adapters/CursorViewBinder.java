@@ -53,7 +53,7 @@ public class CursorViewBinder {
 	public boolean bindView(View v, Cursor c) {
 		int id = v.getId();
 		String columnName = map.get(id);
-		if(columnName == null)
+		if (columnName == null)
 			return false;
 		int columnIndex = c.getColumnIndex(columnName);
 		if (columnIndex == -1) {
@@ -63,12 +63,12 @@ public class CursorViewBinder {
 		if (value == null) {
 			return false;
 		}
-		if(v instanceof TextView) {
+		if (v instanceof TextView) {
 			TextView tv = (TextView) v;
 			tv.setText((value==null) ? "" : Html.fromHtml(value));
 			return true;
 		}
-		if(v instanceof ImageView) {
+		if (v instanceof ImageView) {
 			ImageView iv = (ImageView) v;
 			if(value.equals("")) {
 				iv.setVisibility(View.GONE);

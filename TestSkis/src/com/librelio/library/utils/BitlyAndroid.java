@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.librelio.library.utils;
 /*
 Copyright 2010 Finn J Johnsen. All rights reserved.

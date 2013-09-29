@@ -57,7 +57,6 @@ public class NumericCriteriaAdapter extends MyBaseCriteriaAdapter {
 
 	@Override
 	public int getCount() {
-		// TODO Auto-generated method stub
 		return cursor.getCount();
 	}
 
@@ -69,7 +68,6 @@ public class NumericCriteriaAdapter extends MyBaseCriteriaAdapter {
 
 	@Override
 	public long getItemId(int position) {
-		// TODO Auto-generated method stub
 		return position;
 	}
 

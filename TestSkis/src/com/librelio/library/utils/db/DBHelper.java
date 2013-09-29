@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -19,7 +18,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-
 
 public class DBHelper{
     
@@ -37,7 +35,6 @@ public class DBHelper{
     // Database open/upgrade helper
     private MyDbHelper mDbHelper;
 
-    
     public DBHelper(Context context, String dbName) {
         mContext = context;
         mDbHelper = new MyDbHelper(mContext, dbName);
@@ -52,20 +49,14 @@ public class DBHelper{
         return this;
     }
     
-    /**
-	 * 
-	 */
 	public void createUserSearchInputsTable() {
 		mDb.rawQuery("CREATE TABLE IF NOT EXISTS \"UserSearchInputs\" (\"ColName\" TEXT NOT NULL , \"UserInput\" TEXT, \"Title\" TEXT,\"QueryString\" TEXT);", null).moveToFirst();
 		mDb.rawQuery("CREATE TABLE IF NOT EXISTS \"UserSearchInputsOld\" (\"ColName\" TEXT NOT NULL , \"UserInput\" TEXT, \"Title\" TEXT,\"QueryString\" TEXT);", null).moveToFirst();
 	}
 
-
-                                                     
     public void close() {
         mDb.close();
     }
-    
     
     public Cursor getAllFromTable(String table) {
     	Cursor res = this.mDb.query(table, null, null, null, null, null, null);
@@ -113,7 +104,6 @@ public class DBHelper{
     	return res;
 	}
 
-    
     // -------------- UserSearchInputs
     public static final String USER_SEARCH_INPUTS_TABLE ="UserSearchInputs";
     public static final String USER_SEARCH_INPUTS_COLNAME = "ColName";
@@ -224,8 +214,6 @@ public class DBHelper{
 	protected static final int MODELE_TEST_INCONVENIENTS_COLUMN = 22;
 //	public static final String MODELE_ROW_ID = "_id";
 
-
-
 	public static final String FAVORITES_TABLE = "UserFavorites";
 	public static final String FAVORITES_MODEL_ID_KEY = "id";
 	protected static final int FAVORITES_MODEL_ID_COLUMN = 1;
@@ -242,12 +230,7 @@ public class DBHelper{
 
 	private static final String DETAIL_TABLE = "Detail";
 
-
-
-
-
 	// -------------- LEXIQUE HELPERS ------------------
-
 
 	public Cursor getAllLexique()
 	{
@@ -349,11 +332,6 @@ public class DBHelper{
 		return res;
 	}
 
-	
-	
-	
-
-
 	public Cursor getAllGenre() {
 		// Here we do some SQL magic to translate genreIDs with actual strings
 		Cursor res = mDb.query(true, MODELE_TABLE, new String[] {
@@ -414,7 +392,6 @@ public class DBHelper{
 		return possibleValues;
 	}
 
-	
 	public long addFavorite(String id) {
 
 			ContentValues contentValues = new ContentValues();
@@ -438,7 +415,6 @@ public class DBHelper{
 		}
 		return cursor.getCount() > 0;
 	}
-	
 	
     private static class MyDbHelper extends SQLiteOpenHelper {
 
@@ -484,7 +460,6 @@ public class DBHelper{
 			if (dbExist) {
 				// do nothing - database already exist
 			} else {
-
 				// By calling this method and empty database will be created
 				// into the default system path
 				// of your application so we are gonna be able to overwrite that
@@ -492,16 +467,11 @@ public class DBHelper{
 				this.getReadableDatabase();
 
 				try {
-
 					copyDataBase();
-
 				} catch (IOException e) {
-
 					throw new IOException("Error copying database");
-
 				}
 			}
-
 		}
 
 		/**
@@ -518,19 +488,13 @@ public class DBHelper{
 				String myPath = DB_PATH + dbName;
 				checkDB = SQLiteDatabase.openDatabase(myPath, null,
 						SQLiteDatabase.OPEN_READONLY);
-
 			} catch (SQLiteException e) {
-
 				// database does't exist yet.
-
 			}
 
 			if (checkDB != null) {
-
 				checkDB.close();
-
 			}
-
 			return checkDB != null ? true : false;
 		}
 
@@ -591,12 +555,10 @@ public class DBHelper{
 
 		@Override
 		public synchronized void close() {
-
-			if (myDataBase != null)
+			if (myDataBase != null) {
 				myDataBase.close();
-
+			}
 			super.close();
-
 		}
 
 		@Override
@@ -608,15 +570,5 @@ public class DBHelper{
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
 		}
-
-
 	}
-
-
-	
-	
-
-
-     
-    /** Dummy object to allow class to compile */
 }

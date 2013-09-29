@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.view.View;
 import android.widget.CheckBox;
 
-
 public class CheckedCriteriaViewBinder extends CursorViewBinder {
 
 	public CheckedCriteriaViewBinder(Context context, String[] columns,
@@ -26,6 +25,4 @@ public class CheckedCriteriaViewBinder extends CursorViewBinder {
 			return true;
 		} else return super.bindView(v, c);		
 	}
-	
-
 }
