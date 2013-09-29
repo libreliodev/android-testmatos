@@ -58,12 +58,12 @@ import com.librelio.library.utils.adapters.search.SearchAdapter;
 import com.librelio.library.utils.db.DBHelper;
 import com.niveales.testskis.R;
 
-public class MainActivity extends FragmentActivity {
+public class LibraryActivity extends FragmentActivity {
 
 	private static final String DIALOG_TAG = null;
 	private static final int TWITTER_CALLBACK_ID = 9890;
 	@SuppressWarnings("unused")
-	private static final String TAG = MainActivity.class
+	private static final String TAG = LibraryActivity.class
 			.getSimpleName();
 	public static String mTwitterMessage;
 	private int mActiveTab;
@@ -172,7 +172,7 @@ public class MainActivity extends FragmentActivity {
 			@Override
 			public void onItemClick(AdapterView<?> pArg0, View pArg1,
 					int pArg2, long pArg3) {
-				InputMethodManager imm = (InputMethodManager) MainActivity.this
+				InputMethodManager imm = (InputMethodManager) LibraryActivity.this
 						.getSystemService(Activity.INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(mSearchEditText.getWindowToken(), 0);
 				showProductDetail((Cursor) pArg0.getAdapter().getItem(pArg2));

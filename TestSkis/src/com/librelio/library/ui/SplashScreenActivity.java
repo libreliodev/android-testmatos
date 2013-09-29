@@ -23,7 +23,7 @@ public class SplashScreenActivity extends Activity {
 	private Runnable delayRunnable = new Runnable() {
 		@Override
 		public void run() {
-			startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
+			startActivity(new Intent(SplashScreenActivity.this, LibraryActivity.class));
 			finish();
 		}
 	};
