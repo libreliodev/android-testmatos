@@ -19,7 +19,7 @@
         <activity
             android:name="com.niveales.library.ui.MainActivity"
             android:configChanges="keyboard|orientation|screenSize"
-            android:icon="@drawable/tests_snowboards_ic_launcher"
+            android:icon="@drawable/ic_launcher"
             android:label="@string/title_activity_test_snowboards_main"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden">
