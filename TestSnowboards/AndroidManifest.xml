@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.niveales.testsnowboards"
     android:installLocation="preferExternal"
-    android:versionCode="1"
-    android:versionName="beta 21" >
+    android:versionCode="101"
+    android:versionName="1.0.1" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -13,7 +13,7 @@
 
     <application
         android:name="com.niveales.library.ui.NivealesApplication"
-        android:icon="@drawable/tests_snowboards_ic_launcher"
+        android:icon="@drawable/ic_launcher"
         android:label="@string/tests_snowboards_app_name"
         android:theme="@style/AppTheme" >
         <activity
