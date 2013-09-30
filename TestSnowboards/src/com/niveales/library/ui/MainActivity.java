@@ -3,11 +3,6 @@ package com.niveales.library.ui;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
-import org.apache.http.protocol.HTTP;
-
-import twitter4j.Twitter;
-import twitter4j.TwitterFactory;
-import twitter4j.http.AccessToken;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -18,14 +13,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
-import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -33,7 +24,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Html;
 import android.text.InputType;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
@@ -50,17 +40,9 @@ import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.facebook.android.AsyncFacebookRunner;
-import com.facebook.android.DialogError;
-import com.facebook.android.Facebook;
-import com.facebook.android.Facebook.DialogListener;
-import com.facebook.android.FacebookError;
-import com.facebook.android.Util;
 import com.niveales.library.ui.about.AboutFragment;
 import com.niveales.library.ui.about.FacebookFragment;
-import com.niveales.library.ui.activity.TwitterAuthActivity;
 import com.niveales.library.ui.criteraselectors.CheckedCriteriaSelectorFragment.OnCriteriaChangedListener;
 import com.niveales.library.ui.criteraselectors.RangeCriteriaSelectorFragment.OnRangeCriteriaChangedListener;
 import com.niveales.library.ui.productdetail.ProductDetailFragment;
@@ -68,26 +50,17 @@ import com.niveales.library.ui.productdetail.ProductDetailFragment.ShareProductL
 import com.niveales.library.ui.productlist.FavoriteProductListFragment;
 import com.niveales.library.ui.productlist.ProductListFragment;
 import com.niveales.library.ui.productlist.ProductListFragment.ProductSelectedListener;
-import com.niveales.library.utils.BitlyAndroid;
 import com.niveales.library.utils.adapters.AdvancedCriteriaMainListAdapter;
 import com.niveales.library.utils.adapters.search.SearchAdapter;
 import com.niveales.library.utils.db.DBHelper;
 import com.niveales.testsnowboards.R;
-import com.niveales.testsnowboards.R.array;
-import com.niveales.testsnowboards.R.drawable;
-import com.niveales.testsnowboards.R.id;
-import com.niveales.testsnowboards.R.layout;
-import com.niveales.testsnowboards.R.menu;
-import com.niveales.testsnowboards.R.string;
 
 public class MainActivity extends FragmentActivity {
 
 	private static final String DIALOG_TAG = null;
-	private static final int TWITTER_CALLBACK_ID = 9890;
 	@SuppressWarnings("unused")
 	private static final String TAG = MainActivity.class
 			.getSimpleName();
-	public static String mTwitterMessage;
 	private int mActiveTab;
 	private TabHost mMainActivityTabHost;
 	private View mRightFrameFragmentHolder;
@@ -111,7 +84,6 @@ public class MainActivity extends FragmentActivity {
 					.getInt(NivealesApplication.MAIN_TAB_ID);
 		}
 
-		// Set our layout
 		setContentView(R.layout.main_activity_layout);
 
 		// Init DB
@@ -179,9 +151,7 @@ public class MainActivity extends FragmentActivity {
 				R.id.CreteriaGroupTextView, R.id.CreteriaSelectedListTextView);
 		mMainActivityCreteriaSelectionListView.setAdapter(mainAdapter);
 
-		if (android.os.Build.VERSION.SDK_INT >= 11) {
-			getActionBar().setDisplayHomeAsUpEnabled(true);
-		}
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		// mSearchResultHolder = (FrameLayout)
 		// findViewById(R.id.SearchResultHolder);
@@ -190,7 +160,6 @@ public class MainActivity extends FragmentActivity {
 		mSearchEditText.setAdapter(new SearchAdapter(this));
 		mSearchEditText.setThreshold(1);
 		mSearchEditText.setOnItemClickListener(new OnItemClickListener() {
-
 			@Override
 			public void onItemClick(AdapterView<?> pArg0, View pArg1,
 					int pArg2, long pArg3) {
@@ -198,26 +167,20 @@ public class MainActivity extends FragmentActivity {
 						.getSystemService(Activity.INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(mSearchEditText.getWindowToken(), 0);
 				showProductDetail((Cursor) pArg0.getAdapter().getItem(pArg2));
-
 			}
 		});
 		mSearchEditText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+		
 		mPrevSearchTextView = (TextView) findViewById(R.id.PrevSearchTextView);
 		mPrevSearchTextView.setText(getPrevSearchText());
 		mPrevSearchTextView.setOnClickListener(new OnClickListener() {
-
 			@Override
 			public void onClick(View pArg0) {
 				onPrevSearchClick();
-
 			}
 		});
-
 	}
 
-	/**
-	 * 
-	 */
 	protected void onPrevSearchClick() {
 		DBHelper helper = NivealesApplication.getDBHelper();
 		try {
@@ -229,12 +192,10 @@ public class MainActivity extends FragmentActivity {
 			this.mMainLayoutSearchButton.setVisibility(View.VISIBLE);
 			this.mNewSearchTextView.setVisibility(View.INVISIBLE);
 			onSearchButtonClick();
-
 		} catch (Exception e) {
 			// table does not exists, do nothing
 			e.printStackTrace();
 		}
-
 	}
 
 	public String getPrevSearchText() {
@@ -261,10 +222,8 @@ public class MainActivity extends FragmentActivity {
 				}
 				if (!result.equals("")) {
 					text += title + ":" + result;
-
 				}
 				crit.moveToNext();
-
 			}
 
 			if (!text.equals("")) {
@@ -314,7 +273,6 @@ public class MainActivity extends FragmentActivity {
 		b.setText(tabNames[2]);
 		spec.setIndicator(b);
 		pTabHost.addTab(spec);
-
 	}
 
 	private void changeTab(String tabId) {
@@ -331,7 +289,6 @@ public class MainActivity extends FragmentActivity {
 			/**
 			 * Favorites
 			 */
-
 			FavoriteProductListFragment f = getMyApplication()
 					.getFavoriteProductListFragment();
 			f.setOnProductSelectedListener(new ProductSelectedListener() {
@@ -366,10 +323,6 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 
-	/**
-	 * @param f
-	 * @param fragmentTag
-	 */
 	private void attachFavorites(FavoriteProductListFragment f,
 			String fragmentTag) {
 		if (this.mRightFrameFragmentHolder != null) {
@@ -502,8 +455,8 @@ public class MainActivity extends FragmentActivity {
 				.getProductDetailFragment(c, new ShareProductListener() {
 
 					@Override
-					public void onShareProduct(Cursor productId, String site) {
-						showShareDialog(productId, site);
+					public void onShareProduct(Cursor productId) {
+						shareProduct(productId);
 					}
 				});
 		attachProductDetailFragment(productDetailFragment, "productdetail");
@@ -541,9 +494,6 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 
-	/**
-	 * @param pFragment
-	 */
 	private void attachSearchResults(Fragment pFragment, String fragmentTag) {
 		if (this.mRightFrameFragmentHolder != null) {
 			this.getSupportFragmentManager().beginTransaction()
@@ -556,9 +506,6 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 
-	/**
-	 * @return Application instance
-	 */
 	private NivealesApplication getMyApplication() {
 		return (NivealesApplication) getApplication();
 	}
@@ -589,10 +536,6 @@ public class MainActivity extends FragmentActivity {
 
 	}
 
-	/**
-	 * @param f
-	 *            - Fragment
-	 */
 	private void attachCriteriaFragment(Fragment f, String fragmentTag) {
 		if (this.mRightFrameFragmentHolder != null) {
 			// Tablet
@@ -619,28 +562,10 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	public class CriteriaChangeListener implements OnCriteriaChangedListener {
-
 		@Override
 		public void onCriteriaChanged(String colName) {
 			initSearchButton();
 			mMainActivityCreteriaSelectionListView.invalidateViews();
-		}
-	}
-
-	private void showShareDialog(Cursor productCursor, String site) {
-
-		if (site.toLowerCase().equals("facebook")) {
-			shareByFacebook(productCursor);
-		}
-		if (site.toLowerCase().equals("twitter")) {
-			// twitter
-			TwitterSharingTask t = new TwitterSharingTask();
-			t.execute(new Cursor[] { productCursor });
-
-		}
-		if (site.toLowerCase().equals("mail")) {
-			// emal
-			shareByEmail(productCursor);
 		}
 	}
 
@@ -661,7 +586,6 @@ public class MainActivity extends FragmentActivity {
 		MenuItem aboutMenuItem = menu.findItem(R.id.MenuItemAbout);
 		// aboutMenuItem.setIcon(android.R.drawable.ic_menu_info_details);
 		aboutMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-
 			@Override
 			public boolean onMenuItemClick(MenuItem arg0) {
 				showAboutPage();
@@ -672,14 +596,12 @@ public class MainActivity extends FragmentActivity {
 		MenuItem facebookMenuItem = menu.findItem(R.id.MenuItemFacebook);
 		facebookMenuItem
 				.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-
 					@Override
 					public boolean onMenuItemClick(MenuItem pArg0) {
 						showFacebookPage();
 						return true;
 					}
 				});
-
 		return true;
 	}
 
@@ -739,166 +661,18 @@ public class MainActivity extends FragmentActivity {
 		// startActivity(intent);
 	}
 
-	protected void shareByFacebook(final Cursor productCursor) {
-
-		if (NivealesApplication.mFacebook == null) {
-			NivealesApplication.mFacebook = new Facebook(
-					NivealesApplication.FACEBOOK_APP_ID);
-			NivealesApplication.mAsyncRunner = new AsyncFacebookRunner(
-					NivealesApplication.mFacebook);
-		}
-		if (!NivealesApplication.mFacebook.isSessionValid()) {
-			NivealesApplication.mFacebook.authorize(this,
-					NivealesApplication.facebookPermissions,
-					new DialogListener() {
-
-						@Override
-						public void onComplete(Bundle pValues) {
-							//
-
-							shareByFacebook(productCursor);
-						}
-
-						@Override
-						public void onFacebookError(FacebookError pE) {
-							//
-							Util.showAlert(MainActivity.this,
-									"Error:", pE.getMessage());
-
-						}
-
-						@Override
-						public void onError(DialogError pE) {
-							//
-							Util.showAlert(MainActivity.this,
-									"Warning", pE.getMessage());
-
-						}
-
-						@Override
-						public void onCancel() {
-							//
-							Util.showAlert(MainActivity.this,
-									"Warning", "Cancelled");
-
-						}
-					});
-		} else {
-			Cursor cursor = productCursor;
-			String pic = cursor
-					.getString(cursor.getColumnIndexOrThrow("imgLR"));
-			String shareString = "";
-			String title = "";
-			String message = "";
-			String url = "";
-			try {
-				shareString = cursor.getString(cursor
-						.getColumnIndexOrThrow("Lien_Partage"));
-				Uri uri = Uri.parse(shareString);
-				title = URLDecoder.decode(uri.getQueryParameter("watitle"),
-						"utf-8");
-				message = URLDecoder.decode(uri.getQueryParameter("watext"),
-						"utf-8");
-				url = URLDecoder.decode(uri.getQueryParameter("walink"),
-						"utf-8");
-			} catch (UnsupportedEncodingException e1) {
-				//
-				e1.printStackTrace();
-			} catch (IllegalArgumentException e1) {
-				//
-				e1.printStackTrace();
-			}
-			Log.d("SHARE", shareString);
-			Bundle params = new Bundle();
-
-			// params.putString("caption", getString(R.string.app_name));
-			// params.putString("description", getString(R.string.app_desc));
-			// params.putString("picture", Utility.HACK_ICON_URL);
-			// params.putString("name", getString(R.string.app_action));
-			// try {
-			// params.putByteArray("photo", TestSnowboardsApplication
-			// .scaleImage(getApplicationContext(), pic));
-			// } catch (IOException e) {
-			// e.printStackTrace();
-			// }
-			params.putString("caption", title);
-			params.putString("description", message);
-			// params.putString("name", "name");
-			// params.putString("picture", pic);
-			params.putString("link", url);
-			FacebookImagePostPreviewDialogFragment f = new FacebookImagePostPreviewDialogFragment();
-			f.setMessage(title + "\n" + url);
-			f.setPicUri(pic);
-			f.show(dismissDialogs(), DIALOG_TAG);
-			// TestSnowboardsApplication.mFacebook.dialog(this, "feed", params,
-			// new FacebookUpdateStatusListener());
-
-		}
-
-	}
-
-	/*
-	 * callback for the feed dialog which updates the profile status
-	 */
-	public class FacebookUpdateStatusListener implements
-			Facebook.DialogListener {
-		@Override
-		public void onComplete(Bundle values) {
-			final String postId = values.getString("post_id");
-			if (postId != null) {
-				// AlertDialog.Builder b = new
-				// AlertDialog.Builder(TestSnowboardsMainActivity.this);
-				// b.setTitle("").setIcon(R.drawable.facebook_icon)
-				// .create()
-				// .show();
-			} else {
-				Toast toast = Toast.makeText(getApplicationContext(),
-						"No wall post made", Toast.LENGTH_SHORT);
-				toast.show();
-			}
-		}
-
-		@Override
-		public void onFacebookError(FacebookError error) {
-			Toast.makeText(getApplicationContext(),
-					"Facebook Error: " + error.getMessage(), Toast.LENGTH_SHORT)
-					.show();
-		}
-
-		@Override
-		public void onCancel() {
-			Toast toast = Toast.makeText(getApplicationContext(),
-					"Update status cancelled", Toast.LENGTH_SHORT);
-			toast.show();
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * com.facebook.android.Facebook.DialogListener#onError(com.facebook
-		 * .android.DialogError)
-		 */
-		@Override
-		public void onError(DialogError pArg0) {
-			// TODO Auto-generated method stub
-
-		}
-
-	}
-
 	/**
 	 * 
 	 * @param productCursor
 	 *            - id of the product to share
 	 */
-	public void shareByEmail(Cursor productCursor) {
+	public void shareProduct(Cursor productCursor) {
 		Cursor cursor = productCursor;
 		String pic = cursor.getString(cursor.getColumnIndexOrThrow("imgLR"));
 		String shareString = "";
 		String title = "";
 		String message = "";
-		String url;
+		String url = "";
 		try {
 			shareString = cursor.getString(cursor
 					.getColumnIndexOrThrow("Lien_Partage"));
@@ -916,168 +690,14 @@ public class MainActivity extends FragmentActivity {
 			e1.printStackTrace();
 		}
 		String newURI = "file://"
-				+ NivealesApplication.copyFileToExternalDirectory(pic,
+				+ NivealesApplication.copyFileToExternalDirectory(this, pic,
 						getAssets());
 		Intent intent = new Intent(Intent.ACTION_SEND);
-		intent.setType("text/html");
-		intent.setType(HTTP.PLAIN_TEXT_TYPE);
+		intent.setType("text/plain");
 		intent.putExtra(Intent.EXTRA_SUBJECT, title);
-		intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(message));
+		intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(message) + " " + url.toString());
 		intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(newURI));
 		startActivity(intent);
-		Log.d("Html.fromHtml(body)", Html.fromHtml(message).toString());
-	}
-
-	/**
-	 * @param pProductId
-	 * @return error or null if no error
-	 */
-	@SuppressWarnings("unused")
-	protected String shareByTwitter(Cursor productCursor) throws Exception {
-		if (NivealesApplication.mTwitter == null) {
-			NivealesApplication.mTwitter = new TwitterFactory()
-					.getInstance();
-			NivealesApplication.mTwitter.setOAuthConsumer(
-					NivealesApplication.TWITTER_CONSUMER_KEY,
-					NivealesApplication.TWITTER_SECRET);
-			NivealesApplication.mTwitterSession = new com.niveales.library.utils.TwitterSession(
-					this);
-			NivealesApplication.mTwitterAccessToken = NivealesApplication.mTwitterSession
-					.getAccessToken();
-		}
-		if (NivealesApplication.mTwitterAccessToken == null) {
-
-			Intent intent = new Intent(this, TwitterAuthActivity.class);
-			intent.putExtra("productid", productCursor.getInt(productCursor
-					.getColumnIndexOrThrow("id_modele")));
-			startActivityForResult(intent, TWITTER_CALLBACK_ID);
-
-		} else {
-
-			// we has been authenticated before
-			NivealesApplication.mTwitter = new TwitterFactory()
-					.getOAuthAuthorizedInstance(
-							NivealesApplication.TWITTER_CONSUMER_KEY,
-							NivealesApplication.TWITTER_SECRET,
-							NivealesApplication.mTwitterAccessToken);
-			Cursor cursor = productCursor;
-			String pic = cursor
-					.getString(cursor.getColumnIndexOrThrow("imgLR"));
-			String shareString = "";
-			String title = "";
-			String message = "";
-			String url = "";
-			try {
-				shareString = cursor.getString(cursor
-						.getColumnIndexOrThrow("Lien_Partage"));
-				Uri uri = Uri.parse(shareString);
-				title = URLDecoder.decode(uri.getQueryParameter("watitle"),
-						"utf-8");
-				message = URLDecoder.decode(uri.getQueryParameter("watext"),
-						"utf-8");
-				url = URLDecoder.decode(uri.getQueryParameter("walink"),
-						"utf-8").trim();
-				BitlyAndroid bitly = new BitlyAndroid(
-						NivealesApplication.BITLY_USER,
-						NivealesApplication.BITLY_API_KEY);
-				url = bitly.getShortUrl(url);
-				return new String(title + "\n" + url);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				throw new Exception("Error sending tweet");
-			}
-
-		}
-		return null;
-	}
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		switch (requestCode) {
-		/*
-		 * Do not remove: need for Facebook if this is the activity result from
-		 * authorization flow, do a call back to authorizeCallback Source Tag:
-		 * login_tag
-		 */
-		case 32665: {
-			// Avoid Runtime Exception bug
-			// http://efreedom.com/Question/1-7328392/Android-ViewPager-IllegalStateException-Can-Perform-Action-OnSaveInstanceState
-			Handler h = new Handler();
-			final int mRes = resultCode;
-			final int mReq = requestCode;
-			final Intent i = data;
-			// Workaround for Android Support library bug , when
-			// onActivityResult runs before onResume
-			h.postDelayed(new Runnable() {
-
-				@Override
-				public void run() {
-					NivealesApplication.mFacebook.authorizeCallback(mReq,
-							mRes, i);
-				}
-			}, 100);
-
-			break;
-		}
-
-		/**
-		 * return from twitter authorization activity. Peform twitter setup
-		 * actions
-		 */
-		case TWITTER_CALLBACK_ID: {
-			if (resultCode != Activity.RESULT_OK) {
-				if (data != null) {
-					String message = data.getExtras().getString("error");
-					if (message == null) {
-						message = "Twitter authentication failed";
-					}
-					AlertDialog.Builder b = new AlertDialog.Builder(this);
-					b.setTitle("Twitter auth error:");
-					b.setMessage(message);
-					b.setPositiveButton("OK",
-							new DialogInterface.OnClickListener() {
-
-								@Override
-								public void onClick(DialogInterface pDialog,
-										int pWhich) {
-									pDialog.dismiss();
-								}
-							});
-					b.create().show();
-				}
-				return;
-			}
-			int productId = data.getIntExtra("productid", 0);
-			Log.d("OAuthTwitter KEY", NivealesApplication.ACCESS_KEY);
-			Log.d("OAuthTwitter SECRET",
-					NivealesApplication.ACCESS_SECRET);
-			try {
-
-				NivealesApplication.mTwitterAccessToken = new AccessToken(
-						NivealesApplication.ACCESS_KEY,
-						NivealesApplication.ACCESS_SECRET);
-				Twitter t = new TwitterFactory().getOAuthAuthorizedInstance(
-						NivealesApplication.TWITTER_CONSUMER_KEY,
-						NivealesApplication.TWITTER_SECRET,
-						NivealesApplication.mTwitterAccessToken);
-				NivealesApplication.mTwitter = t;
-				NivealesApplication.mTwitterSession = new com.niveales.library.utils.TwitterSession(
-						this);
-				NivealesApplication.mTwitterSession
-						.storeAccessToken(NivealesApplication.mTwitterAccessToken);
-				// Avoid Android HONEYCOMB+ NetworkOnUIThreadException
-				new TwitterSharingTask().execute(NivealesApplication
-						.getDBHelper()
-						.getAllFromTableWithWhereAndOrder("Detail",
-								"id_modele='" + productId + "'", null));
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			break;
-		}
-		}
 	}
 
 	@Override
@@ -1128,54 +748,15 @@ public class MainActivity extends FragmentActivity {
 			onClearSearchClick();
 		}
 	}
-
-	public class TwitterSharingTask extends AsyncTask<Cursor, Integer, String> {
-		String error;
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see android.os.AsyncTask#doInBackground(Params[])
-		 */
-		@Override
-		protected String doInBackground(Cursor... pParams) {
-
-			try {
-				return shareByTwitter(pParams[0]);
-
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				error = e.getMessage();
-				return null;
-			}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case android.R.id.home:
+				onBackPressed();
+			break;
 		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			if (result == null && error != null) {
-				AlertDialog.Builder b = new AlertDialog.Builder(
-						MainActivity.this);
-				b.setTitle("Twitter error:");
-				b.setMessage(error)
-						.setPositiveButton("OK",
-								new DialogInterface.OnClickListener() {
-
-									@Override
-									public void onClick(
-											DialogInterface pDialog, int pWhich) {
-										pDialog.dismiss();
-
-									}
-								}).create().show();
-			} else {
-				if (result != null) {
-					TwitterPostPreviewDialogFragment f = new TwitterPostPreviewDialogFragment();
-					f.setMessage(result);
-					f.show(getSupportFragmentManager(), null);
-				}
-			}
-		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
@@ -1215,7 +796,6 @@ public class MainActivity extends FragmentActivity {
 
 	@Override
 	public void onAttachFragment(Fragment fragment) {
-		// TODO Auto-generated method stub
 		super.onAttachFragment(fragment);
 		SharedPreferences prefs = this.getPreferences(MODE_PRIVATE);
 		// prefs.edit().putString("FRAGMENT", fragment.getTag()).commit();
@@ -1224,9 +804,6 @@ public class MainActivity extends FragmentActivity {
 		// () - 1);
 		prefs.edit().putInt("FRAGEMENT_ID", fragment.getId())
 				.putString("FRAGMENT_TAG", fragment.getTag()).commit();
-		// Toast.makeText(getApplicationContext(), fragment.getId(),
-		// Toast.LENGTH_SHORT).show();
-
 	}
 
 	public void saveFragments() {

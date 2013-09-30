@@ -163,7 +163,7 @@ public class NivealesApplication extends Application {
 				"%Description_Test%", "%Test_avantages%",
 				"%test_inconvenients%", "%icone_genre%", "%icone_cambres%",
 				"%icone_wide%", "%icone_top%", "%img_niveau%",
-				"%img_polyvalence%", "%Caractéristiques%",
+				"%img_polyvalence%", "%Caractéristiques%", "%niveau%", "%pratique%"
 
 		};
 
@@ -179,7 +179,7 @@ public class NivealesApplication extends Application {
 				"Test_baseline", "Description_Test", "Test_avantages",
 				"test_inconvenients", "icone_genre", "icone_cambres",
 				"icone_wide", "icone_top", "img_niveau", "img_polyvalence",
-				"Caractéristiques",
+				"Caractéristiques", "niveau_requis", "Pratique"
 		// List of Details table columns to get data from, used to fill HTML
 		// fields above
 		};
@@ -291,7 +291,7 @@ public class NivealesApplication extends Application {
 	}
 
 	// Global staff for TestsSnowboards
-	public static String DB_FILE_NAME;// = "snowsurf_tests2013_.sqlite";
+	public static String DB_FILE_NAME;// = "snowsurf_tests2014_.sqlite";
 
 	// Twitter staff
 	public static TwitterSession mTwitterSession;
@@ -523,16 +523,15 @@ public class NivealesApplication extends Application {
 		return bMapArray;
 	}
 
-	public static String copyFileToExternalDirectory(String pic,
+	public static String copyFileToExternalDirectory(Context context, String pic,
 			AssetManager assets) {
 		String state = Environment.getExternalStorageState();
 		if (Environment.MEDIA_MOUNTED.equals(state)) {
-			File externalDir = Environment
-					.getExternalStoragePublicDirectory("Download");
+			File externalDir = context.getExternalCacheDir();
 			if (externalDir.canWrite()) {
 				try {
 					String fileName = pic.split("/")[pic.split("/").length - 1];
-					File newPic = File.createTempFile("pic", fileName);
+					File newPic = new File(externalDir.getAbsolutePath() + "/" + fileName);
 					byte[] buffer = new byte[1024];
 					BufferedOutputStream bos = new BufferedOutputStream(
 							new FileOutputStream(newPic));

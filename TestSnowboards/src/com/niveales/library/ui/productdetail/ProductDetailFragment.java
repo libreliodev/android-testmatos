@@ -8,12 +8,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLDecoder;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
@@ -34,17 +31,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.niveales.library.ui.BaseNivealesFragment;
@@ -52,34 +45,20 @@ import com.niveales.library.ui.NivealesApplication;
 import com.niveales.library.ui.NivealesApplication.ProductDetailConstants;
 import com.niveales.library.ui.popup.ActionItem;
 import com.niveales.library.ui.popup.ImageZoomPopup;
-import com.niveales.library.ui.popup.QuickAction;
 import com.niveales.library.utils.db.DBHelper;
 
 public class ProductDetailFragment extends BaseNivealesFragment {
 
-	/**
-	 * 
-	 */
 	private static final String ZOOM_TOUCHMOVE = "zoom://touchmove/";
-
-	/**
-	 * 
-	 */
 	private static final String ZOOM_FINISH = "zoom://finish";
-	/**
-	 * 
-	 */
 	private static final String ZOOM_TOUCHSTART = "zoom://touchstart";
-	/**
-	 * 
-	 */
 	private static final String ZOOM_TOUCHEND = "zoom://touchend";
 
 	View rootView;
 	String htmlBasePage; // text from assets html page to customize
 	String customizedHTMLPage; // page after customization
 	DBHelper helper;
-	private int productId;
+	private String productId;
 	Cursor productCursor;
 	String pic;
 	private int productDetailLayout;
@@ -98,13 +77,11 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 	private int bitmapHeight;
 	private Bitmap mHiResBitmap;
 	private int webPageStringResourceId;
-	private QuickAction mShareHolder;
-	private LinearLayout mShareButtonsHolder;
 	protected float downX;
 	protected float downY;
 	protected boolean isZoomStarted = false;
 	private ArrayList<ActionItem> mActionItems = new ArrayList<ActionItem>();
-	private CheckBox mFavoriteCkeckBox;
+	private CheckBox mFavoriteCheckBox;
 
 	private int[] mZoomCoords;
 
@@ -120,7 +97,6 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 		this.htmlKeys = htmlKeys;
 		this.columnKeys = columnKeys;
 		this.webPageStringResourceId = webPageStringResourceId;
-
 	}
 
 	public void setProductCursor(Cursor c) {
@@ -155,20 +131,26 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 	}
 
 	String getHTMLPage(Cursor c) {
-		productId = c.getInt(c.getColumnIndexOrThrow("id_modele"));
+		productId = c.getString(c.getColumnIndexOrThrow("id_modele"));
 		String htmlString = new String(htmlBasePage);
 		for (int i = 0; i < columnKeys.length; i++) {
-			String value = c.getString(c.getColumnIndexOrThrow(columnKeys[i]));
-			if (htmlKeys[i].startsWith("%icone") && !value.equals("")) {
-				value = "<img src=\"" + NivealesApplication.ASSETS_URI + value
-						+ "\"/>";
-			} else {
-				if (value.endsWith("png") || value.endsWith("jpg")) {
-					// product image
-					value = NivealesApplication.ASSETS_URI + value;
+			int columnIndex = c.getColumnIndex(columnKeys[i]);
+			if (columnIndex != -1) {
+				String value = c.getString(columnIndex);
+				if (value == null) {
+					value = "";
 				}
+				if (htmlKeys[i].startsWith("%icone") && !value.equals("")) {
+					value = "<img src=\"" + NivealesApplication.ASSETS_URI
+							+ value + "\"/>";
+				} else {
+					if (value.endsWith("png") || value.endsWith("jpg")) {
+						// product image
+						value = NivealesApplication.ASSETS_URI + value;
+					}
+				}
+				htmlString = htmlString.replace(htmlKeys[i], value);
 			}
-			htmlString = htmlString.replace(htmlKeys[i], value);
 		}
 		Log.d("HTML", htmlString);
 		return htmlString;
@@ -208,7 +190,7 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 	public void loadProduct(Cursor c) {
 		webView.loadDataWithBaseURL(NivealesApplication.ASSETS_URI,
 				getHTMLPage(c), "text/html", "UTF-8", null);
-		mFavoriteCkeckBox.setChecked(helper.isFavorite(productId));
+		mFavoriteCheckBox.setChecked(helper.isFavorite(productId));
 	}
 
 	@SuppressLint("SetJavaScriptEnabled")
@@ -242,7 +224,6 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 		});
 
 		webView.setOnTouchListener(new OnTouchListener() {
-
 			@Override
 			public boolean onTouch(View pV, MotionEvent pEvent) {
 				if (isZoomStarted) {
@@ -269,18 +250,14 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 
 		ImageView shareButton = (ImageView) rootView.findViewById(shareId);
 		shareButton.setOnClickListener(new OnClickListener() {
-
 			@Override
 			public void onClick(View arg0) {
-				mShareHolder.dismiss();
-				mShareHolder.show();
+				listener.onShareProduct(productCursor);
 			}
 		});
-		mFavoriteCkeckBox = (CheckBox) rootView.findViewById(favoriteId);
-
-		mFavoriteCkeckBox
+		mFavoriteCheckBox = (CheckBox) rootView.findViewById(favoriteId);
+		mFavoriteCheckBox
 				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
 					@Override
 					public void onCheckedChanged(CompoundButton pButtonView,
 							boolean pIsChecked) {
@@ -297,7 +274,6 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 		mPrevButton = (ImageButton) rootView
 				.findViewById(NivealesApplication.ProductDetailConstants.PRODUCT_DETAIL_PREVBUTTON_VIEW_ID);
 		mPrevButton.setOnClickListener(new OnClickListener() {
-
 			@Override
 			public void onClick(View pV) {
 				if (!productCursor.isFirst()) {
@@ -310,10 +286,10 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 				}
 			}
 		});
+		
 		mNextButton = (ImageButton) rootView
 				.findViewById(NivealesApplication.ProductDetailConstants.PRODUCTDETAIL_NEXTBUTTON_VIEW_ID);
 		mNextButton.setOnClickListener(new OnClickListener() {
-
 			@Override
 			public void onClick(View pV) {
 				if (!productCursor.isLast()) {
@@ -327,42 +303,6 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 			}
 		});
 
-		mShareHolder = new QuickAction(shareButton);
-		String shareString = productCursor.getString(productCursor
-				.getColumnIndexOrThrow("Lien_Partage"));
-		Uri uri = Uri.parse(shareString);
-		try {
-			String[] sites = URLDecoder.decode(
-					uri.getQueryParameter("wasites"), "utf-8").split(",");
-			for (int i = 0; i < sites.length; i++) {
-				ActionItem item = new ActionItem();
-				item.setTitle("Share by " + sites[i]);
-				item.setTag(sites[i]);
-				Button b = new Button(getActivity());
-				b.setText("Share on " + sites[i]);
-				b.setTag(sites[i]);
-				b.setBackgroundColor(Color.WHITE);
-				b.setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View pV) {
-						mShareHolder.dismiss();
-						listener.onShareProduct(productCursor,
-								(String) pV.getTag());
-					}
-				});
-				LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(
-						ViewGroup.LayoutParams.MATCH_PARENT,
-						ViewGroup.LayoutParams.WRAP_CONTENT);
-				p.setMargins(1, 1, 1, 1);
-				b.setLayoutParams(p);
-				// mShareButtonsHolder.addView(b);
-				item.setActionItemView(b);
-				mShareHolder.addActionItem(item);
-			}
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
 		loadProduct(productCursor);
 		return rootView;
 	}
@@ -446,14 +386,10 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 	}
 
 	public interface ShareProductListener {
-		public void onShareProduct(Cursor productCursor, String site);
+		public void onShareProduct(Cursor productCursor);
 	}
 
-	/**
-	 * @return
-	 */
 	public Cursor getCursor() {
-		// TODO Auto-generated method stub
 		return productCursor;
 	}
 
@@ -461,11 +397,6 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 
 		String lastError = "Unknown Error";
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see android.os.AsyncTask#doInBackground(Params[])
-		 */
 		@Override
 		protected Bitmap doInBackground(String... pParams) {
 			try {
@@ -516,7 +447,6 @@ public class ProductDetailFragment extends BaseNivealesFragment {
 				e.printStackTrace();
 				lastError = "Network error";
 			}
-
 			return null;
 		}
 
