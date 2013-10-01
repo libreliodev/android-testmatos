@@ -1,5 +1,5 @@
 {
-	"DB_FILE_NAME" : "snowsurf_tests2013_.sqlite",
+	"DB_FILE_NAME" : "snowsurf_tests2014_.sqlite",
 	"FACEBOOK_TAB_PAGE_URL" : "http://www.facebook.com/Snowsurf.mag",
 	"INFO_TAB_PAGE_URL" : "http://www.snowsurf.com/app-teasing",
 	"FACEBOOK_APP_ID" : "367597189994678",
@@ -25,7 +25,10 @@
 				"%icone_top%", 
 				"%img_niveau%",
 				"%img_polyvalence%", 
-				"%Caractéristiques%"
+				"%Caractéristiques%",
+				"%niveau%",
+				"%pratique%"
+				
 	],
 	"PRODUCT_DETAIL_COLUMN_KEYS" : [
 				"Marque", 
@@ -46,7 +49,9 @@
 				"icone_top", 
 				"img_niveau", 
 				"img_polyvalence",
-				"Caractéristiques"
+				"Caractéristiques",
+				"niveau_requis",
+				"Pratique"
 	],
 	"PRODUCT_LIST_DISPLAY_COLUMNS" : [
 				"Marque", 
