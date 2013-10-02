@@ -8,7 +8,7 @@
     </item>
     <item
         android:id="@+id/MenuItemAbout"
-        android:icon="@drawable/information"
+        android:icon="@drawable/ico_magazine"
         android:showAsAction="always"
         android:title="@string/MenuItemAbout">
     </item>
