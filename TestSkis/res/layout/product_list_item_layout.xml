@@ -109,6 +109,8 @@
         android:id="@+id/productListItemFemale"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:layout_alignTop="@+id/productListItemPicture"
         android:layout_toLeftOf="@+id/productListItemPicture"
         android:src="@drawable/femme" />
@@ -117,6 +119,8 @@
         android:id="@+id/productListItemTesterChoice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:layout_alignTop="@+id/productListItemFemale"
         android:layout_toLeftOf="@+id/productListItemFemale"
         android:src="@drawable/testerchoice" />

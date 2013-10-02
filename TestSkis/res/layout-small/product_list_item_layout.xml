@@ -92,6 +92,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="5dp"
+        			android:layout_marginRight="5dp"
                     android:src="@drawable/empty" />
 
                 <ImageView
@@ -99,6 +101,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="5dp"
+        			android:layout_marginRight="5dp"
                     android:scaleType="fitStart"
                     android:src="@drawable/empty" />
 
@@ -106,12 +110,16 @@
                     android:id="@+id/productListItemWide"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+        			android:layout_marginLeft="5dp"
+        			android:layout_marginRight="5dp"
                     android:src="@drawable/empty" />
 
                 <ImageView
                     android:id="@+id/productListItemTesterChoice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+        			android:layout_marginLeft="5dp"
+        			android:layout_marginRight="5dp"
                     android:src="@drawable/empty" />
             </LinearLayout>
 

@@ -118,6 +118,8 @@
         android:layout_alignBaseline="@id/productListItemFemale"
         android:layout_alignTop="@+id/productListItemFemale"
         android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:layout_toRightOf="@+id/productListItemFemale"
         android:scaleType="fitStart"
         android:src="@drawable/empty" />
@@ -126,6 +128,8 @@
         android:id="@+id/productListItemWide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:layout_alignBaseline="@id/productListItemFemale"
         android:layout_alignTop="@+id/productListItemChambre"
         android:layout_toRightOf="@+id/productListItemChambre"
@@ -135,6 +139,8 @@
         android:id="@+id/productListItemPop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:layout_alignBaseline="@id/productListItemFemale"
         android:layout_below="@+id/productListItemBudget"
         android:layout_toRightOf="@+id/productListItemWide"
@@ -147,6 +153,8 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/productListItemChambre"
         android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:src="@drawable/list_devider" />
 
 </RelativeLayout>
