@@ -197,23 +197,45 @@ public class RangeCriteriaSelectorFragment extends Fragment {
 		String value = et.getEditableText().toString();
 		String selectionColumn = colName;
 		if (!value.equals("")) {
-			if (colName.toLowerCase().equals("tailles")
-					&& tag.toLowerCase().equals("max")) {
-				selectionColumn = "TailleMax";
+//			if (colName.toLowerCase().equals("tailles")
+//					&& tag.toLowerCase().equals("max")) {
+//				selectionColumn = "TailleMax";
+//			}
+//			if (colName.toLowerCase().equals("tailles")
+//					&& tag.toLowerCase().equals("mini")) {
+//				selectionColumn = "TailleMin";
+//			}
+			if (colName.toLowerCase().equals("tailles")) {
+				int min = getMinTaille();
+				int max = getMaxiTaille();
+				if (min > max) {
+					// Toast.makeText(context, "Min can't be more than max",
+					// Toast.LENGTH_SHORT).show();
+					return;
+				}
+				StringBuilder builder = new StringBuilder();
+				for (int i = min; i <= max; i++) {
+					builder.append("tailles_dispo").append(" LIKE '%")
+							.append(String.valueOf(i)).append("%' OR ");
+				}
+				String string = builder.toString();
+//				Log.d("dshfoisd", string.substring(0, string.length() - 3));
+				helper.rawQuery(
+						"insert into userSearchInputs values (?, ?, ?, ?)",
+						new String[] { colName, value,
+								tag + ":" + value + metaIndicator,
+								string.substring(0, string.length() - 3) });
+			} else {
+				helper.rawQuery(
+						"insert into userSearchInputs values (?, ?, ?, ?)",
+						new String[] {
+								colName,
+								value,
+								tag + ":" + value + metaIndicator,
+								(tag.toLowerCase().equals("max")) ? selectionColumn
+										+ " < " + value
+										: selectionColumn + " > " + value, });
 			}
-			if (colName.toLowerCase().equals("tailles")
-					&& tag.toLowerCase().equals("mini")) {
-				selectionColumn = "TailleMin";
-			}
-			helper.rawQuery(
-					"insert into userSearchInputs values (?, ?, ?, ?)",
-					new String[] {
-							colName,
-							value,
-							tag + ":" + value + metaIndicator,
-							(tag.toLowerCase().equals("max")) ? selectionColumn
-									+ " < " + value : selectionColumn + " > "
-									+ value, });
 		}
 		listener.onCriteriaChanged(colName);
 
@@ -227,5 +249,23 @@ public class RangeCriteriaSelectorFragment extends Fragment {
 
 	public interface OnRangeCriteriaChangedListener {
 		public void onCriteriaChanged(String colName);
+	}
+	
+	public int getMinTaille() {
+		try {
+			return Integer.parseInt(min.getEditableText().toString());
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+	
+	public int getMaxiTaille() {
+		try {
+			return Integer.parseInt(max.getEditableText().toString());
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			return 200;
+		}
 	}
 }
