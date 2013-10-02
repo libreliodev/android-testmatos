@@ -215,7 +215,7 @@ public class RangeCriteriaSelectorFragment extends Fragment {
 				}
 				StringBuilder builder = new StringBuilder();
 				for (int i = min; i <= max; i++) {
-					builder.append("tailles_dispo").append(" LIKE '%")
+					builder.append("Tailles").append(" LIKE '%")
 							.append(String.valueOf(i)).append("%' OR ");
 				}
 				String string = builder.toString();
