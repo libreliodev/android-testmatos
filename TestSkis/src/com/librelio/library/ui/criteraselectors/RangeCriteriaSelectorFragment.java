@@ -222,7 +222,6 @@ public class RangeCriteriaSelectorFragment extends Fragment {
 							.append(String.valueOf(i)).append("%' OR ");
 				}
 				String string = builder.toString();
-				Log.d("dshfoisd", string.substring(0, string.length() - 3));
 				helper.rawQuery(
 						"insert into userSearchInputs values (?, ?, ?, ?)",
 						new String[] { colName, value,
