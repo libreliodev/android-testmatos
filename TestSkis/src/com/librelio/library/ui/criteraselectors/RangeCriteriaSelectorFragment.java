@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -112,7 +113,8 @@ public class RangeCriteriaSelectorFragment extends Fragment {
 			@Override
 			public void onTextChanged(CharSequence seq, int pArg1, int pArg2,
 					int pArg3) {
-					saveEdit(min);
+				saveEdit(max);
+				saveEdit(min);
 							
 			}});
 		
@@ -121,8 +123,8 @@ public class RangeCriteriaSelectorFragment extends Fragment {
 			@Override
 			public boolean onEditorAction(TextView view, int actionId,
 					KeyEvent event) {
-				EditText et = (EditText) view;
-				saveEdit(et);
+				saveEdit(max);
+				saveEdit(min);
 				return true;
 			}
 		});
@@ -155,7 +157,8 @@ public class RangeCriteriaSelectorFragment extends Fragment {
 			@Override
 			public void onTextChanged(CharSequence seq, int pArg1, int pArg2,
 					int pArg3) {
-					saveEdit(max);
+				saveEdit(max);
+				saveEdit(min);
 							
 			}});
 		max.setOnEditorActionListener(new OnEditorActionListener() {
@@ -163,8 +166,8 @@ public class RangeCriteriaSelectorFragment extends Fragment {
 			@Override
 			public boolean onEditorAction(TextView view, int actionId,
 					KeyEvent event) {
-				EditText et = (EditText) view;
-				saveEdit(et);
+				saveEdit(max);
+				saveEdit(min);
 				return true;
 			}
 		});
@@ -219,7 +222,7 @@ public class RangeCriteriaSelectorFragment extends Fragment {
 							.append(String.valueOf(i)).append("%' OR ");
 				}
 				String string = builder.toString();
-//				Log.d("dshfoisd", string.substring(0, string.length() - 3));
+				Log.d("dshfoisd", string.substring(0, string.length() - 3));
 				helper.rawQuery(
 						"insert into userSearchInputs values (?, ?, ?, ?)",
 						new String[] { colName, value,

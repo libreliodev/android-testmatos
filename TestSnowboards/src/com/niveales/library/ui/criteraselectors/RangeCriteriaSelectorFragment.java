@@ -113,6 +113,7 @@ public class RangeCriteriaSelectorFragment extends Fragment {
 			public void onTextChanged(CharSequence seq, int pArg1, int pArg2,
 					int pArg3) {
 					saveEdit(min);
+					saveEdit(max);
 							
 			}});
 		
@@ -121,8 +122,8 @@ public class RangeCriteriaSelectorFragment extends Fragment {
 			@Override
 			public boolean onEditorAction(TextView view, int actionId,
 					KeyEvent event) {
-				EditText et = (EditText) view;
-				saveEdit(et);
+				saveEdit(min);
+				saveEdit(max);
 				return true;
 			}
 		});
@@ -155,7 +156,8 @@ public class RangeCriteriaSelectorFragment extends Fragment {
 			@Override
 			public void onTextChanged(CharSequence seq, int pArg1, int pArg2,
 					int pArg3) {
-					saveEdit(max);
+				saveEdit(min);
+				saveEdit(max);
 							
 			}});
 		max.setOnEditorActionListener(new OnEditorActionListener() {
@@ -163,8 +165,8 @@ public class RangeCriteriaSelectorFragment extends Fragment {
 			@Override
 			public boolean onEditorAction(TextView view, int actionId,
 					KeyEvent event) {
-				EditText et = (EditText) view;
-				saveEdit(et);
+				saveEdit(min);
+				saveEdit(max);
 				return true;
 			}
 		});
