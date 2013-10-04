@@ -226,6 +226,10 @@ public class RangeCriteriaSelectorFragment extends Fragment {
 						new String[] { colName, value,
 								tag + ":" + value + metaIndicator,
 								string.substring(0, string.length() - 3) });
+				if (tag.equals("min")) {
+					// only fire listener once for min & max
+					listener.onCriteriaChanged(colName);
+				}
 			} else {
 				helper.rawQuery(
 						"insert into userSearchInputs values (?, ?, ?, ?)",
@@ -236,10 +240,9 @@ public class RangeCriteriaSelectorFragment extends Fragment {
 								(tag.toLowerCase().equals("max")) ? selectionColumn
 										+ " < " + value
 										: selectionColumn + " > " + value, });
+				listener.onCriteriaChanged(colName);
 			}
 		}
-		listener.onCriteriaChanged(colName);
-
 	}
 
 	public void onPause() {
