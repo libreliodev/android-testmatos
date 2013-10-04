@@ -123,6 +123,6 @@
         android:layout_marginRight="5dp"
         android:layout_alignTop="@+id/productListItemFemale"
         android:layout_toLeftOf="@+id/productListItemFemale"
-        android:src="@drawable/testerchoice" />
+        android:src="@drawable/empty" />
 
 </RelativeLayout>

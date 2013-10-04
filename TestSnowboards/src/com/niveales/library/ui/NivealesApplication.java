@@ -137,7 +137,7 @@ public class NivealesApplication extends Application {
 
 	public static final String ACRA_FORM_ID = "dDVpd19Uc2E4WTBaWTJXNGJHNkZEMWc6MQ";
 	public static String FACEBOOK_TAB_PAGE_URL = "http://www.facebook.com/Snowsurf.mag";
-	public static String INFO_TAB_PAGE_URL = "http://www.snowsurf.com/app-teasing";
+	public static String INFO_TAB_PAGE_URL = "http://www.snowsurf.com/android-teasing";
 
 	public static class ProductDetailConstants {
 		/**

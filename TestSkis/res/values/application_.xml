@@ -16,7 +16,7 @@
     <bool name="enable_downloads_in_menu">true</bool>
     <bool name="enable_refresh_in_menu">true</bool>
     <bool name="enable_subscribe_in_menu">false</bool>
-    <string name="facebook_tab_url">http://www.facebook.com/Snowsurf.mag</string>
-    <string name="info_tab_url">http://www.snowsurf.com/app-teasing</string>
+    <string name="facebook_tab_url">https://www.facebook.com/skieurmagazine</string>
+    <string name="info_tab_url">http://www.skieur.com/android-teasing</string>
 
 </resources>
