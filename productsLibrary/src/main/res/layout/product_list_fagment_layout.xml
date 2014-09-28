@@ -35,7 +35,7 @@
             android:text="@string/tri_par"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <com.librelio.library.ui.Button3State
+        <com.librelio.products.ui.Button3State
             android:id="@+id/ProductListMarqueSortButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
             custom:state2drawable="@drawable/mark_up"
             custom:state3drawable="@drawable/mark_down" />
 
-        <com.librelio.library.ui.Button3State
+        <com.librelio.products.ui.Button3State
             android:id="@+id/ProductListGammeSortButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
             custom:state2drawable="@drawable/mark_up"
             custom:state3drawable="@drawable/mark_down" />
 
-        <com.librelio.library.ui.Button3State
+        <com.librelio.products.ui.Button3State
             android:id="@+id/ProductListPrixSortButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

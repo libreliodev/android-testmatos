@@ -2,20 +2,15 @@ package com.librelio.model.dictitem;
 
 import android.content.Context;
 
-import com.librelio.event.LoadPlistEvent;
 import com.librelio.products.ProductsItem;
 import com.librelio.utils.StorageUtils;
 import com.longevitysoft.android.xml.plist.domain.Dict;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import de.greenrobot.event.EventBus;
 
 public abstract class DictItem {
 
@@ -124,14 +119,5 @@ public abstract class DictItem {
 		if (!magazineDir.exists()) {
 			magazineDir.mkdirs();
 		}
-	}
-
-	public void clearMagazineDir(Context context) {
-		try {
-			FileUtils.deleteDirectory(new File(getItemStorageDir(context)));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		EventBus.getDefault().post(new LoadPlistEvent());
 	}
 }

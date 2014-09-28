@@ -7,14 +7,19 @@ import android.text.format.DateUtils;
 
 import com.librelio.LibrelioApplication;
 import com.librelio.activity.BillingActivity;
+import com.librelio.event.LoadPlistEvent;
 import com.librelio.model.interfaces.DisplayableAsGridItem;
 import com.librelio.service.MagazineDownloadService;
 import com.librelio.storage.DataBaseHelper;
 import com.librelio.storage.DownloadsManager;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
+import java.io.IOException;
+
+import de.greenrobot.event.EventBus;
 
 public class MagazineItem extends DownloadableDictItem implements DisplayableAsGridItem {
 	protected static final String TAG = MagazineItem.class.getSimpleName();
@@ -99,6 +104,7 @@ public class MagazineItem extends DownloadableDictItem implements DisplayableAsG
 		return LibrelioApplication.getAmazonServerUrl() + filePath;
 	}
 
+    @Override
 	public String getDownloadDate() {
 		File file;
 		if (isSampleDownloaded()) {
@@ -136,7 +142,7 @@ public class MagazineItem extends DownloadableDictItem implements DisplayableAsG
 //		String localPngPath = getItemStorageDir() + FilenameUtils.getBaseName(filePath) + ".png";
 //		File localPngFile = new File(localPngPath);
 //		if (localPngFile.exists()) {
-//			return localPngPath;
+//			return "file:///" + localPngPath;
 //		}
 
 		// else return server url
@@ -153,10 +159,19 @@ public class MagazineItem extends DownloadableDictItem implements DisplayableAsG
 
 	}
 
-	public void deleteMagazine() {
+    public void clearMagazineDir(Context context) {
+        try {
+            FileUtils.deleteDirectory(new File(getItemStorageDir(context)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        EventBus.getDefault().post(new LoadPlistEvent());
+    }
+
+    @Override
+	public void deleteItem() {
 		clearMagazineDir(context);
 		DownloadsManager.removeDownload(context, this);
-
 	}
 
     @Override

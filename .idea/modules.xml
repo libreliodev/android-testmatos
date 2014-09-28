@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/android-testmatos.iml" filepath="$PROJECT_DIR$/android-testmatos.iml" />
       <module fileurl="file://$PROJECT_DIR$/appiraterAndroid/appiraterAndroid.iml" filepath="$PROJECT_DIR$/appiraterAndroid/appiraterAndroid.iml" />
-      <module fileurl="file://$PROJECT_DIR$/libreliodev-android-gradle.iml" filepath="$PROJECT_DIR$/libreliodev-android-gradle.iml" />
       <module fileurl="file://$PROJECT_DIR$/main/main.iml" filepath="$PROJECT_DIR$/main/main.iml" />
       <module fileurl="file://$PROJECT_DIR$/productsLibrary/productsLibrary.iml" filepath="$PROJECT_DIR$/productsLibrary/productsLibrary.iml" />
     </modules>

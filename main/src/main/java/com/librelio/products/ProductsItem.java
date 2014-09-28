@@ -1,13 +1,19 @@
 package com.librelio.products;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.text.format.DateUtils;
 
 import com.librelio.LibrelioApplication;
+import com.librelio.event.LoadPlistEvent;
 import com.librelio.model.DownloadStatusCode;
 import com.librelio.model.dictitem.DownloadableDictItem;
 import com.librelio.model.interfaces.DisplayableAsGridItem;
+import com.librelio.storage.DataBaseHelper;
+import com.librelio.storage.DownloadsManager;
 import com.librelio.utils.StorageUtils;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
@@ -15,6 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import de.greenrobot.event.EventBus;
 
 public class ProductsItem extends DownloadableDictItem implements DisplayableAsGridItem {
 	
@@ -29,6 +37,21 @@ public class ProductsItem extends DownloadableDictItem implements DisplayableAsG
 		this.title = title;
 		initValues(fileName);
 	}
+
+    public ProductsItem(Context context, Cursor cursor) {
+        int titleColumnId = cursor.getColumnIndex(DataBaseHelper.FIELD_TITLE);
+        int subitleColumnId = cursor
+                .getColumnIndex(DataBaseHelper.FIELD_SUBTITLE);
+        int fileNameColumnId = cursor
+                .getColumnIndex(DataBaseHelper.FIELD_FILE_PATH);
+        this.title = cursor.getString(titleColumnId);
+        this.subtitle = cursor.getString(subitleColumnId);
+//		this.downloadStatus = cursor.getInt(cursor
+//				.getColumnIndex(DataBaseHelper.FIELD_DOWNLOAD_STATUS));
+        this.context = context;
+
+        initValues(cursor.getString(fileNameColumnId));
+    }
 	
 	private void initValues(String filePath) {
         String filePathWithoutQueriesAtEnd;
@@ -75,11 +98,10 @@ public class ProductsItem extends DownloadableDictItem implements DisplayableAsG
 	
 	public String getLocalPathIfAvailable() {
 		// check in assets
-		String pngPath = filePath;
 		try {
-			InputStream file = context.getAssets().open(pngPath + ".zip");
+			InputStream file = context.getAssets().open(filePath + ".zip");
 			file.close();
-			return "file:///android_asset/" + pngPath;
+			return "file:///android_asset/" + filePath;
 		} catch (IOException e) {
 //			e.printStackTrace();
 		}
@@ -111,7 +133,7 @@ public class ProductsItem extends DownloadableDictItem implements DisplayableAsG
 		String localPngPath = getItemStorageDir() + FilenameUtils.getBaseName(filePath) + ".png";
 		File localPngFile = new File(localPngPath);
 		if (localPngFile.exists()) {
-			return localPngPath;
+			return "file:///" + localPngPath;
 		}
 
 		// else return server url
@@ -140,7 +162,38 @@ public class ProductsItem extends DownloadableDictItem implements DisplayableAsG
 
     public String getDatabaseStoragePath() {
         return "/data/data/" + context.getPackageName()
-                + "/databases/" + itemFilename + ".sqlite";
+                + "/databases/" + itemFilename;
+    }
+
+    @Override
+    public void makeLocalStorageDir(Context context) {
+        File magazineDir = new File(getItemStorageDir(context) + "/Photos");
+        if (!magazineDir.exists()) {
+            magazineDir.mkdirs();
+        }
+    }
+
+    public void clearMagazineDir(Context context) {
+        try {
+            FileUtils.deleteDirectory(new File(getItemStorageDir(context)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        EventBus.getDefault().post(new LoadPlistEvent());
+    }
+
+    @Override
+    public String getDownloadDate() {
+        File file = new File(getDatabaseStoragePath());
+        return DateUtils.formatDateTime(context, file.lastModified(),
+                DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR);
+    }
+
+    @Override
+    public void deleteItem() {
+        clearMagazineDir(context);
+        DownloadsManager.removeDownload(context, this);
+        new File(getDatabaseStoragePath()).delete();
     }
 
 	@Override

@@ -194,7 +194,7 @@ public class MainTabsActivity extends BaseActivity {
 
 		// TODO do this off ui thread
 
-		String pList = StorageUtils.getFielPathFromAssetsOrLocalStorage(this, "Tabs.plist");
+		String pList = StorageUtils.getFilePathFromAssetsOrLocalStorage(this, "Tabs.plist");
 
 		try {
 			PListXMLHandler handler = new PListXMLHandler();

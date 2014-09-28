@@ -14,7 +14,7 @@ import android.util.Log;
 
 import com.commonsware.cwac.wakeful.WakefulIntentService;
 import com.librelio.LibrelioApplication;
-import com.librelio.event.MagazinesUpdatedEvent;
+import com.librelio.event.PlistUpdatedEvent;
 import com.librelio.exception.FileAlreadyExistException;
 import com.librelio.exception.NoMemoryException;
 import com.librelio.model.Asset;
@@ -114,7 +114,7 @@ public class AssetDownloadService extends WakefulIntentService {
 			if (BuildConfig.DEBUG) {
 				Log.v(null, "Output file already exists and is correct size. Marking as downloaded.");
 				manager.setAssetStatus(asset.id, DownloadsManager.ASSET_DOWNLOADED);
-				EventBus.getDefault().post(new MagazinesUpdatedEvent());
+				EventBus.getDefault().post(new PlistUpdatedEvent());
 			}
 
 			throw new FileAlreadyExistException(
@@ -148,7 +148,7 @@ public class AssetDownloadService extends WakefulIntentService {
 
 		StorageUtils.move(tempFile.getPath(), file.getPath());
 		manager.setAssetStatus(asset.id, DownloadsManager.ASSET_DOWNLOADED);
-		EventBus.getDefault().post(new MagazinesUpdatedEvent());
+		EventBus.getDefault().post(new PlistUpdatedEvent());
 
 		if (BuildConfig.DEBUG) {
 			Log.v(TAG, "Download completed successfully.");

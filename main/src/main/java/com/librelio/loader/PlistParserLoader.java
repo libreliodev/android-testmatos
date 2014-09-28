@@ -54,7 +54,7 @@ public class PlistParserLoader extends AsyncTaskLoader<ArrayList<DictItem>> {
         ArrayList<DictItem> magazines = new ArrayList<DictItem>();
 
         //Convert plist to String for parsing
-        String pList = StorageUtils.getFielPathFromAssetsOrLocalStorage(getContext(), plistItem
+        String pList = StorageUtils.getFilePathFromAssetsOrLocalStorage(getContext(), plistItem
                 .getItemFileName());
 
         if (pList == null) {

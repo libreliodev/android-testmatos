@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.librelio.model.dictitem.DownloadableDictItem;
 import com.librelio.model.dictitem.MagazineItem;
 import com.niveales.wind.R;
 import com.squareup.picasso.Picasso;
@@ -61,21 +62,21 @@ public class DownloadedMagazinesListView extends ListView {
 		this(context, null, 0);
 	}
 
-	public void setMagazines(Activity activity, List<MagazineItem> downloads) {
+	public void setMagazines(Activity activity, List<DownloadableDictItem> downloads) {
 		magazinesAdapter.setDownloads(activity, downloads);
 	}
 }
 
-class MagazinesAdapter extends ArrayAdapter<MagazineItem> {
+class MagazinesAdapter extends ArrayAdapter<DownloadableDictItem> {
 
 	private Context context;
-	private List<MagazineItem> downloads;
+	private List<DownloadableDictItem> downloads;
 	private String samplePostfix;
 
 	public MagazinesAdapter(Context context) {
 		super(context, R.layout.row_downloaded_magazines, 0);
 		this.context = context;
-		downloads = new ArrayList<MagazineItem>();
+		downloads = new ArrayList<>();
 
 		samplePostfix = new StringBuilder(" (")
 				.append(context.getString(R.string.sample)).append(")")
@@ -83,7 +84,7 @@ class MagazinesAdapter extends ArrayAdapter<MagazineItem> {
 	}
 
 	public void setDownloads(Activity activity,
-			final List<MagazineItem> newDownloads) {
+			final List<DownloadableDictItem> newDownloads) {
 		activity.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
@@ -100,7 +101,7 @@ class MagazinesAdapter extends ArrayAdapter<MagazineItem> {
 	}
 
 	@Override
-	public MagazineItem getItem(int position) {
+	public DownloadableDictItem getItem(int position) {
 		return downloads.get(position);
 	}
 
@@ -118,7 +119,7 @@ class MagazinesAdapter extends ArrayAdapter<MagazineItem> {
 
 		final ViewHolder holder;
 		if (position < this.downloads.size()) {
-			final MagazineItem downloadedMagazine = this.downloads.get(position);
+			final DownloadableDictItem downloadedItem = this.downloads.get(position);
 
 			if ((convertView == null) || (null == convertView.getTag())) {
 
@@ -155,28 +156,33 @@ class MagazinesAdapter extends ArrayAdapter<MagazineItem> {
 				holder = (ViewHolder) convertView.getTag();
 			}
 
-			holder.title.setText(downloadedMagazine.getTitle()
-					+ (downloadedMagazine.isSample() ? samplePostfix : ""));
-			holder.editionDate.setText(downloadedMagazine.getSubtitle());
-			holder.downloadDate.setText(getContext().getString(R.string.downloaded_title) + downloadedMagazine.getDownloadDate());
+            if (downloadedItem instanceof MagazineItem) {
+                holder.title.setText(downloadedItem.getTitle()
+                        + (((MagazineItem)downloadedItem).isSample() ? samplePostfix : ""));
+            } else {
+                holder.title.setText(downloadedItem.getTitle());
+            }
+			holder.editionDate.setText(downloadedItem.getSubtitle());
+			holder.downloadDate.setText(getContext().getString(R.string.downloaded_title) +
+                    downloadedItem.getDownloadDate());
 
 			holder.deleteButton.setText(getContext().getString(R.string.delete));
 			holder.deleteButton.setOnClickListener(new OnClickListener() {
 
-				@Override
-				public void onClick(View v) {
-					holder.deleteButton.setText("...");
-					new Thread(new Runnable() {
-						@Override
-						public void run() {
-							downloadedMagazine.deleteMagazine();
-						}
-					}).start();
-				}
-			});
+                @Override
+                public void onClick(View v) {
+                    holder.deleteButton.setText("...");
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            downloadedItem.deleteItem();
+                        }
+                    }).start();
+                }
+            });
 			holder.position = position;
 
-			Picasso.with(context).load(downloadedMagazine.getPngUri()).fit()
+			Picasso.with(context).load(downloadedItem.getPngUri()).fit()
 					.centerInside().into(holder.image);
 		} else {
 			LayoutInflater inflater = LayoutInflater.from(context);

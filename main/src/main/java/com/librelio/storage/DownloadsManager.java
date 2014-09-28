@@ -9,12 +9,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.librelio.base.BaseManager;
-import com.librelio.event.MagazinesUpdatedEvent;
+import com.librelio.event.PlistUpdatedEvent;
 import com.librelio.exception.MagazineNotFoundInDatabaseException;
 import com.librelio.model.Asset;
 import com.librelio.model.DownloadStatusCode;
 import com.librelio.model.dictitem.DictItem;
+import com.librelio.model.dictitem.DownloadableDictItem;
 import com.librelio.model.dictitem.MagazineItem;
+import com.librelio.products.ProductsItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,17 +36,21 @@ public class DownloadsManager extends BaseManager {
 
 	}
 
-	public List<MagazineItem> getDownloadedMagazines() {
-		List<MagazineItem> magazines = new ArrayList<MagazineItem>();
+	public List<DownloadableDictItem> getDownloadedMagazines() {
+		List<DownloadableDictItem> magazines = new ArrayList<>();
 		SQLiteDatabase db = DataBaseHelper.getInstance(getContext())
 				.getReadableDatabase();
 		Cursor c = db.rawQuery("select * from "
-				+ DataBaseHelper.TABLE_DOWNLOADED_ITEMS, null);
+				+ DataBaseHelper.TABLE_DOWNLOADED_ITEMS + " where " + DataBaseHelper.FIELD_DOWNLOAD_STATUS + "=101", null);
 		while (c.moveToNext()) {
-			MagazineItem magazine = new MagazineItem(getContext(), c);
-			if (magazine.isDownloaded() || magazine.isSampleDownloaded()) {
-				magazines.add(magazine);
-			}
+            String filePath = c.getString(c.getColumnIndex(DataBaseHelper.FIELD_FILE_PATH));
+            if (filePath.contains("sqlite")) {
+                ProductsItem item = new ProductsItem(getContext(), c);
+                magazines.add(item);
+            } else {
+                MagazineItem magazine = new MagazineItem(getContext(), c);
+                magazines.add(magazine);
+            }
 		}
 		c.close();
 		return magazines;
@@ -60,7 +66,7 @@ public class DownloadsManager extends BaseManager {
 		cv.put(DataBaseHelper.FIELD_SUBTITLE, magazine.getSubtitle());
 		db.insert(tableName, null, cv);
 
-		EventBus.getDefault().post(new MagazinesUpdatedEvent());
+		EventBus.getDefault().post(new PlistUpdatedEvent());
 	}
 
 	public static synchronized void removeDownload(Context context,
@@ -107,7 +113,7 @@ public class DownloadsManager extends BaseManager {
 				DataBaseHelper.FIELD_FILE_PATH + "=?",
 				new String[] { magazine.getFilePath() });
 
-		EventBus.getDefault().post(new MagazinesUpdatedEvent());
+		EventBus.getDefault().post(new PlistUpdatedEvent());
 	}
 
 	public static void removeNotification(Context context, long notificationId) {
@@ -227,7 +233,7 @@ public class DownloadsManager extends BaseManager {
 		return downloadStatus;
 	}
 
-	public synchronized void addAsset(MagazineItem magazine, String assetFile,
+	public synchronized void addAsset(DownloadableDictItem magazine, String assetFile,
 			String assetUrl) {
 		SQLiteDatabase db = DataBaseHelper.getInstance(getContext())
 				.getWritableDatabase();
@@ -327,10 +333,10 @@ public class DownloadsManager extends BaseManager {
 //			// cursor.close();
 //		}
 
-		EventBus.getDefault().post(new MagazinesUpdatedEvent());
+		EventBus.getDefault().post(new PlistUpdatedEvent());
 	}
 
-	public static int getTotalAssetCount(Context context, MagazineItem magazine) {
+	public static int getTotalAssetCount(Context context, DownloadableDictItem magazine) {
 		SQLiteDatabase db = DataBaseHelper.getInstance(context)
 				.getReadableDatabase();
 		int count = (int) DatabaseUtils.longForQuery(db, "select COUNT("
@@ -343,7 +349,7 @@ public class DownloadsManager extends BaseManager {
 		return count;
 	}
 
-	public static int getDownloadedAssetCount(Context context, MagazineItem magazine) {
+	public static int getDownloadedAssetCount(Context context, DownloadableDictItem magazine) {
 		SQLiteDatabase db = DataBaseHelper.getInstance(context)
 				.getReadableDatabase();
 		int count = (int) DatabaseUtils.longForQuery(
@@ -359,7 +365,7 @@ public class DownloadsManager extends BaseManager {
 		return count;
 	}
 
-	public static int getFailedAssetCount(Context context, MagazineItem magazine) {
+	public static int getFailedAssetCount(Context context, DownloadableDictItem magazine) {
 		SQLiteDatabase db = DataBaseHelper.getInstance(context)
 				.getReadableDatabase();
 		int count = (int) DatabaseUtils.longForQuery(

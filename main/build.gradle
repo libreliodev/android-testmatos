@@ -29,7 +29,7 @@ android {
             applicationId "com.niveales.testskis"
         }
         testsnow {
-            applicationId "com.developer.snowsurf"
+            applicationId "com.niveales.testsnowboards2014"
         }
     }
 }

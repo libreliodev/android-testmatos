@@ -4,10 +4,11 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Environment;
 import android.os.StatFs;
-import android.support.v4.os.EnvironmentCompat;
 import android.util.Log;
 
 import com.niveales.wind.R;
+
+import org.apache.commons.io.IOUtils;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -20,8 +21,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import org.apache.commons.io.IOUtils;
 
 public class StorageUtils {
 
@@ -135,7 +134,7 @@ public class StorageUtils {
         }
     }
 
-	public static String getFielPathFromAssetsOrLocalStorage(Context context, String filename) {
+	public static String getFilePathFromAssetsOrLocalStorage(Context context, String filename) {
 		String path = getStoragePath(context) + filename;
 		// If file exists in local storage then use that
 		if (new File(path).exists()) {

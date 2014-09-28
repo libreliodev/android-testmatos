@@ -1,7 +1,5 @@
 package com.librelio.fragments;
 
-import java.util.ArrayList;
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -20,15 +18,15 @@ import com.librelio.adapter.DictItemAdapter;
 import com.librelio.base.BaseActivity;
 import com.librelio.event.InvalidateGridViewEvent;
 import com.librelio.event.LoadPlistEvent;
-import com.librelio.event.MagazinesUpdatedEvent;
+import com.librelio.event.PlistUpdatedEvent;
 import com.librelio.event.UpdateMagazinesEvent;
 import com.librelio.loader.PlistParserLoader;
 import com.librelio.model.dictitem.DictItem;
-import com.librelio.model.dictitem.DownloadableDictItem;
-import com.librelio.model.dictitem.MagazineItem;
 import com.librelio.service.AssetDownloadService;
 import com.librelio.utils.PlistDownloader;
 import com.niveales.wind.R;
+
+import java.util.ArrayList;
 
 import de.greenrobot.event.EventBus;
 
@@ -53,8 +51,8 @@ public class PlistGridFragment extends Fragment implements LoaderManager.LoaderC
 				getActivity().runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
-//						getLoaderManager().restartLoader(PLIST_PARSER_LOADER,
-//								null, PlistGridFragment.this);
+						getLoaderManager().restartLoader(PLIST_PARSER_LOADER,
+								null, PlistGridFragment.this);
 						adapter.notifyDataSetChanged();
 						startUpdateGridTask(5000);
 					}
@@ -106,9 +104,9 @@ public class PlistGridFragment extends Fragment implements LoaderManager.LoaderC
         reloadGrid();
     }
     
-    public void onEventMainThread(MagazinesUpdatedEvent event) {
-//    	getLoaderManager().restartLoader(PLIST_PARSER_LOADER,
-//				null, PlistGridFragment.this);
+    public void onEventMainThread(PlistUpdatedEvent event) {
+    	getLoaderManager().restartLoader(PLIST_PARSER_LOADER,
+				null, PlistGridFragment.this);
     }
 
     public void onEventMainThread(InvalidateGridViewEvent event) {

@@ -37,20 +37,20 @@ import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 
-import com.librelio.library.ui.BaseNivealesFragment;
-import com.librelio.library.ui.NivealesApplication;
-import com.librelio.library.ui.criteraselectors.CheckedCriteriaSelectorFragment
+import com.librelio.products.ui.BaseNivealesFragment;
+import com.librelio.products.ui.CustomizationHelper;
+import com.librelio.products.ui.criteraselectors.CheckedCriteriaSelectorFragment
         .OnCriteriaChangedListener;
-import com.librelio.library.ui.criteraselectors.RangeCriteriaSelectorFragment
+import com.librelio.products.ui.criteraselectors.RangeCriteriaSelectorFragment
         .OnRangeCriteriaChangedListener;
-import com.librelio.library.ui.productdetail.ProductDetailFragment;
-import com.librelio.library.ui.productdetail.ProductDetailFragment.ShareProductListener;
-import com.librelio.library.ui.productlist.FavoriteProductListFragment;
-import com.librelio.library.ui.productlist.ProductListFragment;
-import com.librelio.library.ui.productlist.ProductListFragment.ProductSelectedListener;
-import com.librelio.library.utils.adapters.AdvancedCriteriaMainListAdapter;
-import com.librelio.library.utils.adapters.search.SearchAdapter;
-import com.librelio.library.utils.db.DBHelper;
+import com.librelio.products.ui.productdetail.ProductDetailFragment;
+import com.librelio.products.ui.productdetail.ProductDetailFragment.ShareProductListener;
+import com.librelio.products.ui.productlist.FavoriteProductListFragment;
+import com.librelio.products.ui.productlist.ProductListFragment;
+import com.librelio.products.ui.productlist.ProductListFragment.ProductSelectedListener;
+import com.librelio.products.utils.adapters.AdvancedCriteriaMainListAdapter;
+import com.librelio.products.utils.adapters.search.SearchAdapter;
+import com.librelio.products.utils.db.ProductsDBHelper;
 import com.librelio.utils.StorageUtils;
 import com.niveales.testskis.R;
 
@@ -62,9 +62,10 @@ public class ProductsActivity extends FragmentActivity {
 	private static final String DIALOG_TAG = null;
 	private static final String FILEPATHFROMPLIST = "filename";
 	private static final String ITEMFILENAME = "itemfilepath";
+    private static final String ASSETSFOLDER = "assetsfolder";
 	@SuppressWarnings("unused")
 	private static final String TAG = ProductsActivity.class.getSimpleName();
-	private int mActiveTab;
+    private int mActiveTab;
 	private TabHost mMainActivityTabHost;
 	private View mRightFrameFragmentHolder;
 	private ListView mMainActivityCreteriaSelectionListView;
@@ -86,6 +87,7 @@ public class ProductsActivity extends FragmentActivity {
 		Intent intent = new Intent(context, ProductsActivity.class);
 		intent.putExtra(FILEPATHFROMPLIST, item.getFilePath());
 		intent.putExtra(ITEMFILENAME, item.getItemFileName());
+        intent.putExtra(ASSETSFOLDER, item.getItemStorageDir());
 		return intent;
 
 	}
@@ -94,16 +96,22 @@ public class ProductsActivity extends FragmentActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+        // Initialize constants
+        CustomizationHelper.initCustomization(this);
+        CustomizationHelper.ASSETS_PHOTOS_URI = getIntent().getStringExtra(ASSETSFOLDER);
+
 		if (savedInstanceState != null) {
 			mActiveTab = savedInstanceState
-					.getInt(NivealesApplication.MAIN_TAB_ID);
+					.getInt(CustomizationHelper.MAIN_TAB_ID);
 		}
 
 		setContentView(R.layout.main_activity_layout);
 
 		// Init DB
-		DBHelper.setDBHelper(new DBHelper(this, getIntent().getStringExtra(FILEPATHFROMPLIST), getIntent().getStringExtra(ITEMFILENAME)));
-		DBHelper.getDBHelper().open();
+		ProductsDBHelper.setDBHelper(new ProductsDBHelper(this, getIntent().getStringExtra
+                (FILEPATHFROMPLIST), getIntent().getStringExtra(ITEMFILENAME)));
+		ProductsDBHelper.getDBHelper().open();
 
 		initViews();
 		restoreAppState();
@@ -161,7 +169,7 @@ public class ProductsActivity extends FragmentActivity {
 				.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
 		mainAdapter = new AdvancedCriteriaMainListAdapter(
-				DBHelper.getDBHelper(), this,
+				ProductsDBHelper.getDBHelper(), this,
 				R.layout.creteria_group_selector_item_layout,
 				R.id.CreteriaGroupTextView, R.id.CreteriaSelectedListTextView);
 		mMainActivityCreteriaSelectionListView.setAdapter(mainAdapter);
@@ -197,7 +205,7 @@ public class ProductsActivity extends FragmentActivity {
 	}
 
 	protected void onPrevSearchClick() {
-		DBHelper helper = DBHelper.getDBHelper();
+		ProductsDBHelper helper = ProductsDBHelper.getDBHelper();
 		try {
 			helper.rawQuery("delete from UserSearchInputs", null);
 			helper.rawQuery(
@@ -216,7 +224,7 @@ public class ProductsActivity extends FragmentActivity {
 	public String getPrevSearchText() {
 		String text = "";
 		try {
-			Cursor crit = DBHelper.getDBHelper().getAllFromTable(
+			Cursor crit = ProductsDBHelper.getDBHelper().getAllFromTable(
 					"AdvancedCriteria");
 			while (!crit.isAfterLast()) {
 				String result = "";
@@ -224,7 +232,7 @@ public class ProductsActivity extends FragmentActivity {
 						.getColumnIndexOrThrow("Title"));
 				String critColName = crit.getString(crit
 						.getColumnIndexOrThrow("ColName"));
-				Cursor c = DBHelper.getDBHelper()
+				Cursor c = ProductsDBHelper.getDBHelper()
 						.getAllFromTableWithWhereAndOrder(
 								"UserSearchInputsOld",
 								"ColName LIKE '%" + critColName + "%'", null);
@@ -307,7 +315,7 @@ public class ProductsActivity extends FragmentActivity {
 			/**
 			 * Favorites
 			 */
-			FavoriteProductListFragment f = NivealesApplication
+			FavoriteProductListFragment f = CustomizationHelper
 					.getFavoriteProductListFragment(this);
 			f.setOnProductSelectedListener(new ProductSelectedListener() {
 				@Override
@@ -324,14 +332,14 @@ public class ProductsActivity extends FragmentActivity {
 			 */
 			if (this.mRightFrameFragmentHolder != null) {
 				// Tablet
-				Fragment lexiqueFragment = NivealesApplication
+				Fragment lexiqueFragment = CustomizationHelper
 						.getLexiqueFragment();
 				this.getSupportFragmentManager().beginTransaction()
 						.replace(R.id.ContentHolder, lexiqueFragment)
 						.addToBackStack(null).commit();
 			} else {
 				// Phone
-				Fragment lexiqueFragment = NivealesApplication
+				Fragment lexiqueFragment = CustomizationHelper
 						.getLexiqueFragment();
 				this.getSupportFragmentManager().beginTransaction()
 						.replace(R.id.terms_tab, lexiqueFragment).commit();
@@ -353,7 +361,7 @@ public class ProductsActivity extends FragmentActivity {
 
 	protected void onSearchButtonClick() {
 		String whereClaus = null;
-		DBHelper helper = DBHelper.getDBHelper();
+		ProductsDBHelper helper = ProductsDBHelper.getDBHelper();
 		Cursor tempCursor = helper.getAllFromTableWithOrder("AdvancedCriteria",
 				"Title");
 		boolean isFirst = true;
@@ -384,9 +392,9 @@ public class ProductsActivity extends FragmentActivity {
 		}
 
 		Cursor productCursor = helper.getAllFromTableWithWhereAndOrder(
-				NivealesApplication.DETAIL_TABLE_NAME, whereClaus, null);
+				CustomizationHelper.DETAIL_TABLE_NAME, whereClaus, null);
 		if (productCursor.getCount() > 0) {
-			ProductListFragment f = NivealesApplication.getProductListFragment(this);
+			ProductListFragment f = CustomizationHelper.getProductListFragment(this);
 			f.setOnProductSelectedListener(new ProductSelectedListener() {
 				@Override
 				public void showProductDetails(Cursor c) {
@@ -413,13 +421,13 @@ public class ProductsActivity extends FragmentActivity {
 	}
 
 	public void onClearSearchClick() {
-		DBHelper.getDBHelper().rawQuery(
+		ProductsDBHelper.getDBHelper().rawQuery(
 				"delete from UserSearchInputsOld", null);
-		DBHelper.getDBHelper()
+		ProductsDBHelper.getDBHelper()
 				.rawQuery(
 						"insert into UserSearchInputsOld select * from UserSearchInputs",
 						null);
-		DBHelper.getDBHelper().rawQuery(
+		ProductsDBHelper.getDBHelper().rawQuery(
 				"delete from UserSearchInputs", null);
 		// TestSnowboardsApplication.getDBHelper().rawQuery(
 		// "delete from UserSearchInputs", null);
@@ -466,14 +474,14 @@ public class ProductsActivity extends FragmentActivity {
 	// }
 
 	protected void showProductDetail(Cursor c) {
-		ProductDetailFragment productDetailFragment = NivealesApplication
+		ProductDetailFragment productDetailFragment = CustomizationHelper
 				.getProductDetailFragment(c, new ShareProductListener() {
 
-					@Override
-					public void onShareProduct(Cursor productId) {
-						shareProduct(productId);
-					}
-				});
+                    @Override
+                    public void onShareProduct(Cursor productId) {
+                        shareProduct(productId);
+                    }
+                });
 		attachProductDetailFragment(productDetailFragment, "productdetail");
 	}
 
@@ -525,7 +533,7 @@ public class ProductsActivity extends FragmentActivity {
 
 		mLastSelectedMainItem = position;
 
-		Cursor cursor = DBHelper.getDBHelper()
+		Cursor cursor = ProductsDBHelper.getDBHelper()
 				.getAllAdvancedCriteria();
 
 		cursor.moveToPosition(position);
@@ -534,13 +542,13 @@ public class ProductsActivity extends FragmentActivity {
 		String colName = cursor.getString(1);
 		Fragment f;
 		if (type.equals("Numeric")) {
-			f = NivealesApplication.getRangeCriteriaSelectorFragment(
-					this, type, criteria, colName,
-					new RangeCriteriaChangedListener());
+			f = CustomizationHelper.getRangeCriteriaSelectorFragment(
+                    this, type, criteria, colName,
+                    new RangeCriteriaChangedListener());
 
 		} else {
-			f = NivealesApplication.getCheckedCriteriaSelectorFragment(position,
-					new CriteriaChangeListener());
+			f = CustomizationHelper.getCheckedCriteriaSelectorFragment(position,
+                    new CriteriaChangeListener());
 
 		}
 		attachCriteriaFragment(f, "criteriacategory");
@@ -648,7 +656,7 @@ public class ProductsActivity extends FragmentActivity {
 	}
 
 	public void initSearchButton() {
-		Cursor c = DBHelper.getDBHelper().getAllFromTable(
+		Cursor c = ProductsDBHelper.getDBHelper().getAllFromTable(
 				"UserSearchInputs");
 		if (c.getCount() > 0) {
 			mMainLayoutSearchButton

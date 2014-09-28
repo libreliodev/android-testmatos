@@ -5,18 +5,16 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.IBinder;
 import android.util.Log;
-import android.util.SparseArray;
 
-import com.artifex.mupdfdemo.LinkInfoExternal;
 import com.commonsware.cwac.wakeful.WakefulIntentService;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.librelio.LibrelioApplication;
 import com.librelio.event.LoadPlistEvent;
-import com.librelio.event.MagazinesUpdatedEvent;
-import com.librelio.lib.utils.PDFParser;
+import com.librelio.event.PlistUpdatedEvent;
 import com.librelio.model.DownloadStatusCode;
 import com.librelio.model.dictitem.DictItem;
-import com.librelio.model.dictitem.MagazineItem;
+import com.librelio.products.utils.db.ProductsDBHelper;
+import com.librelio.service.AssetDownloadService;
 import com.librelio.storage.DataBaseHelper;
 import com.librelio.storage.DownloadsManager;
 import com.niveales.wind.BuildConfig;
@@ -29,7 +27,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
+import java.util.List;
 
 import de.greenrobot.event.EventBus;
 
@@ -101,7 +99,8 @@ public class ProductsDownloadService extends WakefulIntentService {
 //			return;
 //		}
 
-		ProductsItem item = new ProductsItem(this, "faketitle", "fakesubtitle",
+		ProductsItem item = new ProductsItem(this, intent.getStringExtra(DataBaseHelper.FIELD_TITLE),
+                intent.getStringExtra(DataBaseHelper.FIELD_SUBTITLE) ,
 				intent.getStringExtra(DataBaseHelper.FIELD_FILE_PATH));
 
 		String fileUrl = item.getItemUrl();
@@ -208,7 +207,7 @@ public class ProductsDownloadService extends WakefulIntentService {
 			manager.addDownload(item,
                     DataBaseHelper.TABLE_DOWNLOADED_ITEMS, true);
 
-//			addAssetsToDatabase(this, magazine);
+			addAssetsToDatabase(this, item);
 
 			manager.setDownloadStatus(item.getFilePath(),
 					DownloadStatusCode.DOWNLOADED);
@@ -253,8 +252,8 @@ public class ProductsDownloadService extends WakefulIntentService {
 //			mNotificationManager.notify(magazine.getFilePath().hashCode(),
 //					mBuilder.build());
 
-			EventBus.getDefault().post(new MagazinesUpdatedEvent());
-//			AssetDownloadService.startAssetDownloadService(this);
+			EventBus.getDefault().post(new PlistUpdatedEvent());
+			AssetDownloadService.startAssetDownloadService(this);
 		} catch (IOException e) {
 			e.printStackTrace();
 			manager.setDownloadStatus(item.getFilePath(),
@@ -263,57 +262,37 @@ public class ProductsDownloadService extends WakefulIntentService {
 		}
 	}
 
-	private void addAssetsToDatabase(Context context, MagazineItem magazine) {
-		Log.d(TAG, "addAssetsToDatabase " + magazine.getFilePath());
+	private void addAssetsToDatabase(Context context, ProductsItem magazine) {
+        Log.d(TAG, "addAssetsToDatabase " + magazine.getFilePath());
 
-		SQLiteDatabase db = DataBaseHelper.getInstance(context)
-				.getWritableDatabase();
-		db.beginTransaction();
+        magazine.makeLocalStorageDir(context);
 
-		ArrayList<String> assetsNames = new ArrayList<String>();
-		//
-		String filePath = magazine.isSample() ? magazine.getSamplePdfPath()
-				: magazine.getItemFilePath();
-		PDFParser linkGetter = new PDFParser(filePath);
-		SparseArray<LinkInfoExternal[]> linkBuf = linkGetter.getLinkInfo();
-		if (linkBuf == null) {
-			Log.d(TAG, "There is no links");
-			return;
-		}
-		for (int i = 0; i < linkBuf.size(); i++) {
-			int key = linkBuf.keyAt(i);
-			Log.d(TAG, "--- i = " + i);
-			if (linkBuf.get(key) != null) {
-				for (int j = 0; j < linkBuf.get(key).length; j++) {
-					// LinkInfoExternal extLink = linkBuf.get(key)[j];
-					String link = linkBuf.get(key)[j].url;
-					Log.d(TAG, "link[" + j + "] = " + link);
-					String local = "http://localhost";
-					if (link.startsWith(local)) {
-						int startIdx = local.length() + 1;
-						int finIdx = link.length();
-						if (link.contains("?")) {
-							finIdx = link.indexOf("?");
-						}
-						String assetsFileName = link
-								.substring(startIdx, finIdx);
-						assetsNames.add(assetsFileName);
+        SQLiteDatabase db = DataBaseHelper.getInstance(context)
+                .getWritableDatabase();
+        db.beginTransaction();
 
-						String uriString = magazine.getAssetUrl(assetsFileName);
-						Log.d(TAG, "   file: " + assetsFileName);
-						Log.d(TAG, "  link to download: " + uriString);
+        ProductsDBHelper dbHelper = new ProductsDBHelper(this, magazine.getItemFilePath(), magazine.getItemFileName());
+        dbHelper.open();
 
-						manager.addAsset(magazine, assetsFileName, uriString);
-					}
-				}
-			}
-		}
-		try {
+        List<String> imageUrls = dbHelper.getAllImageUrls();
+
+        // Download cover image
+        imageUrls.add(FilenameUtils.getBaseName(magazine.getItemFileName()) + ".png");
+
+        String baseUrl = LibrelioApplication.getAmazonServerUrl() + FilenameUtils.getPath(magazine.getFilePath());
+
+        for (String imageUrl : imageUrls) {
+            manager.addAsset(magazine, imageUrl, baseUrl + imageUrl);
+        }
+
+        try {
 			db.setTransactionSuccessful();
 		} finally {
 			db.endTransaction();
 		}
-	}
+
+        dbHelper.close();
+    }
 
 	public static void startProductsDownload(Context context, DictItem item,
 			boolean isSample) {
@@ -336,6 +315,8 @@ public class ProductsDownloadService extends WakefulIntentService {
 
 		Intent intent = new Intent(context, ProductsDownloadService.class);
 		intent.putExtra(DataBaseHelper.FIELD_FILE_PATH, item.getFilePath());
+        intent.putExtra(DataBaseHelper.FIELD_TITLE, item.getTitle());
+        intent.putExtra(DataBaseHelper.FIELD_SUBTITLE, item.getSubtitle());
 		intent.putExtra(EXTRA_IS_TEMP, isTemp);
 		intent.putExtra(EXTRA_TEMP_URL_KEY, tempUrlKey);
 		intent.putExtra(EXTRA_IS_SAMPLE, isSample);

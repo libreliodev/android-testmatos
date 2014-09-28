@@ -22,7 +22,7 @@ import com.librelio.LibrelioApplication;
 import com.librelio.activity.MuPDFActivity;
 import com.librelio.event.LoadPlistEvent;
 import com.librelio.event.MagazineDownloadedEvent;
-import com.librelio.event.MagazinesUpdatedEvent;
+import com.librelio.event.PlistUpdatedEvent;
 import com.librelio.exception.MagazineNotFoundInDatabaseException;
 import com.librelio.lib.utils.PDFParser;
 import com.librelio.model.DownloadStatusCode;
@@ -249,7 +249,7 @@ public class MagazineDownloadService extends WakefulIntentService {
 			mNotificationManager.notify(magazine.getFilePath().hashCode(),
 					mBuilder.build());
 
-			EventBus.getDefault().post(new MagazinesUpdatedEvent());
+			EventBus.getDefault().post(new PlistUpdatedEvent());
 			AssetDownloadService.startAssetDownloadService(this);
 		} catch (IOException e) {
 			e.printStackTrace();

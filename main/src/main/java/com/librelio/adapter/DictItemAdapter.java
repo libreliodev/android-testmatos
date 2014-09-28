@@ -299,6 +299,33 @@ public class DictItemAdapter extends BaseAdapter {
 				// set as download
 				holder.downloadButton.setVisibility(View.VISIBLE);
 			}
+
+            int totalAssetCount = DownloadsManager.getTotalAssetCount(context,
+                    productsItem);
+            int downloadedAssetCount = DownloadsManager.getDownloadedAssetCount(
+                    context, productsItem);
+            int failedAssetCount = DownloadsManager.getFailedAssetCount(context,
+                    productsItem);
+            if ((totalAssetCount > 0)
+                    && (downloadedAssetCount > 0)
+                    && ((downloadedAssetCount + failedAssetCount) < totalAssetCount)) {
+                holder.progressLayout.setVisibility(View.VISIBLE);
+                holder.progressBar.setVisibility(View.VISIBLE);
+                holder.progressBar.setIndeterminate(false);
+                holder.progressBar
+                        .setProgress((int) ((downloadedAssetCount * 100.0f) / totalAssetCount));
+                holder.info.setVisibility(View.VISIBLE);
+                holder.info.setText(context.getResources().getString(
+                        R.string.downloading_assets)
+                        + "\n" + downloadedAssetCount + "/" + totalAssetCount);
+            }
+
+            // If download failed
+            if (downloadStatus == DownloadStatusCode.FAILED) {
+                holder.info.setText("Download failed");
+                holder.progressLayout.setVisibility(View.VISIBLE);
+                holder.info.setVisibility(View.VISIBLE);
+            }
 		}
 
 		if (dictItems.get(position) instanceof DisplayableAsGridItem) {
