@@ -43,9 +43,6 @@
         <service
             android:name="com.librelio.products.ProductsDownloadService"
             android:exported="false" />
-        <service
-            android:name="com.librelio.products.ProductsAssetDownloadService"
-            android:exported="false" />
 
         <receiver android:name="com.librelio.lib.utils.BillingReceiver" >
             <intent-filter>
