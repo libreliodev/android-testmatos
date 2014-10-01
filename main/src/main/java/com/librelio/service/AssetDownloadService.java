@@ -1,12 +1,5 @@
 package com.librelio.service;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.RandomAccessFile;
-import java.util.ArrayList;
-
 import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +16,13 @@ import com.librelio.utils.StorageUtils;
 import com.niveales.wind.BuildConfig;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.util.ArrayList;
 
 import de.greenrobot.event.EventBus;
 
@@ -52,7 +52,7 @@ public class AssetDownloadService extends WakefulIntentService {
 		for (Asset asset : assetsToDownload) {
 			try {
 				download(asset);
-			} catch (FileAlreadyExistException e) {
+			} catch (FileAlreadyExistException ignored) {
 			} catch (NetworkErrorException e) {
 				e.printStackTrace();
 				assetDownloadFailed(asset);

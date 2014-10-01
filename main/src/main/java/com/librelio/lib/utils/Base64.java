@@ -32,6 +32,8 @@ package com.librelio.lib.utils;
  * @version 1.3
  */
 
+import android.annotation.SuppressLint;
+
 /**
  * Base64 converter class. This code is not a complete MIME encoder;
  * it simply converts binary data to base64 data and back.
@@ -297,6 +299,7 @@ public class Base64 {
    * @param maxLineLength maximum length of one line.
    * @return the BASE64-encoded byte array
    */
+  @SuppressLint("Assert")
   public static byte[] encode(byte[] source, int off, int len, byte[] alphabet,
       int maxLineLength) {
     int lenDiv3 = (len + 2) / 3; // ceil(len / 3)

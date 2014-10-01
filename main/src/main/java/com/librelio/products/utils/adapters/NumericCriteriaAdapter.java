@@ -1,7 +1,5 @@
 package com.librelio.products.utils.adapters;
 
-import com.librelio.products.utils.db.ProductsDBHelper;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
@@ -13,6 +11,8 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
+
+import com.librelio.products.utils.db.ProductsDBHelper;
 
 public class NumericCriteriaAdapter extends MyBaseCriteriaAdapter {
 	ProductsDBHelper helper;
@@ -109,7 +109,7 @@ public class NumericCriteriaAdapter extends MyBaseCriteriaAdapter {
 										c.getColumnIndexOrThrow(ProductsDBHelper.ADVANCED_SELECT_DETAILLINK_KEY))
 								.replaceAll("%@", value);
 						helper.rawQuery(newAction, null);
-					} catch (NumberFormatException e) {
+					} catch (NumberFormatException ignored) {
 
 					}
 				}

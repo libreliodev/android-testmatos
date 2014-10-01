@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyDashes">
 
-    <string name="app_name">Wind</string>
-    <string name="yearly_subs_code">yearlysubscription</string>
-    <string name="monthly_subs_code">monthlysubscriptiontest</string>
-	<string name="code_service">S3</string>
-	<string name="user_service"></string>
-    <string name="google_analytics">UA-1732003-23</string>
-    <bool name="enable_subscribe_in_menu">false</bool>
-	<bool name="enable_app_rating">true</bool>
-	<string name="gcm_project_number">1012641315687</string>
+    <string name="app_name" tools:ignore="MissingTranslation">Wind</string>
+    <string name="yearly_subs_code" tools:ignore="MissingTranslation">yearlysubscription</string>
+    <string name="monthly_subs_code" tools:ignore="MissingTranslation">monthlysubscriptiontest</string>
+	<string name="code_service" tools:ignore="MissingTranslation">S3</string>
+	<string name="user_service" tools:ignore="MissingTranslation"></string>
+    <string name="google_analytics" tools:ignore="MissingTranslation">UA-1732003-23</string>
+    <bool name="enable_subscribe_in_menu" tools:ignore="MissingTranslation">false</bool>
+	<bool name="enable_app_rating" tools:ignore="MissingTranslation">true</bool>
+	<string name="gcm_project_number" tools:ignore="MissingTranslation">1012641315687</string>
     
 </resources>
