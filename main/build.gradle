@@ -49,5 +49,6 @@ dependencies {
     compile 'com.android.support:support-v4:20.0.0'
     compile 'com.google.android.gms:play-services:5.0.89'
     compile 'commons-io:commons-io:2.4'
+    compile 'org.lucasr.twowayview:twowayview:0.1.1'
     compile project(':productsLibrary')
 }

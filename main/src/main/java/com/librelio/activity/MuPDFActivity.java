@@ -1,7 +1,5 @@
 package com.librelio.activity;
 
-import java.util.ArrayList;
-
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -52,11 +50,12 @@ import com.librelio.model.dictitem.MagazineItem;
 import com.librelio.storage.DataBaseHelper;
 import com.librelio.storage.DownloadsManager;
 import com.librelio.task.TinySafeAsyncTask;
-import com.librelio.view.TwoWayView;
-import com.librelio.view.TwoWayView.Orientation;
 import com.niveales.wind.R;
 
 import org.apache.commons.io.FilenameUtils;
+import org.lucasr.twowayview.TwoWayView;
+
+import java.util.ArrayList;
 
 //TODO: remove preffix mXXXX from all properties this class
 public class MuPDFActivity extends BaseActivity{
@@ -526,7 +525,7 @@ public class MuPDFActivity extends BaseActivity{
 		mFilenameView = (TextView)buttonsView.findViewById(R.id.docNameText);
 		mPreviewBarHolder = (FrameLayout) buttonsView.findViewById(R.id.PreviewBarHolder);
 		mPreview = new TwoWayView(this);
-		mPreview.setOrientation(Orientation.HORIZONTAL);
+		mPreview.setOrientation(TwoWayView.Orientation.HORIZONTAL);
 		FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(-1, -1);
 		mPreview.setLayoutParams(lp);
 		pdfPreviewPagerAdapter = new PDFPreviewPagerAdapter(this, core);
