@@ -463,7 +463,7 @@ public class ProductsDBHelper {
 			} catch (IOException e) {
 				e.printStackTrace();
 				throw new IllegalStateException(
-						"Cannot init database, please free some space on the device");
+						"Cannot init database");
 			}
 		}
 
