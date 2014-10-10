@@ -1,6 +1,7 @@
 package com.librelio.products;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.text.format.DateUtils;
 
@@ -9,6 +10,7 @@ import com.librelio.event.LoadPlistEvent;
 import com.librelio.model.DownloadStatusCode;
 import com.librelio.model.dictitem.DownloadableDictItem;
 import com.librelio.model.interfaces.DisplayableAsGridItem;
+import com.librelio.products.ui.ProductsBillingActivity;
 import com.librelio.storage.DataBaseHelper;
 import com.librelio.storage.DownloadsManager;
 import com.librelio.utils.StorageUtils;
@@ -198,7 +200,19 @@ public class ProductsItem extends DownloadableDictItem implements DisplayableAsG
 
 	@Override
 	public void onDownloadButtonClick(Context context) {
-		ProductsDownloadService.startProductsDownload(context, this, false);
+        if (isPaid()) {
+            Intent intent = new Intent(context,
+                    ProductsBillingActivity.class);
+            intent.putExtra(ProductsBillingActivity.FILE_NAME_KEY,
+                    getFilePath());
+            intent.putExtra(ProductsBillingActivity.TITLE_KEY,
+                    getTitle());
+            intent.putExtra(ProductsBillingActivity.SUBTITLE_KEY,
+                    getSubtitle());
+            context.startActivity(intent);
+        } else {
+            ProductsDownloadService.startProductsDownload(context, this, false);
+        }
 	}
 
 	public void onReadButtonClicked(Context context) {

@@ -276,8 +276,8 @@ public class ProductsDownloadService extends WakefulIntentService {
 
         List<String> imageUrls = dbHelper.getAllImageUrls();
 
-        // Download cover image
-        imageUrls.add(FilenameUtils.getBaseName(magazine.getItemFileName()) + ".png");
+//        // Download cover image
+//        imageUrls.add(FilenameUtils.getBaseName(magazine.getItemFileName()) + ".png");
 
         String baseUrl = LibrelioApplication.getAmazonServerUrl() + FilenameUtils.getPath(magazine.getFilePath());
 

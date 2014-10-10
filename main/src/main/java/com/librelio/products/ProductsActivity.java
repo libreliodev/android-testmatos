@@ -63,6 +63,7 @@ public class ProductsActivity extends FragmentActivity {
 	private static final String FILEPATHFROMPLIST = "filename";
 	private static final String ITEMFILENAME = "itemfilepath";
     private static final String ASSETSFOLDER = "assetsfolder";
+    private static final String TITLE = "title";
 	@SuppressWarnings("unused")
 	private static final String TAG = ProductsActivity.class.getSimpleName();
     private int mActiveTab;
@@ -88,6 +89,7 @@ public class ProductsActivity extends FragmentActivity {
 		intent.putExtra(FILEPATHFROMPLIST, item.getFilePath());
 		intent.putExtra(ITEMFILENAME, item.getItemFileName());
         intent.putExtra(ASSETSFOLDER, item.getItemStorageDir());
+        intent.putExtra(TITLE, item.getTitle());
 		return intent;
 
 	}
@@ -107,6 +109,8 @@ public class ProductsActivity extends FragmentActivity {
 		}
 
 		setContentView(R.layout.main_activity_layout);
+
+        getActionBar().setTitle(getIntent().getStringExtra(TITLE));
 
 		// Init DB
 		ProductsDBHelper.setDBHelper(new ProductsDBHelper(this, getIntent().getStringExtra

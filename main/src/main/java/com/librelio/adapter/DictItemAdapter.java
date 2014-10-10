@@ -298,6 +298,13 @@ public class DictItemAdapter extends BaseAdapter {
 			} else {
 				// set as download
 				holder.downloadButton.setVisibility(View.VISIBLE);
+                if (productsItem.isPaid()) {
+                    holder.downloadButton.setText(context.getResources()
+                            .getString(R.string.download));
+                } else {
+                    holder.downloadButton.setText(context.getResources()
+                            .getString(R.string.free_Download));
+                }
 			}
 
             int totalAssetCount = DownloadsManager.getTotalAssetCount(context,
