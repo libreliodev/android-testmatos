@@ -168,7 +168,7 @@ public class ProductsBillingActivity extends BaseActivity {
 
 	private void setupDialogView() {
 
-		setContentView(R.layout.billing_activity);
+		setContentView(R.layout.products_billing_activity);
 		buy = (Button) findViewById(R.id.billing_buy_button);
 //		subsMonthly = (Button) findViewById(R.id.billing_subs_monthly);
 //		subsYear = (Button) findViewById(R.id.billing_subs_year);
