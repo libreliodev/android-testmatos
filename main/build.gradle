@@ -9,6 +9,9 @@ android {
         applicationId "com.niveales.wind"
         minSdkVersion 14
         targetSdkVersion 20
+        versionCode 110
+        versionName "1.1.0"
+
     }
     buildTypes {
         release {
@@ -26,12 +29,16 @@ android {
 
         }
         testskis {
-            applicationId "com.niveales.testskis"
+            applicationId "com.niveales.testskis2014"
         }
         testsnow {
             applicationId "com.niveales.testsnowboards2014"
         }
     }
+
+        lintOptions {
+            abortOnError false
+        }
 }
 
 dependencies {
