@@ -49,7 +49,7 @@ dependencies {
     compile 'de.greenrobot:eventbus:2.2.1'
     compile files('libs/libGoogleAnalyticsV2.jar')
     compile 'com.squareup.okhttp:okhttp:2.0.0'
-    compile 'com.squareup.okhttp:okhttpurlconnection:2.0.0'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
     compile 'com.squareup.picasso:picasso:2.3.4'
     compile files('libs/cwac-wakeful-1.0.3.jar')
     compile 'com.android.support:support-v4:20.0.0'
