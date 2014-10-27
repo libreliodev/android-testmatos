@@ -19,23 +19,6 @@
 
 package com.librelio.activity;
 
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Locale;
-
-import org.apache.commons.io.FilenameUtils;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.params.HttpClientParams;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
@@ -65,6 +48,23 @@ import com.librelio.service.MagazineDownloadService;
 import com.librelio.view.SubscriberCodeDialog;
 import com.librelio.view.UsernamePasswordLoginDialog;
 import com.niveales.wind.R;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.params.HttpClientParams;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * The class for purchases via Google Play
@@ -149,9 +149,9 @@ public class BillingActivity extends BaseActivity {
 		if (!isNetworkConnected()) {
 			showAlertDialog(CONNECTION_ALERT);
 		} else {
-			bindService(new Intent(
-					"com.android.vending.billing.InAppBillingService.BIND"),
-					mServiceConn, Context.BIND_AUTO_CREATE);
+            Intent iapIntent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
+            iapIntent.setPackage("com.android.vending");
+            getContext().bindService(iapIntent, mServiceConn, Context.BIND_AUTO_CREATE);
 			if (getIntent().getExtras() != null) {
 				fileName = getIntent().getExtras().getString(FILE_NAME_KEY);
 				title = getIntent().getExtras().getString(TITLE_KEY);

@@ -150,10 +150,10 @@ public class ProductsBillingActivity extends BaseActivity {
 		if (!isNetworkConnected()) {
 			showAlertDialog(CONNECTION_ALERT);
 		} else {
-			bindService(new Intent(
-					"com.android.vending.billing.InAppBillingService.BIND"),
-					mServiceConn, Context.BIND_AUTO_CREATE);
-			if (getIntent().getExtras() != null) {
+            Intent iapIntent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
+            iapIntent.setPackage("com.android.vending");
+            getContext().bindService(iapIntent, mServiceConn, Context.BIND_AUTO_CREATE);
+            if (getIntent().getExtras() != null) {
 				fileName = getIntent().getExtras().getString(FILE_NAME_KEY);
 				title = getIntent().getExtras().getString(TITLE_KEY);
 				subtitle = getIntent().getExtras().getString(SUBTITLE_KEY);
