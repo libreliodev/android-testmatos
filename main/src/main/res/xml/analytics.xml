@@ -3,17 +3,14 @@
 <resources xmlns:tools="https://schemas.android.com/tools"
 tools:ignore="TypographyDashes">
   <!--Replace placeholder ID with your tracking ID-->
-  <string name="ga_trackingId">@string/google_analytics</string>
+  <string name="ga_trackingId">UA-1732003-23</string>
 
   <!--Enable automatic activity tracking-->
-  <bool name="ga_autoActivityTracking">false</bool>
+  <bool name="ga_autoActivityTracking">true</bool>
 
   <!--Enable automatic exception tracking-->
   <bool name="ga_reportUncaughtExceptions">true</bool>
 
- <!--  The screen names that will appear in your reporting -->
- <string name="com.librelio.activity.StartupActivity">Splash</string>
-  
-  
-  
+  <screenName name="com.librelio.activity.StartupActivity">Splash</screenName>
+
 </resources>

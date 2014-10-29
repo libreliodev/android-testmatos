@@ -31,7 +31,8 @@ import android.view.View.OnTouchListener;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageView;
 
-import com.google.analytics.tracking.android.EasyTracker;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.librelio.LibrelioApplication;
 import com.librelio.animation.DisplayNextView;
 import com.librelio.animation.Rotate3dAnimation;
@@ -97,10 +98,11 @@ public class StartupActivity extends AbstractLockRotationActivity {
 			@Override
 			public void onResponse(Response response) throws IOException {
 				if (response.code() == 200) {
-					EasyTracker.getTracker().sendView(
-							"Interstitial/"
-									+ FilenameUtils
-											.getName(getAdvertisingImageURL()));
+                    Tracker tracker = ((LibrelioApplication)getApplication()).getTracker();
+                    tracker.setScreenName("Interstitial/"
+                            + FilenameUtils
+                            .getName(getAdvertisingImageURL()));
+                    tracker.send(new HitBuilders.AppViewBuilder().build());
 					byte[] bytes = response.body().bytes();
 					if (bytes != null) {
 						adImage = BitmapFactory.decodeByteArray(bytes, 0,

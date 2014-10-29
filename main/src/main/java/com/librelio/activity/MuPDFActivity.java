@@ -42,7 +42,9 @@ import com.artifex.mupdfdemo.domain.OutlineActivityData;
 import com.artifex.mupdfdemo.domain.SearchTaskResult;
 import com.artifex.mupdfdemo.view.DocumentReaderView;
 import com.artifex.mupdfdemo.view.ReaderView;
-import com.google.analytics.tracking.android.EasyTracker;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.librelio.LibrelioApplication;
 import com.librelio.base.BaseActivity;
 import com.librelio.exception.MagazineNotFoundInDatabaseException;
 import com.librelio.lib.utils.PDFParser;
@@ -221,22 +223,23 @@ public class MuPDFActivity extends BaseActivity{
 				mLinksActivator = new ActivateAutoLinks(pageView);
 				mLinksActivator.safeExecute(i);
 				setCurrentlyViewedPreview();
-				EasyTracker.getInstance().setContext(MuPDFActivity.this);
+                Tracker tracker = ((LibrelioApplication)getApplication()).getTracker();
 				if (core.getDisplayPages() == 2) {
 					int actualPageNumber = (i * 2) - 1;
 					if (i > 0) {
-					EasyTracker.getTracker().sendView(
-							"PDFReader/" + FilenameUtils.getBaseName(fileName) + "/page"
-									+ (actualPageNumber + 1));
-					}
+                        tracker.setScreenName("PDFReader/" + FilenameUtils.getBaseName(fileName) + "/page"
+                                + (actualPageNumber + 1));
+                        tracker.send(new HitBuilders.AppViewBuilder().build());
+                    }
 					if (i + 1 < docView.getAdapter().getCount()) {
-					EasyTracker.getTracker().sendView(
-							"PDFReader/" + FilenameUtils.getBaseName(fileName) + "/page"
-									+ (actualPageNumber + 2));
+                        tracker.setScreenName("PDFReader/" + FilenameUtils.getBaseName(fileName) + "/page"
+                                + (actualPageNumber + 2));
+                        tracker.send(new HitBuilders.AppViewBuilder().build());
 					}
 				} else {
-					EasyTracker.getTracker().sendView(
-							"PDFReader/" + FilenameUtils.getBaseName(fileName) + "/page" + (i + 1));
+                    tracker.setScreenName(
+                            "PDFReader/" + FilenameUtils.getBaseName(fileName) + "/page" + (i + 1));
+                    tracker.send(new HitBuilders.AppViewBuilder().build());
 				}
 			}
 

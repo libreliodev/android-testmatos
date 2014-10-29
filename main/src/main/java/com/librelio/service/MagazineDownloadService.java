@@ -17,7 +17,8 @@ import android.widget.Toast;
 
 import com.artifex.mupdfdemo.LinkInfoExternal;
 import com.commonsware.cwac.wakeful.WakefulIntentService;
-import com.google.analytics.tracking.android.EasyTracker;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.librelio.LibrelioApplication;
 import com.librelio.activity.MuPDFActivity;
 import com.librelio.event.LoadPlistEvent;
@@ -121,9 +122,10 @@ public class MagazineDownloadService extends WakefulIntentService {
 		}
 		Log.d(TAG, "isSample: " + isSample + "\nfileUrl: " + fileUrl
 				+ "\nfilePath: " + filePath);
-		EasyTracker.getInstance().setContext(this);
-		EasyTracker.getTracker().sendView(
-				"Downloading/" + FilenameUtils.getBaseName(filePath));
+        Tracker tracker = ((LibrelioApplication)getApplication()).getTracker();
+        tracker.setScreenName(
+                "Downloading/" + FilenameUtils.getBaseName(filePath));
+        tracker.send(new HitBuilders.AppViewBuilder().build());
 		
 		String tempFilePath = filePath + TEMP_FILE_SUFFIX;
 		

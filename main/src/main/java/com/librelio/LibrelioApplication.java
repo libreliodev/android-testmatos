@@ -9,6 +9,9 @@ import android.net.Uri;
 import android.provider.Settings;
 import android.util.Log;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Logger;
+import com.google.android.gms.analytics.Tracker;
 import com.librelio.activity.MuPDFActivity;
 import com.librelio.storage.DataBaseHelper;
 import com.librelio.utils.GooglePlayServicesUtils;
@@ -44,8 +47,9 @@ public class LibrelioApplication extends Application {
 	
 	private static String baseUrl;
 	private static OkHttpClient client;
+    private Tracker tracker;
 
-	@Override
+    @Override
 	public void onCreate() {
         super.onCreate();
         ACRA.init(this);
@@ -57,6 +61,17 @@ public class LibrelioApplication extends Application {
 //                PATH_SEPARATOR;
 
         registerForGCM();
+    }
+
+    public synchronized Tracker getTracker() {
+        if (tracker == null) {
+            GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+            tracker = analytics.newTracker(R.xml.analytics);
+            // Set the log level to verbose.
+            GoogleAnalytics.getInstance(this).getLogger()
+                    .setLogLevel(Logger.LogLevel.VERBOSE);
+        }
+        return tracker;
     }
 
 	public static OkHttpClient getOkHttpClient() {

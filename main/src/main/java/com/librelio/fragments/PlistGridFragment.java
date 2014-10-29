@@ -13,7 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 
-import com.google.analytics.tracking.android.EasyTracker;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.librelio.LibrelioApplication;
 import com.librelio.adapter.DictItemAdapter;
 import com.librelio.base.BaseActivity;
 import com.librelio.event.InvalidateGridViewEvent;
@@ -125,7 +127,9 @@ public class PlistGridFragment extends Fragment implements LoaderManager.LoaderC
 	@Override
 	public void onResume() {
 		super.onResume();
-		EasyTracker.getTracker().sendView("Library/Magazines");
+        Tracker tracker = ((LibrelioApplication)getActivity().getApplication()).getTracker();
+        tracker.setScreenName("Library/Magazines");
+        tracker.send(new HitBuilders.AppViewBuilder().build());
 		EventBus.getDefault().register(this);
         startUpdateGridTask(0);
         PlistDownloader.doLoad(getActivity(), plistName, false);

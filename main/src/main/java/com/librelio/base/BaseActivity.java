@@ -1,23 +1,23 @@
 package com.librelio.base;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Locale;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
-import com.google.analytics.tracking.android.EasyTracker;
+import com.google.android.gms.analytics.GoogleAnalytics;
 import com.librelio.LibrelioApplication;
 import com.librelio.event.UpdateProgressBarEvent;
 import com.librelio.utils.StorageUtils;
 import com.niveales.wind.R;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Locale;
 
 import de.greenrobot.event.EventBus;
 
@@ -32,7 +32,7 @@ public class BaseActivity extends FragmentActivity implements IBaseContext {
 
 	private SharedPreferences sharedPreferences;
 
-	/**
+    /**
 	 * A {@link PurchaseObserver} is used to get callbacks when Android Market
 	 * sends messages to this application so that we can update the UI.
 	 */
@@ -172,15 +172,14 @@ public class BaseActivity extends FragmentActivity implements IBaseContext {
 	@Override
 	protected void onStart(){
 		super.onStart();
-		EasyTracker.getInstance().activityStart(this);
-		
-	}
+        GoogleAnalytics.getInstance(this).reportActivityStart(this);
+    }
 	
 	@Override
-	protected void onStop(){
-		super.onStop();
-		EasyTracker.getInstance().activityStop(this);
-	}
+	protected void onStop() {
+        super.onStop();
+        GoogleAnalytics.getInstance(this).reportActivityStop(this);
+    }
 
     @Override
     protected void onResume() {

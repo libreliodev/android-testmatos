@@ -7,7 +7,8 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.commonsware.cwac.wakeful.WakefulIntentService;
-import com.google.analytics.tracking.android.EasyTracker;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.librelio.LibrelioApplication;
 import com.librelio.event.LoadPlistEvent;
 import com.librelio.event.PlistUpdatedEvent;
@@ -117,9 +118,10 @@ public class ProductsDownloadService extends WakefulIntentService {
 		}
 		Log.d(TAG, "isSample: " + isSample + "\nfileUrl: " + fileUrl
 				+ "\nfilePath: " + filePath);
-		EasyTracker.getInstance().setContext(this);
-		EasyTracker.getTracker().sendView(
-				"Downloading/" + FilenameUtils.getBaseName(filePath));
+        Tracker tracker = ((LibrelioApplication)getApplication()).getTracker();
+        tracker.setScreenName(
+                "Downloading/" + FilenameUtils.getBaseName(filePath));
+        tracker.send(new HitBuilders.AppViewBuilder().build());
 
 		String tempFilePath = filePath + TEMP_FILE_SUFFIX;
 
