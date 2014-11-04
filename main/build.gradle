@@ -6,7 +6,7 @@ android {
     defaultConfig {
         applicationId "com.niveales.wind"
         minSdkVersion 14
-        targetSdkVersion 20
+        targetSdkVersion 21
         versionCode 110
         versionName "1.1.0"
     }
@@ -57,7 +57,7 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
     compile 'com.squareup.picasso:picasso:2.3.4'
     compile files('libs/cwac-wakeful-1.0.3.jar')
-    compile 'com.android.support:support-v4:20.0.0'
+    compile 'com.android.support:support-v4:21.0.0'
     compile 'com.google.android.gms:play-services:6.1.11'
     compile 'commons-io:commons-io:2.4'
     compile 'org.lucasr.twowayview:twowayview:0.1.1'
