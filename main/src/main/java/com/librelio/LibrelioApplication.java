@@ -66,7 +66,9 @@ public class LibrelioApplication extends Application {
     public synchronized Tracker getTracker() {
         if (tracker == null) {
             GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
-            tracker = analytics.newTracker(R.xml.analytics);
+            tracker = analytics.newTracker(getString(R.string.google_analytics));
+            tracker.enableExceptionReporting(true);
+            tracker.enableAutoActivityTracking(true);
             // Set the log level to verbose.
             GoogleAnalytics.getInstance(this).getLogger()
                     .setLogLevel(Logger.LogLevel.VERBOSE);
