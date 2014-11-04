@@ -24,10 +24,8 @@ android {
     }
     productFlavors {
         // default
-        wind {
+        magazine {
             applicationId "com.niveales.wind"
-            versionCode 110
-            versionName "1.1.0"
         }
         testskis {
             applicationId "com.niveales.testskis2014"
