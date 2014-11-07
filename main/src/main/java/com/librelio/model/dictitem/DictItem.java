@@ -2,7 +2,6 @@ package com.librelio.model.dictitem;
 
 import android.content.Context;
 
-import com.librelio.products.ProductsItem;
 import com.librelio.utils.StorageUtils;
 import com.longevitysoft.android.xml.plist.domain.Dict;
 

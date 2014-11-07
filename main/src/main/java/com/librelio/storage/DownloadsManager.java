@@ -16,7 +16,7 @@ import com.librelio.model.DownloadStatusCode;
 import com.librelio.model.dictitem.DictItem;
 import com.librelio.model.dictitem.DownloadableDictItem;
 import com.librelio.model.dictitem.MagazineItem;
-import com.librelio.products.ProductsItem;
+import com.librelio.model.dictitem.ProductsItem;
 
 import java.util.ArrayList;
 import java.util.List;

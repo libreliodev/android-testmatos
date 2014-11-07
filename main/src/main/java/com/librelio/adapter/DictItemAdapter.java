@@ -14,11 +14,11 @@ import android.widget.TextView;
 
 import com.librelio.LibrelioApplication;
 import com.librelio.event.LoadPlistEvent;
-import com.librelio.products.ProductsItem;
 import com.librelio.model.DownloadStatusCode;
 import com.librelio.model.dictitem.DictItem;
 import com.librelio.model.dictitem.DownloadableDictItem;
 import com.librelio.model.dictitem.MagazineItem;
+import com.librelio.model.dictitem.ProductsItem;
 import com.librelio.model.interfaces.DisplayableAsGridItem;
 import com.librelio.service.MagazineDownloadService;
 import com.librelio.storage.DownloadsManager;

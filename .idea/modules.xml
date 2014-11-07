@@ -5,7 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/android-testmatos.iml" filepath="$PROJECT_DIR$/android-testmatos.iml" />
       <module fileurl="file://$PROJECT_DIR$/appiraterAndroid/appiraterAndroid.iml" filepath="$PROJECT_DIR$/appiraterAndroid/appiraterAndroid.iml" />
       <module fileurl="file://$PROJECT_DIR$/main/main.iml" filepath="$PROJECT_DIR$/main/main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/productsLibrary/productsLibrary.iml" filepath="$PROJECT_DIR$/productsLibrary/productsLibrary.iml" />
     </modules>
   </component>
 </project>
