@@ -112,10 +112,10 @@ public class AssetDownloadService extends WakefulIntentService {
 
 		if (file.exists() && totalSize == file.length()) {
 			if (BuildConfig.DEBUG) {
-				Log.v(null, "Output file already exists and is correct size. Marking as downloaded.");
-				manager.setAssetStatus(asset.id, DownloadsManager.ASSET_DOWNLOADED);
-				EventBus.getDefault().post(new PlistUpdatedEvent());
-			}
+                Log.v(null, "Output file already exists and is correct size. Marking as downloaded.");
+            }
+			manager.setAssetStatus(asset.id, DownloadsManager.ASSET_DOWNLOADED);
+			EventBus.getDefault().post(new PlistUpdatedEvent());
 
 			throw new FileAlreadyExistException(
 					"Output file already exists. Skipping download.");
