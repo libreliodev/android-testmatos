@@ -1,19 +1,24 @@
 package com.librelio.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.librelio.LibrelioApplication;
 import com.librelio.event.LoadPlistEvent;
+import com.librelio.model.Asset;
 import com.librelio.model.DownloadStatusCode;
 import com.librelio.model.dictitem.DictItem;
 import com.librelio.model.dictitem.DownloadableDictItem;
@@ -22,6 +27,7 @@ import com.librelio.model.dictitem.ProductsItem;
 import com.librelio.model.interfaces.DisplayableAsGridItem;
 import com.librelio.service.MagazineDownloadService;
 import com.librelio.storage.DownloadsManager;
+import com.niveales.wind.BuildConfig;
 import com.niveales.wind.R;
 import com.squareup.picasso.Picasso;
 
@@ -67,6 +73,7 @@ public class DictItemAdapter extends BaseAdapter {
 		public Button deleteButton;
 		public Button sampleButton;
 		public Button cancelButton;
+        public ImageButton overflowButton;
 		public int position;
 	}
 
@@ -97,6 +104,8 @@ public class DictItemAdapter extends BaseAdapter {
 					.findViewById(R.id.button_sample);
 			holder.cancelButton = (Button) convertView
 					.findViewById(R.id.button_cancel);
+            holder.overflowButton = (ImageButton) convertView
+                    .findViewById(R.id.button_overflow);
 			convertView.setTag(holder);
 		} else {
 			holder = (DictItemHolder) convertView.getTag();
@@ -355,13 +364,45 @@ public class DictItemAdapter extends BaseAdapter {
 
 		if (dictItems.get(position) instanceof DownloadableDictItem) {
 			holder.downloadButton.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					((DownloadableDictItem) dictItems.get(position))
-							.onDownloadButtonClick(context);
-				}
-			});
+                @Override
+                public void onClick(View v) {
+                    ((DownloadableDictItem) dictItems.get(position))
+                            .onDownloadButtonClick(context);
+                }
+            });
 		}
+
+        if (BuildConfig.DEBUG) {
+            final PopupMenu menu = new PopupMenu(context, holder.overflowButton);
+            menu.getMenu().add(0, 999, 0, "Log asset details");
+            menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    switch (item.getItemId()) {
+                        case 999:
+                            DownloadsManager manager = new DownloadsManager(context);
+                            ArrayList<Asset> assetsToDownload = manager
+                                    .getAssetsToDownload();
+                            for (int i = 0; i < assetsToDownload.size(); i++) {
+                                Log.d("DownloadsManager", "assetsToDownload " + i + ": " +
+                                        assetsToDownload.get(i).assetUrl);
+                            }
+                            return true;
+                    }
+                    return false;
+                }
+            });
+
+            holder.overflowButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    menu.show();
+                }
+            });
+        } else {
+            holder.overflowButton.setVisibility(View.GONE);
+        }
+
 		return convertView;
 	}
 }

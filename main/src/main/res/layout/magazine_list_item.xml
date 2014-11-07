@@ -111,6 +111,16 @@
                 android:layout_height="@dimen/preview_button_height"
                 android:layout_marginTop="4dp"
                 android:text="@string/cancel" />
+
+            <ImageButton
+                android:id="@+id/button_overflow"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_more_vert_white_24dp"
+                android:background="?android:attr/selectableItemBackground"/>
+
         </LinearLayout>
     </LinearLayout>
 
