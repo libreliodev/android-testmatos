@@ -1,7 +1,5 @@
 package com.librelio.loader;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
@@ -15,7 +13,8 @@ import com.longevitysoft.android.xml.plist.PListXMLParser;
 import com.longevitysoft.android.xml.plist.domain.Array;
 import com.longevitysoft.android.xml.plist.domain.Dict;
 import com.longevitysoft.android.xml.plist.domain.PList;
-import com.niveales.wind.BuildConfig;
+
+import java.util.ArrayList;
 
 import de.greenrobot.event.EventBus;
 
@@ -45,9 +44,9 @@ public class PlistParserLoader extends AsyncTaskLoader<ArrayList<DictItem>> {
 
     private ArrayList<DictItem> parsePlist(String plistName) {
     	
-    	if (BuildConfig.DEBUG) {
-    		Log.d(getClass().getSimpleName(), "parsing plist: " + plistName);
-    	}
+//    	if (BuildConfig.DEBUG) {
+//    		Log.d(getClass().getSimpleName(), "parsing plist: " + plistName);
+//    	}
 
         PlistItem plistItem = new PlistItem(getContext(), "", plistName);
 
@@ -87,9 +86,9 @@ public class PlistParserLoader extends AsyncTaskLoader<ArrayList<DictItem>> {
             e.printStackTrace();
         }
         
-    	if (BuildConfig.DEBUG) {
-    		Log.d(getClass().getSimpleName(), "finished parsing plist: " + plistName);
-    	}
+//    	if (BuildConfig.DEBUG) {
+//    		Log.d(getClass().getSimpleName(), "finished parsing plist: " + plistName);
+//    	}
         return magazines;
     }
 
